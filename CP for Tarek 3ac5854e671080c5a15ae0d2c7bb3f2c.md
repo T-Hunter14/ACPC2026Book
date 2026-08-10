@@ -20,6 +20,7 @@
 - [7) Math & Number Theory](#7-math--number-theory)
 - [8) Dynamic Programming](#8-dynamic-programming)
 - [9) Missing Topics (Added)](#9-missing-topics-added)
+- [10) Comprehensive Missing Tricks & Function Ideas](#10-comprehensive-missing-tricks--function-ideas)
 
 ### Foundation quick links
 
@@ -12213,3 +12214,224 @@ long long bestSubsetSumLE(const vector<long long>& a, long long S){
     return ans;
 }
 ```
+
+## 10) Comprehensive Missing Tricks & Function Ideas
+
+### Foundations & Utilities: extra useful functions
+
+```cpp
+template<class T> bool chmin(T& a,const T& b){ if(b<a){ a=b; return true; } return false; }
+template<class T> bool chmax(T& a,const T& b){ if(b>a){ a=b; return true; } return false; }
+long long mod_pow(long long a,long long e,long long mod){ long long r=1%mod; a%=mod; while(e){ if(e&1) r=r*a%mod; a=a*a%mod; e>>=1; } return r; }
+long long ceil_div(long long a,long long b){ if(b<0) a=-a,b=-b; return a>=0 ? (a+b-1)/b : a/b; }
+long long floor_div(long long a,long long b){ if(b<0) a=-a,b=-b; return a>=0 ? a/b : -(( -a + b - 1)/b); }
+```
+
+#### Extra ideas
+
+- Coordinate-compress pairs/tuples when a value alone is not enough.
+- Prefer `long long` in weighted/DP transitions by default.
+- Keep one reusable `restore_path(par, target)` helper for graph and DP reconstructions.
+
+---
+
+### Graphs: missed patterns and tricks
+
+```cpp
+// Multi-test graph reset trick:
+// vector<vector<int>> adj(n+1); vector<int> vis(n+1,0);
+// Recreate per test instead of manual clear loops on huge static arrays.
+
+// Edge index trick for undirected graph with parent edge:
+// store edges as pairs (to, id), and skip only parent edge id in DFS.
+```
+
+```cpp
+// Bridge / articulation skeleton (Tarjan low-link)
+vector<vector<pair<int,int>>> g;
+vector<int> tin, low, isCut; vector<pair<int,int>> bridges; int timerDFS=0;
+void dfsBridge(int u,int pe=-1){
+    tin[u]=low[u]=++timerDFS; int children=0;
+    for(auto [v,id]:g[u]) if(id!=pe){
+        if(tin[v]) low[u]=min(low[u],tin[v]);
+        else {
+            dfsBridge(v,id); low[u]=min(low[u],low[v]); children++;
+            if(low[v]>tin[u]) bridges.push_back({u,v});
+            if(pe!=-1 && low[v]>=tin[u]) isCut[u]=1;
+        }
+    }
+    if(pe==-1 && children>1) isCut[u]=1;
+}
+```
+
+#### Common graph problem recognition
+
+- **Shortest path + 0/1 edges** → 0-1 BFS.
+- **Topological order + DAG transitions** → DAG DP.
+- **Connectivity under edge additions** → DSU.
+- **Offline connectivity with removals** → reverse process + DSU.
+- **Constraints of form `x - y <= c`** → Bellman-Ford / SPFA model.
+
+---
+
+### Trees: missed ideas
+
+```cpp
+// Rerooting DP pattern:
+// 1) dfs_down(u,p): compute contribution inside subtree.
+// 2) dfs_up(u,p,fromParent): reroot transition to children.
+// This solves sum of distances, max distance to any node, etc.
+```
+
+```cpp
+// Binary lifting helper: kth node on path(u,v)
+int kth_on_path(int u,int v,int k,
+                function<int(int,int)> lca,
+                function<int(int,int)> jump,
+                const vector<int>& depth){
+    int w=lca(u,v);
+    int left=depth[u]-depth[w]+1;
+    if(k<=left) return jump(u,k-1);
+    int right=depth[v]-depth[w];
+    int need=left+right-k;
+    return jump(v,need);
+}
+```
+
+---
+
+### Strings: missed functions and patterns
+
+```cpp
+vector<int> z_function(const string& s){
+    int n=s.size(); vector<int> z(n); int l=0,r=0;
+    for(int i=1;i<n;i++){
+        if(i<=r) z[i]=min(r-i+1,z[i-l]);
+        while(i+z[i]<n && s[z[i]]==s[i+z[i]]) z[i]++;
+        if(i+z[i]-1>r) l=i,r=i+z[i]-1;
+    }
+    return z;
+}
+```
+
+```cpp
+// Double-hash substring helper idea:
+// pref[i], pw[i] for each mod; getHash(l,r) in O(1).
+// Use for palindrome checks, repeated substring checks, lexicographic compare with LCP binary search.
+```
+
+#### String problem recognition
+
+- Many pattern queries in one text → Aho-Corasick.
+- Prefix/suffix border questions → prefix-function / Z-function.
+- Need lexicographic cyclic operations → suffix-array / Booth-style ideas.
+
+---
+
+### Data Structures (DS): missed important functions
+
+```cpp
+struct FenwickRange {
+    int n; vector<long long> b1,b2;
+    FenwickRange(int n=0){ init(n); }
+    void init(int n_){ n=n_; b1.assign(n+1,0); b2.assign(n+1,0); }
+    void add(vector<long long>& b,int i,long long v){ for(;i<=n;i+=i&-i) b[i]+=v; }
+    long long sum(const vector<long long>& b,int i) const { long long r=0; for(;i>0;i-=i&-i) r+=b[i]; return r; }
+    void range_add(int l,int r,long long v){ add(b1,l,v); add(b1,r+1,-v); add(b2,l,v*(l-1)); add(b2,r+1,-v*r); }
+    long long pref(int i) const { return sum(b1,i)*i - sum(b2,i); }
+    long long range_sum(int l,int r) const { return pref(r)-pref(l-1); }
+};
+```
+
+```cpp
+// DSU rollback idea (for offline dynamic connectivity):
+// keep stack of parent/size changes, no path compression, union by size only, rollback to checkpoint.
+```
+
+#### DS problem-type checklist
+
+- Point update + prefix/range sum → Fenwick.
+- Range update + range query → lazy segtree or two-BIT trick.
+- Static idempotent range query (min/gcd/max) → sparse table.
+- Order statistics with updates → PBDS / segtree over compressed values.
+
+---
+
+### Number Theory (NS): missed functions and ideas
+
+```cpp
+long long ext_gcd(long long a,long long b,long long& x,long long& y){
+    if(!b){ x=1; y=0; return a; }
+    long long x1,y1,g=ext_gcd(b,a%b,x1,y1);
+    x=y1; y=x1-(a/b)*y1; return g;
+}
+
+// Solve a*x + b*y = c
+bool diophantine(long long a,long long b,long long c,long long& x,long long& y){
+    long long g=ext_gcd(abs(a),abs(b),x,y);
+    if(c%g) return false;
+    x*=c/g; y*=c/g;
+    if(a<0) x=-x; if(b<0) y=-y;
+    return true;
+}
+```
+
+```cpp
+// CRT merge (x ≡ a1 mod m1, x ≡ a2 mod m2) can be built using ext_gcd.
+// Keep answer modulo lcm(m1,m2) and check consistency by gcd divisibility.
+```
+
+#### Number theory recognition
+
+- Congruence system with multiple mods → CRT.
+- Huge exponent with mod prime/composite → Euler/Fermat + fast power.
+- Frequent factorization queries up to N → SPF sieve.
+
+---
+
+### Dynamic Programming (DP): missed important patterns
+
+```cpp
+// Reconstruction helper (1D choice DP)
+vector<int> restore_choice(int target,const vector<int>& from){
+    vector<int> pick;
+    while(target!=-1 && from[target]!=-1){
+        pick.push_back(target-from[target]);
+        target=from[target];
+    }
+    reverse(pick.begin(),pick.end());
+    return pick;
+}
+```
+
+```cpp
+// Bitset knapsack idea:
+// bitset<MAXS+1> bs; bs[0]=1;
+// for(int w:weights) bs |= (bs<<w);
+// reachable sum queries in O(N*MAXS/word_size).
+```
+
+```cpp
+// Divide & Conquer DP optimization condition:
+// dp[i][j] = min_{k<j}(dp[i-1][k] + cost(k+1,j))
+// with monotone opt: opt[i][j] <= opt[i][j+1].
+```
+
+#### DP problem-type recognition (high-value)
+
+- Sequence with local transitions → 1D DP.
+- Partition into k groups with cost interval → D&C / Knuth candidates.
+- State depends on subset of used elements → bitmask DP.
+- Count strings/numbers with digit constraints → digit DP.
+- Tree answer requiring include/exclude node states → tree DP with 2-state transitions.
+
+---
+
+### Final quick ACPC checklist by topic
+
+- **Graphs:** shortest path family, SCC/2-SAT, flow, bridges/articulation, DSU offline.
+- **DS:** Fenwick variants, segtree lazy, sparse table, PBDS/compression workflow.
+- **Strings:** KMP + Z + Aho, hashing for O(1) substring compare.
+- **Number theory (NS):** gcd/ext-gcd, inverses, CRT, sieve/SPF, modular power.
+- **DP:** state design, transition proof, memory compression, reconstruction, optimization conditions.
+
