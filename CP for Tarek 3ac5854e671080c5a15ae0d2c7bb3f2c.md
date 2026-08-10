@@ -82,8 +82,10 @@ void solve() {
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    int t = 1; cin >> t;
-    while (t--) solve();
+    int t = 1;
+    cin >> t;
+    while (t--)
+        solve();
     return 0;
 }
 ```
@@ -92,7 +94,12 @@ int main() {
 
 ### Custom Sort
 
-```cpp\nstruct node{ int x, y; };\nsort(all(v), [](const node& a, const node& b){ return a.x!=b.x ? a.x<b.x : a.y>b.y; });\n```
+```cpp
+struct node {
+    int x, y;
+};
+sort(all(v), [](const node &a, const node &b) { return a.x != b.x ? a.x < b.x : a.y > b.y; });
+```
 
 ##### Use
 
@@ -108,17 +115,29 @@ int main() {
 ### Coordinate Compression (Restore Values)
 
 ```cpp
-struct compressor{
+struct compressor {
     vector<int> vals;
-    void build(vector<int> v){ vals=move(v); sort(all(vals)); vals.erase(unique(all(vals)), vals.end()); }
-    int  get(int x) const { return lower_bound(all(vals), x) - vals.begin(); }
-    int  rev(int id) const { return vals[id]; }
+    void build(vector<int> v) {
+        vals = move(v);
+        sort(all(vals));
+        vals.erase(unique(all(vals)), vals.end());
+    }
+    int get(int x) const { return lower_bound(all(vals), x) - vals.begin(); }
+    int rev(int id) const { return vals[id]; }
 };
 ```
 
 ##### Use
 
-```cpp\ncompressor cp;\n\ncp.build(a);\n\nint id = cp.get(x);\n\nint val = cp.rev(id);\n```
+```cpp
+compressor cp;
+
+cp.build(a);
+
+int id = cp.get(x);
+
+int val = cp.rev(id);
+```
 
 ##### Complexity
 
@@ -137,7 +156,13 @@ Memory : O(n)
 
 ### Coordinate Compression (In-place)
 
-```cpp\nauto vals=a; sort(all(vals)); vals.erase(unique(all(vals)), vals.end());\nfor(auto &x:a) x = lower_bound(all(vals), x) - vals.begin();\n```
+```cpp
+auto vals = a;
+sort(all(vals));
+vals.erase(unique(all(vals)), vals.end());
+for (auto &x : a)
+    x = lower_bound(all(vals), x) - vals.begin();
+```
 
 ##### Complexity
 
@@ -154,17 +179,28 @@ Memory : O(n)
 
 ```cpp
 #ifndef ONLINE_JUDGE
-template<class T> void dbg(const vector<T>& v){ cerr<<"[ "; for(const auto& x:v) cerr<<x<<' '; cerr<<"]\n"; }
-#define debug(x) cerr<<#x<<" = "<<(x)<<'\n'
+template <class T>
+void dbg(const vector<T> &v) {
+    cerr << "[ ";
+    for (const auto &x : v)
+        cerr << x << ' ';
+    cerr << "]\n";
+}
+#define debug(x) cerr << #x << " = " << (x) << '\n'
 #else
 #define debug(x) ((void)0)
-#define dbg(v)   ((void)0)
+#define dbg(v) ((void)0)
 #endif
 ```
 
 ##### Use
 
-```cpp\ndebug(n);\ndebug(ans);\n\ndbg(v);\n```
+```cpp
+debug(n);
+debug(ans);
+
+dbg(v);
+```
 
 ##### Notes
 
@@ -174,11 +210,16 @@ template<class T> void dbg(const vector<T>& v){ cerr<<"[ "; for(const auto& x:v)
 
 ### Random (RNG helper)
 
-```cpp\nmt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());\nlong long rnd(long long l, long long r){ return uniform_int_distribution<long long>(l, r)(rng); }\n```
+```cpp
+mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
+long long rnd(long long l, long long r) { return uniform_int_distribution<long long>(l, r)(rng); }
+```
 
 ##### Use
 
-```cpp\nlong long x = rnd(1, 100);\n```
+```cpp
+long long x = rnd(1, 100);
+```
 
 ##### Complexity
 
@@ -193,7 +234,9 @@ template<class T> void dbg(const vector<T>& v){ cerr<<"[ "; for(const auto& x:v)
 
 ### Shuffle
 
-```cpp\nshuffle(all(v), rng);\n```
+```cpp
+shuffle(all(v), rng);
+```
 
 ##### Complexity
 
@@ -208,11 +251,20 @@ template<class T> void dbg(const vector<T>& v){ cerr<<"[ "; for(const auto& x:v)
 
 ### ckmin / ckmax
 
-```cpp\ntemplate<class T> bool ckmin(T& a, const T& b){ return b<a ? (a=b, true) : false; }\ntemplate<class T> bool ckmax(T& a, const T& b){ return a<b ? (a=b, true) : false; }\n```
+```cpp
+template <class T>
+bool ckmin(T &a, const T &b) { return b < a ? (a = b, true) : false; }
+template <class T>
+bool ckmax(T &a, const T &b) { return a < b ? (a = b, true) : false; }
+```
 
 ##### Use
 
-```cpp\nckmin(ans, cur);\n\nckmax(ans, cur);\n```
+```cpp
+ckmin(ans, cur);
+
+ckmax(ans, cur);
+```
 
 ##### Complexity
 
@@ -226,7 +278,11 @@ template<class T> void dbg(const vector<T>& v){ cerr<<"[ "; for(const auto& x:v)
 
 ### Next / Previous Permutation
 
-```cpp\nnext_permutation(all(v));\n\nprev_permutation(all(v));\n```
+```cpp
+next_permutation(all(v));
+
+prev_permutation(all(v));
+```
 
 ##### Complexity
 
@@ -241,7 +297,19 @@ template<class T> void dbg(const vector<T>& v){ cerr<<"[ "; for(const auto& x:v)
 
 ### Useful STL Tricks
 
-```cpp\n*max_element(all(v));\n\n*min_element(all(v));\n\naccumulate(all(v), 0LL);\n\nreverse(all(v));\n\nrotate(v.begin(), v.begin() + k, v.end());\n\niota(all(v), 0);\n```
+```cpp
+*max_element(all(v));
+
+*min_element(all(v));
+
+accumulate(all(v), 0LL);
+
+reverse(all(v));
+
+rotate(v.begin(), v.begin() + k, v.end());
+
+iota(all(v), 0);
+```
 
 ##### Complexity
 
@@ -258,7 +326,16 @@ template<class T> void dbg(const vector<T>& v){ cerr<<"[ "; for(const auto& x:v)
 
 ### Binary Search Template (First True)
 
-```cpp\nlong long l=0, r=(long long)1e18, ans=-1;\nwhile(l<=r){\n    long long mid=(l+r)>>1;\n    if(check(mid)) ans=mid, r=mid-1;\n    else l=mid+1;\n}\n```
+```cpp
+long long l = 0, r = (long long)1e18, ans = -1;
+while (l <= r) {
+    long long mid = (l + r) >> 1;
+    if (check(mid))
+        ans = mid, r = mid - 1;
+    else
+        l = mid + 1;
+}
+```
 
 ##### Complexity
 
@@ -272,7 +349,16 @@ template<class T> void dbg(const vector<T>& v){ cerr<<"[ "; for(const auto& x:v)
 
 ### Binary Search Template (Last True)
 
-```cpp\nlong long l=0, r=(long long)1e18, ans=-1;\nwhile(l<=r){\n    long long mid=(l+r)>>1;\n    if(check(mid)) ans=mid, l=mid+1;\n    else r=mid-1;\n}\n```
+```cpp
+long long l = 0, r = (long long)1e18, ans = -1;
+while (l <= r) {
+    long long mid = (l + r) >> 1;
+    if (check(mid))
+        ans = mid, l = mid + 1;
+    else
+        r = mid - 1;
+}
+```
 
 ##### Complexity
 
@@ -286,7 +372,15 @@ template<class T> void dbg(const vector<T>& v){ cerr<<"[ "; for(const auto& x:v)
 
 ### Ternary Search
 
-```cpp\nwhile(r-l>3){\n    long long m1=l+(r-l)/3, m2=r-(r-l)/3;\n    if(f(m1)<f(m2)) r=m2; else l=m1;\n}\n```
+```cpp
+while (r - l > 3) {
+    long long m1 = l + (r - l) / 3, m2 = r - (r - l) / 3;
+    if (f(m1) < f(m2))
+        r = m2;
+    else
+        l = m1;
+}
+```
 
 ##### Complexity
 
@@ -382,27 +476,42 @@ O(n)
 
 #### Connectivity
 
-```cpp\nif (d.same(u, v))\n```
+```cpp
+if (d.same(u, v))
+```
 
 #### Merge Components
 
-```cpp\nd.unite(u, v);\n```
+```cpp
+d.unite(u, v);
+```
 
 #### Component Size
 
-```cpp\ncout << d.size(u);\n```
+```cpp
+cout << d.size(u);
+```
 
 #### Number of Components
 
-```cpp\ncout << d.cc;\n```
+```cpp
+cout << d.cc;
+```
 
 #### Cycle Detection
 
-```cpp\nif (!d.unite(u, v)) {\n    // cycle found\n}\n```
+```cpp
+if (!d.unite(u, v)) {
+    // cycle found
+}
+```
 
 #### Kruskal MST
 
-```cpp\nif (d.unite(u, v))\n    mst += w;\n```
+```cpp
+if (d.unite(u, v))
+    mst += w;
+```
 
 ---
 
@@ -471,7 +580,7 @@ struct dsu {
         return sz[find(x)];
     }
 
-    vector<int>& members(int x) {
+    vector<int> &members(int x) {
         return comp[find(x)];
     }
 
@@ -517,11 +626,22 @@ O(n)
 
 #### Get Members of Component
 
-```cpp\nfor (auto u : d.members(x))\n    cout << u << ' ';\n```
+```cpp
+for (auto u : d.members(x))
+    cout << u << ' ';
+```
 
 #### Print All Components
 
-```cpp\nauto comps = d.get_all_components();\n\nfor (auto &c : comps) {\n    for (auto x : c)\n        cout << x << ' ';\n    cout << endl;\n}\n```
+```cpp
+auto comps = d.get_all_components();
+
+for (auto &c : comps) {
+    for (auto x : c)
+        cout << x << ' ';
+    cout << endl;
+}
+```
 
 #### Merge Small Into Large
 
@@ -569,17 +689,20 @@ Multi Source Expansion
 ### Normal BFS
 
 ```cpp
-vector<int> bfs(int src, const vector<vector<int>>& adj) {
+vector<int> bfs(int src, const vector<vector<int>> &adj) {
     int n = (int)adj.size() - 1;
     vector<int> dist(n + 1, -1);
     queue<int> q;
-    q.push(src); dist[src] = 0;
+    q.push(src);
+    dist[src] = 0;
     while (!q.empty()) {
-        int u = q.front(); q.pop();
-        for (int v : adj[u]) if (dist[v] == -1) {
-            dist[v] = dist[u] + 1;
-            q.push(v);
-        }
+        int u = q.front();
+        q.pop();
+        for (int v : adj[u])
+            if (dist[v] == -1) {
+                dist[v] = dist[u] + 1;
+                q.push(v);
+            }
     }
     return dist;
 }
@@ -594,7 +717,9 @@ Memory: O(V)
 
 ##### Use
 
-```cpp\nauto dist = bfs(1, adj);\n```
+```cpp
+auto dist = bfs(1, adj);
+```
 
 ---
 
@@ -627,7 +752,14 @@ while (!q.empty()) {
 
 ##### Restore Path
 
-```cpp\nvector<int> path;\n\nfor (int cur = dest; cur != -1; cur = par[cur])\n    path.push_back(cur);\n\nreverse(all(path));\n```
+```cpp
+vector<int> path;
+
+for (int cur = dest; cur != -1; cur = par[cur])
+    path.push_back(cur);
+
+reverse(all(path));
+```
 
 ##### Use
 
@@ -685,10 +817,10 @@ O(V + E)
 ### Grid BFS
 
 ```cpp
-int dx[] = {1,-1,0,0};
-int dy[] = {0,0,1,-1};
+int dx[] = {1, -1, 0, 0};
+int dy[] = {0, 0, 1, -1};
 
-queue<pair<int,int>> q;
+queue<pair<int, int>> q;
 
 q.push({sx, sy});
 
@@ -750,12 +882,11 @@ Maze Problems
 ---
 
 ```cpp
-queue<pair<int,int>> q;
+queue<pair<int, int>> q;
 
 vector<vector<int>> dist(
     n + 1,
-    vector<int>(1 << k, -1)
-);
+    vector<int>(1 << k, -1));
 
 q.push({src, 0});
 
@@ -890,7 +1021,17 @@ for (int i = 1; i <= n; i++) {
 
 #### Find Farthest Node
 
-```cpp\nint mx = 0;\nint node = src;\n\nfor (int i = 1; i <= n; i++) {\n    if (dist[i] > mx) {\n        mx = dist[i];\n        node = i;\n    }\n}\n```
+```cpp
+int mx = 0;
+int node = src;
+
+for (int i = 1; i <= n; i++) {
+    if (dist[i] > mx) {
+        mx = dist[i];
+        node = i;
+    }
+}
+```
 
 ##### Use
 
@@ -959,7 +1100,17 @@ Articulation Points
 
 ### Normal DFS
 
-```cpp\nvector<vector<int>> adj;\nvector<int> vis;\n\nvoid dfs(int u) {\n    vis[u] = 1;\n    for (int v : adj[u]) if (!vis[v]) dfs(v);\n}\n```
+```cpp
+vector<vector<int>> adj;
+vector<int> vis;
+
+void dfs(int u) {
+    vis[u] = 1;
+    for (int v : adj[u])
+        if (!vis[v])
+            dfs(v);
+}
+```
 
 ##### Complexity
 
@@ -970,17 +1121,44 @@ Memory: O(V)
 
 ##### Use
 
-```cpp\ndfs(1);\n```
+```cpp
+dfs(1);
+```
 
 ---
 
 ### Connected Components
 
-```cpp\nvector<int> vis;\n\nvoid dfs(int u) {\n\n    vis[u] = 1;\n\n    for (auto v : adj[u]) {\n\n        if (!vis[v])\n            dfs(v);\n    }\n}\n```
+```cpp
+vector<int> vis;
+
+void dfs(int u) {
+
+    vis[u] = 1;
+
+    for (auto v : adj[u]) {
+
+        if (!vis[v])
+            dfs(v);
+    }
+}
+```
 
 ##### Count Components
 
-```cpp\nint cc = 0;\n\nfor (int i = 1; i <= n; i++) {\n\n    if (vis[i])\n        continue;\n\n    cc++;\n\n    dfs(i);\n}\n```
+```cpp
+int cc = 0;
+
+for (int i = 1; i <= n; i++) {
+
+    if (vis[i])
+        continue;
+
+    cc++;
+
+    dfs(i);
+}
+```
 
 ##### Complexity
 
@@ -992,7 +1170,18 @@ O(V + E)
 
 ### DFS With Parent
 
-```cpp\nvoid dfs(int u, int p) {\n\n    for (auto v : adj[u]) {\n\n        if (v == p)\n            continue;\n\n        dfs(v, u);\n    }\n}\n```
+```cpp
+void dfs(int u, int p) {
+
+    for (auto v : adj[u]) {
+
+        if (v == p)
+            continue;
+
+        dfs(v, u);
+    }
+}
+```
 
 ##### Use
 
@@ -1026,7 +1215,9 @@ void dfs(int u, int p) {
 
 ##### Use
 
-```cpp\ncout << sz[u];\n```
+```cpp
+cout << sz[u];
+```
 
 ##### Meaning
 
@@ -1061,7 +1252,12 @@ void dfs(int u, int p) {
 
 ##### Check Ancestor
 
-```cpp\nbool is_ancestor(int u, int v) {\n\n    return tin[u] <= tin[v]\n        && tout[v] <= tout[u];\n}\n```
+```cpp
+bool is_ancestor(int u, int v) {
+
+    return tin[u] <= tin[v] && tout[v] <= tout[u];
+}
+```
 
 ##### Use
 
@@ -1103,7 +1299,9 @@ void dfs(int u, int p) {
 
 ##### Subtree Range
 
-```cpp\n[tin[u], tout[u]]\n```
+```cpp
+[ tin[u], tout[u] ]
+```
 
 ##### Use
 
@@ -1189,11 +1387,35 @@ Check DAG
 
 ### Topological Sort (DFS)
 
-```cpp\nvector<int> vis;\nvector<int> topo;\n\nvoid dfs(int u) {\n\n    vis[u] = 1;\n\n    for (auto v : adj[u]) {\n\n        if (!vis[v])\n            dfs(v);\n    }\n\n    topo.push_back(u);\n}\n```
+```cpp
+vector<int> vis;
+vector<int> topo;
+
+void dfs(int u) {
+
+    vis[u] = 1;
+
+    for (auto v : adj[u]) {
+
+        if (!vis[v])
+            dfs(v);
+    }
+
+    topo.push_back(u);
+}
+```
 
 ##### Build Topological Order
 
-```cpp\nfor (int i = 1; i <= n; i++) {\n\n    if (!vis[i])\n        dfs(i);\n}\n\nreverse(all(topo));\n```
+```cpp
+for (int i = 1; i <= n; i++) {
+
+    if (!vis[i])
+        dfs(i);
+}
+
+reverse(all(topo));
+```
 
 ##### Complexity
 
@@ -1207,27 +1429,41 @@ O(V + E)
 
 #### First DFS
 
-```cpp\ndfs(1);\n```
+```cpp
+dfs(1);
+```
 
 Find farthest node:
 
-```cpp\nint a = max_element(\n    all(dist)\n) - dist.begin();\n```
+```cpp
+int a = max_element(
+            all(dist)) -
+        dist.begin();
+```
 
 ---
 
 #### Second DFS
 
-```cpp\ndfs(a);\n```
+```cpp
+dfs(a);
+```
 
 Find farthest node:
 
-```cpp\nint b = max_element(\n    all(dist)\n) - dist.begin();\n```
+```cpp
+int b = max_element(
+            all(dist)) -
+        dist.begin();
+```
 
 ---
 
 #### Diameter Length
 
-```cpp\ndist[b]\n```
+```cpp
+dist[b]
+```
 
 ##### Complexity
 
@@ -1239,7 +1475,22 @@ O(N)
 
 ### DFS Order
 
-```cpp\nvector<int> ord;\n\nvoid dfs(int u, int p) {\n\n    ord.push_back(u);\n\n    for (auto v : adj[u]) {\n\n        if (v == p)\n            continue;\n\n        dfs(v, u);\n    }\n}\n```
+```cpp
+vector<int> ord;
+
+void dfs(int u, int p) {
+
+    ord.push_back(u);
+
+    for (auto v : adj[u]) {
+
+        if (v == p)
+            continue;
+
+        dfs(v, u);
+    }
+}
+```
 
 ##### Use
 
@@ -1266,8 +1517,7 @@ bool dfs(int u, int c) {
 
             if (!dfs(v, c ^ 1))
                 return false;
-        }
-        else {
+        } else {
 
             if (color[v] == color[u])
                 return false;
@@ -1290,19 +1540,46 @@ O(V + E)
 
 #### Collect Nodes Of Component
 
-```cpp\nvector<int> comp;\n\nvoid dfs(int u) {\n\n    vis[u] = 1;\n\n    comp.push_back(u);\n\n    for (auto v : adj[u]) {\n\n        if (!vis[v])\n            dfs(v);\n    }\n}\n```
+```cpp
+vector<int> comp;
+
+void dfs(int u) {
+
+    vis[u] = 1;
+
+    comp.push_back(u);
+
+    for (auto v : adj[u]) {
+
+        if (!vis[v])
+            dfs(v);
+    }
+}
+```
 
 ---
 
 #### Leaf Detection
 
-```cpp\nif (adj[u].size() == 1 && u != root)\n{\n    // leaf\n}\n```
+```cpp
+if (adj[u].size() == 1 && u != root) {
+    // leaf
+}
+```
 
 ---
 
 #### Count Leaves
 
-```cpp\nint leaves = 0;\n\nfor (int i = 2; i <= n; i++) {\n\n    if (adj[i].size() == 1)\n        leaves++;\n}\n```
+```cpp
+int leaves = 0;
+
+for (int i = 2; i <= n; i++) {
+
+    if (adj[i].size() == 1)
+        leaves++;
+}
+```
 
 ---
 
@@ -1422,7 +1699,11 @@ Memory: O(V)
 
 ### Check If DAG
 
-```cpp\nif ((int)topo.size() != n)\n{\n    // cycle exists\n}\n```
+```cpp
+if ((int)topo.size() != n) {
+    // cycle exists
+}
+```
 
 ##### Idea
 
@@ -1439,8 +1720,8 @@ iff it is a DAG.
 priority_queue<
     int,
     vector<int>,
-    greater<int>
-> pq;
+    greater<int>>
+    pq;
 
 for (int i = 1; i <= n; i++) {
     if (indeg[i] == 0)
@@ -1480,11 +1761,35 @@ Smallest Valid Ordering
 
 ### DFS Topological Sort
 
-```cpp\nvector<int> vis;\nvector<int> topo;\n\nvoid dfs(int u) {\n\n    vis[u] = 1;\n\n    for (auto v : adj[u]) {\n\n        if (!vis[v])\n            dfs(v);\n    }\n\n    topo.push_back(u);\n}\n```
+```cpp
+vector<int> vis;
+vector<int> topo;
+
+void dfs(int u) {
+
+    vis[u] = 1;
+
+    for (auto v : adj[u]) {
+
+        if (!vis[v])
+            dfs(v);
+    }
+
+    topo.push_back(u);
+}
+```
 
 ##### Build Order
 
-```cpp\nfor (int i = 1; i <= n; i++) {\n\n    if (!vis[i])\n        dfs(i);\n}\n\nreverse(all(topo));\n```
+```cpp
+for (int i = 1; i <= n; i++) {
+
+    if (!vis[i])
+        dfs(i);
+}
+
+reverse(all(topo));
+```
 
 ##### Complexity
 
@@ -1530,7 +1835,19 @@ bool dfs(int u) {
 
 ### Longest Path In DAG
 
-```cpp\nvector<int> dp(n + 1, 0);\n\nfor (auto u : topo) {\n\n    for (auto v : adj[u]) {\n\n        dp[v] =\n            max(dp[v], \n                dp[u] + 1);\n    }\n}\n```
+```cpp
+vector<int> dp(n + 1, 0);
+
+for (auto u : topo) {
+
+    for (auto v : adj[u]) {
+
+        dp[v] =
+            max(dp[v],
+                dp[u] + 1);
+    }
+}
+```
 
 ##### Complexity
 
@@ -1585,7 +1902,20 @@ Works even with negative weights
 
 ### Count Number Of Paths In DAG
 
-```cpp\nvector<int> dp(n + 1);\n\ndp[src] = 1;\n\nfor (auto u : topo) {\n\n    for (auto v : adj[u]) {\n\n        dp[v] += dp[u];\n        dp[v] %= MOD;\n    }\n}\n```
+```cpp
+vector<int> dp(n + 1);
+
+dp[src] = 1;
+
+for (auto u : topo) {
+
+    for (auto v : adj[u]) {
+
+        dp[v] += dp[u];
+        dp[v] %= MOD;
+    }
+}
+```
 
 ##### Use
 
@@ -1616,7 +1946,17 @@ for (auto u : topo) {
 
 ##### Restore Path
 
-```cpp\nvector<int> path;\n\nfor (int cur = dest;\n     cur != -1;\n     cur = par[cur])\n{\n    path.push_back(cur);\n}\n\nreverse(all(path));\n```
+```cpp
+vector<int> path;
+
+for (int cur = dest;
+     cur != -1;
+     cur = par[cur]) {
+    path.push_back(cur);
+}
+
+reverse(all(path));
+```
 
 ---
 
@@ -1624,19 +1964,48 @@ for (auto u : topo) {
 
 #### Sources (Indegree = 0)
 
-```cpp\nvector<int> srcs;\n\nfor (int i = 1; i <= n; i++) {\n\n    if (indeg[i] == 0)\n        srcs.push_back(i);\n}\n```
+```cpp
+vector<int> srcs;
+
+for (int i = 1; i <= n; i++) {
+
+    if (indeg[i] == 0)
+        srcs.push_back(i);
+}
+```
 
 ---
 
 #### Sinks (Outdegree = 0)
 
-```cpp\nvector<int> sinks;\n\nfor (int i = 1; i <= n; i++) {\n\n    if (adj[i].empty())\n        sinks.push_back(i);\n}\n```
+```cpp
+vector<int> sinks;
+
+for (int i = 1; i <= n; i++) {
+
+    if (adj[i].empty())
+        sinks.push_back(i);
+}
+```
 
 ---
 
 #### Check Unique Topological Order
 
-```cpp\nbool unique_order = true;\n\nwhile (!q.empty()) {\n\n    if ((int)q.size() > 1)\n        unique_order = false;\n\n    int u = q.front();\n    q.pop();\n\n    ...\n}\n```
+```cpp
+bool unique_order = true;
+
+while (!q.empty()) {
+
+    if ((int)q.size() > 1)
+        unique_order = false;
+
+    int u = q.front();
+    q.pop();
+
+    ...
+}
+```
 
 ##### Meaning
 
@@ -1712,18 +2081,22 @@ Multi Source Shortest Path
 ### Standard Dijkstra
 
 ```cpp
-vector<long long> dijkstra(int src, const vector<vector<pair<int,int>>>& adj) {
+vector<long long> dijkstra(int src, const vector<vector<pair<int, int>>> &adj) {
     int n = (int)adj.size() - 1;
     vector<long long> dist(n + 1, INF);
-    priority_queue<pair<long long,int>, vector<pair<long long,int>>, greater<pair<long long,int>>> pq;
-    dist[src] = 0; pq.push({0, src});
+    priority_queue<pair<long long, int>, vector<pair<long long, int>>, greater<pair<long long, int>>> pq;
+    dist[src] = 0;
+    pq.push({0, src});
     while (!pq.empty()) {
-        auto [d, u] = pq.top(); pq.pop();
-        if (d != dist[u]) continue;
-        for (auto [v, w] : adj[u]) if (dist[v] > d + w) {
-            dist[v] = d + w;
-            pq.push({dist[v], v});
-        }
+        auto [d, u] = pq.top();
+        pq.pop();
+        if (d != dist[u])
+            continue;
+        for (auto [v, w] : adj[u])
+            if (dist[v] > d + w) {
+                dist[v] = d + w;
+                pq.push({dist[v], v});
+            }
     }
     return dist;
 }
@@ -1751,10 +2124,10 @@ vector<int> dist(n + 1, INF);
 vector<int> par(n + 1, -1);
 
 priority_queue<
-    pair<int,int>,
-    vector<pair<int,int>>,
-    greater<pair<int,int>>
-> pq;
+    pair<int, int>,
+    vector<pair<int, int>>,
+    greater<pair<int, int>>>
+    pq;
 
 dist[src] = 0;
 
@@ -1783,7 +2156,17 @@ while (!pq.empty()) {
 
 ##### Restore Path
 
-```cpp\nvector<int> path;\n\nfor (int cur = dest;\n     cur != -1;\n     cur = par[cur])\n{\n    path.push_back(cur);\n}\n\nreverse(all(path));\n```
+```cpp
+vector<int> path;
+
+for (int cur = dest;
+     cur != -1;
+     cur = par[cur]) {
+    path.push_back(cur);
+}
+
+reverse(all(path));
+```
 
 ---
 
@@ -1793,10 +2176,10 @@ while (!pq.empty()) {
 vector<int> dist(n + 1, INF);
 
 priority_queue<
-    pair<int,int>,
-    vector<pair<int,int>>,
-    greater<pair<int,int>>
-> pq;
+    pair<int, int>,
+    vector<pair<int, int>>,
+    greater<pair<int, int>>>
+    pq;
 
 for (auto src : sources) {
 
@@ -1851,15 +2234,14 @@ Spread Problems
 
 ```cpp
 priority_queue<
-    array<int,3>,
-    vector<array<int,3>>,
-    greater<array<int,3>>
-> pq;
+    array<int, 3>,
+    vector<array<int, 3>>,
+    greater<array<int, 3>>>
+    pq;
 
 vector<vector<int>> dist(
     n + 1,
-    vector<int>(K, INF)
-);
+    vector<int>(K, INF));
 
 dist[src][0] = 0;
 
@@ -1906,8 +2288,7 @@ for (int it = 1; it <= n; it++) {
             continue;
 
         if (u == -1 ||
-            dist[i] < dist[u])
-        {
+            dist[i] < dist[u]) {
             u = i;
         }
     }
@@ -1985,7 +2366,13 @@ Count Shortest Paths
 
 ### Shortest Path DAG After Dijkstra
 
-```cpp\nif (\n    dist[v] ==\n    dist[u] + w\n)\n{\n    dag[u].push_back(v);\n}\n```
+```cpp
+if (
+    dist[v] ==
+    dist[u] + w) {
+    dag[u].push_back(v);
+}
+```
 
 ##### Use
 
@@ -1998,7 +2385,16 @@ DP On Shortest Paths
 
 ### Dijkstra On Grid
 
-```cpp\npriority_queue<\n    array<int, 3>, \n    vector<array<int, 3>>, \n    greater<array<int, 3>>\n> pq;\n\ndist[sx][sy] = 0;\npq.push({0, sx, sy});\n```
+```cpp
+priority_queue<
+    array<int, 3>,
+    vector<array<int, 3>>,
+    greater<array<int, 3>>>
+    pq;
+
+dist[sx][sy] = 0;
+pq.push({0, sx, sy});
+```
 
 ##### Use
 
@@ -2015,10 +2411,10 @@ Minimum Cost Path
 vector<int> cnt(n + 1);
 
 priority_queue<
-    pair<int,int>,
-    vector<pair<int,int>>,
-    greater<pair<int,int>>
-> pq;
+    pair<int, int>,
+    vector<pair<int, int>>,
+    greater<pair<int, int>>>
+    pq;
 
 pq.push({0, src});
 
@@ -2052,25 +2448,49 @@ K Shortest Paths
 
 #### Unreachable Nodes
 
-```cpp\nif (dist[u] == INF)\n{\n    // unreachable\n}\n```
+```cpp
+if (dist[u] == INF) {
+    // unreachable
+}
+```
 
 ---
 
 #### Farthest Reachable Node
 
-```cpp\nint mx = -1;\nint node = -1;\n\nfor (int i = 1; i <= n; i++) {\n\n    if (dist[i] == INF)\n        continue;\n\n    if (dist[i] > mx) {\n\n        mx = dist[i];\n        node = i;\n    }\n}\n```
+```cpp
+int mx = -1;
+int node = -1;
+
+for (int i = 1; i <= n; i++) {
+
+    if (dist[i] == INF)
+        continue;
+
+    if (dist[i] > mx) {
+
+        mx = dist[i];
+        node = i;
+    }
+}
+```
 
 ---
 
 #### Shortest Path Length
 
-```cpp\ncout << dist[dest];\n```
+```cpp
+cout << dist[dest];
+```
 
 ---
 
 #### Check Negative Edge
 
-```cpp\nif (w < 0)\n{\n    // DON'T use Dijkstra\n}\n```
+```cpp
+if (w < 0) {
+// DON'T use Dijkstra\n}\n
+```
 
 ---
 
@@ -2187,7 +2607,7 @@ struct dsu {
 struct edge {
     int u, v, w;
 
-    bool operator < (const edge &other) const {
+    bool operator<(const edge &other) const {
         return w < other.w;
     }
 };
@@ -2228,7 +2648,22 @@ O(E)
 
 ### Check If MST Exists
 
-```cpp\nint used = 0;\n\nfor (auto [u, v, w] : edges) {\n\n    if (d.unite(u, v)) {\n\n        mst += w;\n        used++;\n    }\n}\n\nif (used != n - 1)\n{\n    cout << "IMPOSSIBLE";\n}\n```
+```cpp
+int used = 0;
+
+for (auto [u, v, w] : edges) {
+
+    if (d.unite(u, v)) {
+
+        mst += w;
+        used++;
+    }
+}
+
+if (used != n - 1) {
+    cout << "IMPOSSIBLE";
+}
+```
 
 ##### Meaning
 
@@ -2241,7 +2676,19 @@ No spanning tree exists
 
 ### Store MST Edges
 
-```cpp\nvector<edge> mst_edges;\n\nfor (auto [u, v, w] : edges) {\n\n    if (d.unite(u, v)) {\n\n        mst += w;\n\n        mst_edges.push_back({\n            u, v, w\n        });\n    }\n}\n```
+```cpp
+vector<edge> mst_edges;
+
+for (auto [u, v, w] : edges) {
+
+    if (d.unite(u, v)) {
+
+        mst += w;
+
+        mst_edges.push_back({u, v, w});
+    }
+}
+```
 
 ##### Use
 
@@ -2257,19 +2704,15 @@ LCA on MST
 ### Build MST Graph
 
 ```cpp
-vector<vector<pair<int,int>>> mst_adj(n + 1);
+vector<vector<pair<int, int>>> mst_adj(n + 1);
 
 for (auto [u, v, w] : edges) {
 
     if (d.unite(u, v)) {
 
-        mst_adj[u].push_back({
-            v, w
-        });
+        mst_adj[u].push_back({v, w});
 
-        mst_adj[v].push_back({
-            u, w
-        });
+        mst_adj[v].push_back({u, w});
     }
 }
 ```
@@ -2287,7 +2730,11 @@ Tree Queries
 
 ### Maximum Spanning Tree
 
-```cpp\nsort(all(edges), [&](auto a, auto b) {\n    return a.w > b.w;\n});\n```
+```cpp
+sort(all(edges), [&](auto a, auto b) {
+    return a.w > b.w;
+});
+```
 
 Everything else remains the same.
 
@@ -2301,13 +2748,34 @@ Maximum total weight tree
 
 ### Number Of Connected Components
 
-```cpp\ndsu d(n);\n\nfor (auto [u, v, w] : edges)\n    d.unite(u, v);\n\nint cc = 0;\n\nfor (int i = 1; i <= n; i++) {\n\n    if (d.find(i) == i)\n        cc++;\n}\n```
+```cpp
+dsu d(n);
+
+for (auto [u, v, w] : edges)
+    d.unite(u, v);
+
+int cc = 0;
+
+for (int i = 1; i <= n; i++) {
+
+    if (d.find(i) == i)
+        cc++;
+}
+```
 
 ---
 
 ### Forest Cost
 
-```cpp\nint cost = 0;\n\nfor (auto [u, v, w] : edges) {\n\n    if (d.unite(u, v))\n        cost += w;\n}\n```
+```cpp
+int cost = 0;
+
+for (auto [u, v, w] : edges) {
+
+    if (d.unite(u, v))
+        cost += w;
+}
+```
 
 ##### Meaning
 
@@ -2362,19 +2830,25 @@ O(E log N)
 
 #### Sort Edges
 
-```cpp\nsort(all(edges));\n```
+```cpp
+sort(all(edges));
+```
 
 ---
 
 #### MST Cost
 
-```cpp\ncout << mst;\n```
+```cpp
+cout << mst;
+```
 
 ---
 
 #### Number Of MST Edges
 
-```cpp\ncout << mst_edges.size();\n```
+```cpp
+cout << mst_edges.size();
+```
 
 Should be:
 
@@ -2388,13 +2862,20 @@ for connected graph.
 
 #### Check Same Component
 
-```cpp\nif (d.find(u) == d.find(v))\n{\n}\n```
+```cpp
+if (d.find(u) == d.find(v)) {
+}
+```
 
 ---
 
 #### Detect Cycle
 
-```cpp\nif (!d.unite(u, v))\n{\n    // cycle edge\n}\n```
+```cpp
+if (!d.unite(u, v)) {
+    // cycle edge
+}
+```
 
 ---
 
@@ -2486,7 +2967,11 @@ When Dijkstra Cannot Be Used
 
 ### Edge Structure
 
-```cpp\nstruct edge {\n    int u, v, w;\n};\n```
+```cpp
+struct edge {
+    int u, v, w;
+};
+```
 
 ---
 
@@ -2531,7 +3016,20 @@ Memory: O(V)
 
 ### Negative Cycle Detection
 
-```cpp\nbool neg_cycle = false;\n\nfor (auto [u, v, w] : edges) {\n\n    if (dist[u] == INF)\n        continue;\n\n    if (dist[v] > dist[u] + w) {\n\n        neg_cycle = true;\n    }\n}\n```
+```cpp
+bool neg_cycle = false;
+
+for (auto [u, v, w] : edges) {
+
+    if (dist[u] == INF)
+        continue;
+
+    if (dist[v] > dist[u] + w) {
+
+        neg_cycle = true;
+    }
+}
+```
 
 ##### Meaning
 
@@ -2568,7 +3066,17 @@ for (int i = 1; i <= n - 1; i++) {
 
 ##### Restore Path
 
-```cpp\nvector<int> path;\n\nfor (int cur = dest;\n     cur != -1;\n     cur = par[cur])\n{\n    path.push_back(cur);\n}\n\nreverse(all(path));\n```
+```cpp
+vector<int> path;
+
+for (int cur = dest;
+     cur != -1;
+     cur = par[cur]) {
+    path.push_back(cur);
+}
+
+reverse(all(path));
+```
 
 ---
 
@@ -2600,19 +3108,42 @@ for (int i = 1; i <= n; i++) {
 
 ##### No Cycle
 
-```cpp\nif (x == -1)\n{\n    // no negative cycle\n}\n```
+```cpp
+if (x == -1) {
+    // no negative cycle
+}
+```
 
 ---
 
 ##### Move Inside Cycle
 
-```cpp\nfor (int i = 1; i <= n; i++)\n    x = par[x];\n```
+```cpp
+for (int i = 1; i <= n; i++)
+    x = par[x];
+```
 
 ---
 
 ##### Extract Cycle
 
-```cpp\nvector<int> cyc;\n\nint cur = x;\n\ndo {\n\n    cyc.push_back(cur);\n\n    cur = par[cur];\n\n} while (cur != x);\n\ncyc.push_back(x);\n\nreverse(all(cyc));\n```
+```cpp
+vector<int> cyc;
+
+int cur = x;
+
+do {
+
+    cyc.push_back(cur);
+
+    cur = par[cur];
+
+} while (cur != x);
+
+cyc.push_back(x);
+
+reverse(all(cyc));
+```
 
 ##### Complexity
 
@@ -2638,7 +3169,9 @@ u -> v (weight w)
 
 Then run:
 
-```cpp\nBellman Ford\n```
+```cpp
+Bellman Ford
+```
 
 ##### Use
 
@@ -2656,11 +3189,16 @@ Sometimes source is unknown.
 
 Create super source:
 
-```cpp\nfor (int i = 1; i <= n; i++)\n    edges.push_back({0, i, 0});\n```
+```cpp
+for (int i = 1; i <= n; i++)
+    edges.push_back({0, i, 0});
+```
 
 Then:
 
-```cpp\nBellman Ford(0)\n```
+```cpp
+Bellman Ford(0)
+```
 
 ##### Meaning
 
@@ -2680,11 +3218,15 @@ maximize path
 
 Convert:
 
-```cpp\nw = -w;\n```
+```cpp
+w = -w;
+```
 
 Then:
 
-```cpp\nBellman Ford\n```
+```cpp
+Bellman Ford
+```
 
 ##### Warning
 
@@ -2698,7 +3240,9 @@ Need cycle handling
 
 After detecting cycle nodes:
 
-```cpp\nBFS / DFS\n```
+```cpp
+BFS / DFS
+```
 
 from cycle vertices.
 
@@ -2716,19 +3260,31 @@ CSES High Score
 
 #### Unreachable Node
 
-```cpp\nif (dist[u] == INF)\n{\n}\n```
+```cpp
+if (dist[u] == INF) {
+}
+```
 
 ---
 
 #### Reachable Node
 
-```cpp\nif (dist[u] != INF)\n{\n}\n```
+```cpp
+if (dist[u] != INF) {
+}
+```
 
 ---
 
 #### Early Stop Optimization
 
-```cpp\nbool changed = false;\n\n...\n\nif (!changed)\n    break;\n```
+```cpp
+bool changed = false;
+
+...
+
+    if (!changed) break;
+```
 
 ##### Benefit
 
@@ -2828,8 +3384,7 @@ Character Transformations
 ```cpp
 vector<vector<int>> dist(
     n + 1,
-    vector<int>(n + 1, INF)
-);
+    vector<int>(n + 1, INF));
 
 for (int i = 1; i <= n; i++)
     dist[i][i] = 0;
@@ -2856,8 +3411,7 @@ for (int k = 1; k <= n; k++) {
                 min(
                     dist[i][j],
                     dist[i][k] +
-                    dist[k][j]
-                );
+                        dist[k][j]);
         }
     }
 }
@@ -2875,25 +3429,36 @@ Memory: O(N²)
 
 ### Undirected Graph
 
-```cpp\ndist[u][v] =\ndist[v][u] = w;\n```
+```cpp
+dist[u][v] =
+    dist[v][u] = w;
+```
 
 ---
 
 ### Multiple Edges
 
-```cpp\ndist[u][v] =\nmin(dist[u][v], w);\n```
+```cpp
+dist[u][v] =
+    min(dist[u][v], w);
+```
 
 ---
 
 ### Query Distance
 
-```cpp\ncout << dist[u][v];\n```
+```cpp
+cout << dist[u][v];
+```
 
 ---
 
 ### Unreachable Nodes
 
-```cpp\nif (dist[u][v] == INF)\n{\n}\n```
+```cpp
+if (dist[u][v] == INF) {
+}
+```
 
 ---
 
@@ -2901,7 +3466,14 @@ Memory: O(N²)
 
 After Floyd:
 
-```cpp\nfor (int i = 1; i <= n; i++) {\n\n    if (dist[i][i] < 0)\n    {\n        // negative cycle\n    }\n}\n```
+```cpp
+for (int i = 1; i <= n; i++) {
+
+    if (dist[i][i] < 0) {
+        // negative cycle
+    }
+}
+```
 
 ##### Why?
 
@@ -2920,29 +3492,68 @@ unless negative cycle exists
 
 #### Parent Matrix
 
-```cpp\nvector<vector<int>> nxt(\n    n + 1, \n    vector<int>(n + 1, -1)\n);\n```
+```cpp
+vector<vector<int>> nxt(
+    n + 1,
+    vector<int>(n + 1, -1));
+```
 
 ---
 
 ##### Initialization
 
-```cpp\nfor (auto [u, v, w] : edges) {\n\n    dist[u][v] = w;\n\n    nxt[u][v] = v;\n}\n```
+```cpp
+for (auto [u, v, w] : edges) {
+
+    dist[u][v] = w;
+
+    nxt[u][v] = v;
+}
+```
 
 ---
 
 ##### Floyd Update
 
-```cpp\nif (\n    dist[i][j] >\n    dist[i][k] +\n    dist[k][j]\n)\n{\n    dist[i][j] =\n        dist[i][k] +\n        dist[k][j];\n\n    nxt[i][j] =\n        nxt[i][k];\n}\n```
+```cpp
+if (
+    dist[i][j] >
+    dist[i][k] +
+        dist[k][j]) {
+    dist[i][j] =
+        dist[i][k] +
+        dist[k][j];
+
+    nxt[i][j] =
+        nxt[i][k];
+}
+```
 
 ---
 
 ##### Restore Path
 
-```cpp\nvector<int> path;\n\nint cur = u;\n\nwhile (cur != v) {\n\n    path.push_back(cur);\n\n    cur = nxt[cur][v];\n}\n\npath.push_back(v);\n```
+```cpp
+vector<int> path;
+
+int cur = u;
+
+while (cur != v) {
+
+    path.push_back(cur);
+
+    cur = nxt[cur][v];
+}
+
+path.push_back(v);
+```
 
 ##### No Path
 
-```cpp\nif (nxt[u][v] == -1)\n{\n}\n```
+```cpp
+if (nxt[u][v] == -1) {
+}
+```
 
 ---
 
@@ -2950,13 +3561,19 @@ unless negative cycle exists
 
 Instead of shortest path:
 
-```cpp\nvector<vector<int>> reach(\n    n + 1, \n    vector<int>(n + 1)\n);\n```
+```cpp
+vector<vector<int>> reach(
+    n + 1,
+    vector<int>(n + 1));
+```
 
 ---
 
 ##### Initialization
 
-```cpp\nreach[u][v] = 1;\n```
+```cpp
+reach[u][v] = 1;
+```
 
 ---
 
@@ -2989,7 +3606,15 @@ Can i reach j from i ?
 
 After Floyd:
 
-```cpp\nint ans = INF;\n\nfor (int i = 1; i <= n; i++) {\n\n    ans =\n        min(ans, dist[i][i]);\n}\n```
+```cpp
+int ans = INF;
+
+for (int i = 1; i <= n; i++) {
+
+    ans =
+        min(ans, dist[i][i]);
+}
+```
 
 ##### Note
 
@@ -3016,7 +3641,9 @@ to convert strings
 
 ##### Build Graph
 
-```cpp\ndist[a][b] = cost;\n```
+```cpp
+dist[a][b] = cost;
+```
 
 Run Floyd.
 
@@ -3056,11 +3683,17 @@ Floyd Warshall
 
 ### APSP Queries
 
-```cpp\nrun Floyd once\n```
+```cpp
+run Floyd once
+```
 
 Then:
 
-```cpp\nanswer Q queries\n\nO(1)\n```
+```cpp
+answer Q queries
+
+    O(1)
+```
 
 ##### Total
 
@@ -3076,13 +3709,21 @@ Query      : O(1)
 
 #### Check Reachability
 
-```cpp\nif (dist[u][v] != INF)\n{\n}\n```
+```cpp
+if (dist[u][v] != INF) {
+}
+```
 
 ---
 
 #### Check Same SCC (small graph)
 
-```cpp\nif (\n    dist[u][v] != INF &&\n    dist[v][u] != INF\n)\n{\n}\n```
+```cpp
+if (
+    dist[u][v] != INF &&
+    dist[v][u] != INF) {
+}
+```
 
 ##### Meaning
 
@@ -3094,7 +3735,15 @@ Mutually reachable
 
 #### Count Reachable Nodes
 
-```cpp\nint cnt = 0;\n\nfor (int v = 1; v <= n; v++) {\n\n    if (dist[u][v] != INF)\n        cnt++;\n}\n```
+```cpp
+int cnt = 0;
+
+for (int v = 1; v <= n; v++) {
+
+    if (dist[u][v] != INF)
+        cnt++;
+}
+```
 
 ---
 
@@ -3251,9 +3900,7 @@ void dfs(int u, int p) {
     for (int j = 1; j < LG; j++) {
 
         up[u][j] =
-            up[
-                up[u][j - 1]
-            ][j - 1];
+            up[up[u][j - 1]][j - 1];
     }
 
     for (auto v : adj[u]) {
@@ -3271,8 +3918,7 @@ void build(int n, int root = 1) {
 
     up.assign(
         n + 1,
-        vector<int>(LG)
-    );
+        vector<int>(LG));
 
     dep.assign(n + 1, 0);
 
@@ -3284,7 +3930,18 @@ void build(int n, int root = 1) {
 
 ### Jump K Levels
 
-```cpp\nint jump(int u, int k) {\n\n    for (int j = 0; j < LG; j++) {\n\n        if (k & (1LL << j))\n            u = up[u][j];\n    }\n\n    return u;\n}\n```
+```cpp
+int jump(int u, int k) {
+
+    for (int j = 0; j < LG; j++) {
+
+        if (k & (1LL << j))
+            u = up[u][j];
+    }
+
+    return u;
+}
+```
 
 ##### Complexity
 
@@ -3296,11 +3953,18 @@ O(log N)
 
 ### Kth Ancestor
 
-```cpp\nint kth_ancestor(int u, int k) {\n\n    return jump(u, k);\n}\n```
+```cpp
+int kth_ancestor(int u, int k) {
+
+    return jump(u, k);
+}
+```
 
 ##### Example
 
-```cpp\ncout << kth_ancestor(10, 3);\n```
+```cpp
+cout << kth_ancestor(10, 3);
+```
 
 Meaning:
 
@@ -3314,7 +3978,12 @@ Meaning:
 
 Needs Euler Tour.
 
-```cpp\nbool is_ancestor(int u, int v) {\n\n    return tin[u] <= tin[v]\n        && tout[v] <= tout[u];\n}\n```
+```cpp
+bool is_ancestor(int u, int v) {
+
+    return tin[u] <= tin[v] && tout[v] <= tout[u];
+}
+```
 
 ##### Complexity
 
@@ -3326,7 +3995,14 @@ O(1)
 
 ### Lift To Same Depth
 
-```cpp\nif (dep[u] < dep[v])\n    swap(u, v);\n\nu = jump(\n    u, \n    dep[u] - dep[v]\n);\n```
+```cpp
+if (dep[u] < dep[v])
+    swap(u, v);
+
+u = jump(
+    u,
+    dep[u] - dep[v]);
+```
 
 ##### Use
 
@@ -3339,7 +4015,9 @@ Path Queries
 
 ### Distance To Root
 
-```cpp\ndep[u]\n```
+```cpp
+dep[u]
+```
 
 ##### Meaning
 
@@ -3382,19 +4060,25 @@ O(N log N)
 
 #### Parent
 
-```cpp\nup[u][0]\n```
+```cpp
+up[u][0]
+```
 
 ---
 
 #### Grand Parent
 
-```cpp\nup[u][1]\n```
+```cpp
+up[u][1]
+```
 
 ---
 
 #### 4th Ancestor
 
-```cpp\nup[u][2]\n```
+```cpp
+up[u][2]
+```
 
 because:
 
@@ -3406,19 +4090,26 @@ because:
 
 #### Move Up One Level
 
-```cpp\nu = up[u][0];\n```
+```cpp
+u = up[u][0];
+```
 
 ---
 
 #### Move Up 13 Levels
 
-```cpp\nu = jump(u, 13);\n```
+```cpp
+u = jump(u, 13);
+```
 
 ---
 
 #### Root Check
 
-```cpp\nif (u == root)\n{\n}\n```
+```cpp
+if (u == root) {
+}
+```
 
 ---
 
@@ -3479,7 +4170,9 @@ Path Queries
 
 ##### Safe Choice
 
-```cpp\nconst int LG = 20;\n```
+```cpp
+const int LG = 20;
+```
 
 for:
 
@@ -3493,11 +4186,15 @@ N <= 1e6
 
 #### Wrong
 
-```cpp\ndfs(root, 0);\n```
+```cpp
+dfs(root, 0);
+```
 
 Then:
 
-```cpp\nup[0][j]\n```
+```cpp
+up[0][j]
+```
 
 may be accessed.
 
@@ -3505,13 +4202,17 @@ may be accessed.
 
 #### Safer
 
-```cpp\ndfs(root, root);\n```
+```cpp
+dfs(root, root);
+```
 
 ---
 
 #### Wrong LG
 
-```cpp\nconst int LG = 17;\n```
+```cpp
+const int LG = 17;
+```
 
 while:
 
@@ -3523,7 +4224,9 @@ N = 2e5
 
 #### Safe
 
-```cpp\nconst int LG = 20;\n```
+```cpp
+const int LG = 20;
+```
 
 ---
 
@@ -3604,9 +4307,7 @@ void dfs(int u, int p) {
     for (int j = 1; j < LG; j++) {
 
         up[u][j] =
-            up[
-                up[u][j - 1]
-            ][j - 1];
+            up[up[u][j - 1]][j - 1];
     }
 
     for (auto v : adj[u]) {
@@ -3624,8 +4325,7 @@ void build(int n, int root = 1) {
 
     up.assign(
         n + 1,
-        vector<int>(LG)
-    );
+        vector<int>(LG));
 
     dep.assign(n + 1, 0);
 
@@ -3659,9 +4359,7 @@ int lca(int u, int v) {
 
         if (
             up[u][j] !=
-            up[v][j]
-        )
-        {
+            up[v][j]) {
             u = up[u][j];
             v = up[v][j];
         }
@@ -3681,7 +4379,16 @@ O(log N)
 
 ### Distance Between Two Nodes
 
-```cpp\nint dist(int u, int v) {\n\n    int p = lca(u, v);\n\n    return\n        dep[u]\n        +\n        dep[v]\n        -\n        2 * dep[p];\n}\n```
+```cpp
+int dist(int u, int v) {
+
+    int p = lca(u, v);
+
+    return dep[u] +
+           dep[v] -
+           2 * dep[p];
+}
+```
 
 ##### Complexity
 
@@ -3693,7 +4400,18 @@ O(log N)
 
 ### Kth Ancestor
 
-```cpp\nint jump(int u, int k) {\n\n    for (int j = 0; j < LG; j++) {\n\n        if (k & (1LL << j))\n            u = up[u][j];\n    }\n\n    return u;\n}\n```
+```cpp
+int jump(int u, int k) {
+
+    for (int j = 0; j < LG; j++) {
+
+        if (k & (1LL << j))
+            u = up[u][j];
+    }
+
+    return u;
+}
+```
 
 ---
 
@@ -3701,7 +4419,13 @@ O(log N)
 
 Needs Euler Tour.
 
-```cpp\nbool is_ancestor(int u, int v) {\n\n    return\n        tin[u] <= tin[v]\n        &&\n        tout[v] <= tout[u];\n}\n```
+```cpp
+bool is_ancestor(int u, int v) {
+
+    return tin[u] <= tin[v] &&
+           tout[v] <= tout[u];
+}
+```
 
 ##### Complexity
 
@@ -3721,13 +4445,21 @@ u -------- v
 
 Suppose:
 
-```cpp\nint p = lca(u, v);\n```
+```cpp
+int p = lca(u, v);
+```
 
 ---
 
 ##### Lengths
 
-```cpp\nint left =\n    dep[u] - dep[p];\n\nint right =\n    dep[v] - dep[p];\n```
+```cpp
+int left =
+    dep[u] - dep[p];
+
+int right =
+    dep[v] - dep[p];
+```
 
 ---
 
@@ -3736,8 +4468,7 @@ Suppose:
 ```cpp
 int kth(int u,
         int v,
-        int k)
-{
+        int k) {
     int p = lca(u, v);
 
     int left =
@@ -3753,8 +4484,7 @@ int kth(int u,
 
     return jump(
         v,
-        right - k
-    );
+        right - k);
 }
 ```
 
@@ -3768,7 +4498,9 @@ SPOJ QTREE2
 
 ### Length Of Path
 
-```cpp\ndist(u, v)\n```
+```cpp
+dist(u, v)
+```
 
 returns:
 
@@ -3780,13 +4512,19 @@ number of edges
 
 ### Number Of Nodes On Path
 
-```cpp\ndist(u, v) + 1\n```
+```cpp
+dist(u, v) + 1
+```
 
 ---
 
 ### Check If Node Lies On Path
 
-```cpp\ndist(u, x)\n+\ndist(x, v)\n==\ndist(u, v)\n```
+```cpp
+dist(u, x) +
+        dist(x, v) ==
+    dist(u, v)
+```
 
 ##### Complexity
 
@@ -3798,13 +4536,17 @@ O(log N)
 
 ### Find Parent
 
-```cpp\nup[u][0]\n```
+```cpp
+up[u][0]
+```
 
 ---
 
 ### Find Root Distance
 
-```cpp\ndep[u]\n```
+```cpp
+dep[u]
+```
 
 ---
 
@@ -3830,37 +4572,51 @@ Used everywhere.
 
 #### LCA
 
-```cpp\nint p = lca(u, v);\n```
+```cpp
+int p = lca(u, v);
+```
 
 ---
 
 #### Distance
 
-```cpp\ncout << dist(u, v);\n```
+```cpp
+cout << dist(u, v);
+```
 
 ---
 
 #### Parent
 
-```cpp\ncout << up[u][0];\n```
+```cpp
+cout << up[u][0];
+```
 
 ---
 
 #### Grand Parent
 
-```cpp\ncout << up[u][1];\n```
+```cpp
+cout << up[u][1];
+```
 
 ---
 
 #### Jump 10 Levels
 
-```cpp\ncout << jump(u, 10);\n```
+```cpp
+cout << jump(u, 10);
+```
 
 ---
 
 #### Same Depth
 
-```cpp\nu = jump(\n    u, \n    dep[u] - dep[v]\n);\n```
+```cpp
+u = jump(
+    u,
+    dep[u] - dep[v]);
+```
 
 ---
 
@@ -3977,19 +4733,29 @@ Most common formulas:
 
 #### Distance
 
-```cpp\ndep[u]\n+\ndep[v]\n-\n2 * dep[lca(u, v)]\n```
+```cpp
+dep[u] +
+    dep[v] -
+    2 * dep[lca(u, v)]
+```
 
 ---
 
 #### Number Of Nodes
 
-```cpp\ndist(u, v)+1\n```
+```cpp
+dist(u, v) + 1
+```
 
 ---
 
 #### Node On Path
 
-```cpp\ndist(u, x)\n+\ndist(x, v)\n==\ndist(u, v)\n```
+```cpp
+dist(u, x) +
+        dist(x, v) ==
+    dist(u, v)
+```
 
 ---
 
@@ -4069,9 +4835,7 @@ vector<int> prefix_function(string s) {
 
         while (
             j > 0 &&
-            s[i] != s[j]
-        )
-        {
+            s[i] != s[j]) {
             j = pi[j - 1];
         }
 
@@ -4115,19 +4879,38 @@ text t
 
 ##### Build String
 
-```cpp\nstring s =\n    p + "#" + t;\n```
+```cpp
+string s =
+    p + "#" + t;
+```
 
 ---
 
 ##### Compute Prefix
 
-```cpp\nauto pi =\n    prefix_function(s);\n```
+```cpp
+auto pi =
+    prefix_function(s);
+```
 
 ---
 
 ##### Occurrences
 
-```cpp\nvector<int> pos;\n\nint m = p.size();\n\nfor (int i = m + 1;\n     i < s.size();\n     i++)\n{\n    if (pi[i] == m)\n    {\n        pos.push_back(\n            i - 2 * m\n        );\n    }\n}\n```
+```cpp
+vector<int> pos;
+
+int m = p.size();
+
+for (int i = m + 1;
+     i < s.size();
+     i++) {
+    if (pi[i] == m) {
+        pos.push_back(
+            i - 2 * m);
+    }
+}
+```
 
 ##### Complexity
 
@@ -4142,8 +4925,7 @@ O(N + M)
 ```cpp
 vector<int> kmp(
     string t,
-    string p
-) {
+    string p) {
 
     string s =
         p + "#" + t;
@@ -4157,13 +4939,10 @@ vector<int> kmp(
 
     for (int i = m + 1;
          i < s.size();
-         i++)
-    {
-        if (pi[i] == m)
-        {
+         i++) {
+        if (pi[i] == m) {
             pos.push_back(
-                i - 2 * m
-            );
+                i - 2 * m);
         }
     }
 
@@ -4191,7 +4970,12 @@ but not entire string.
 
 ##### Answer
 
-```cpp\nauto pi =\n    prefix_function(s);\n\ncout << pi.back();\n```
+```cpp
+auto pi =
+    prefix_function(s);
+
+cout << pi.back();
+```
 
 ##### Complexity
 
@@ -4203,7 +4987,21 @@ O(N)
 
 ### All Borders
 
-```cpp\nauto pi =\n    prefix_function(s);\n\nvector<int> borders;\n\nint cur = pi.back();\n\nwhile (cur > 0) {\n\n    borders.push_back(cur);\n\n    cur = pi[cur - 1];\n}\n```
+```cpp
+auto pi =
+    prefix_function(s);
+
+vector<int> borders;
+
+int cur = pi.back();
+
+while (cur > 0) {
+
+    borders.push_back(cur);
+
+    cur = pi[cur - 1];
+}
+```
 
 ##### Complexity
 
@@ -4220,25 +5018,20 @@ auto pi =
     prefix_function(s);
 
 vector<int> cnt(
-    s.size() + 1
-);
+    s.size() + 1);
 
 for (auto x : pi)
     cnt[x]++;
 
 for (int i = s.size();
      i > 0;
-     i--)
-{
-    cnt[
-        pi[i - 1]
-    ] += cnt[i];
+     i--) {
+    cnt[pi[i - 1]] += cnt[i];
 }
 
 for (int i = 0;
      i <= s.size();
-     i++)
-{
+     i++) {
     cnt[i]++;
 }
 ```
@@ -4280,25 +5073,52 @@ Length:
 
 ##### Formula
 
-```cpp\nint n = s.size();\n\nauto pi =\n    prefix_function(s);\n\nint len =\n    n - pi.back();\n```
+```cpp
+int n = s.size();
+
+auto pi =
+    prefix_function(s);
+
+int len =
+    n - pi.back();
+```
 
 ---
 
 ##### Check
 
-```cpp\nif (n % len == 0)\n{\n    // periodic\n}\n```
+```cpp
+if (n % len == 0) {
+    // periodic
+}
+```
 
 ---
 
 ### Smallest Period
 
-```cpp\nint n = s.size();\n\nauto pi =\n    prefix_function(s);\n\nint len =\n    n - pi.back();\n\nif (n % len == 0)\n    cout << len;\nelse\n    cout << n;\n```
+```cpp
+int n = s.size();
+
+auto pi =
+    prefix_function(s);
+
+int len =
+    n - pi.back();
+
+if (n % len == 0)
+    cout << len;
+else
+    cout << n;
+```
 
 ---
 
 ### Prefix Automaton Jump
 
-```cpp\nj = pi[j - 1];\n```
+```cpp
+j = pi[j - 1];
+```
 
 ##### Meaning
 
@@ -4312,7 +5132,16 @@ This is the whole magic of KMP.
 
 ### Distinct Prefix-Suffix Chain
 
-```cpp\nint cur = pi.back();\n\nwhile (cur > 0) {\n\n    cout << cur << endl;\n\n    cur = pi[cur - 1];\n}\n```
+```cpp
+int cur = pi.back();
+
+while (cur > 0) {
+
+    cout << cur << endl;
+
+    cur = pi[cur - 1];
+}
+```
 
 ##### Use
 
@@ -4326,31 +5155,48 @@ Borders Problems
 
 #### Prefix Array
 
-```cpp\nauto pi =\n    prefix_function(s);\n```
+```cpp
+auto pi =
+    prefix_function(s);
+```
 
 ---
 
 #### Longest Border
 
-```cpp\ncout << pi.back();\n```
+```cpp
+cout << pi.back();
+```
 
 ---
 
 #### Check Border Length K
 
-```cpp\nif (pi.back() >= k)\n{\n}\n```
+```cpp
+if (pi.back() >= k) {
+}
+```
 
 ---
 
 #### Number Of Occurrences
 
-```cpp\nauto pos =\n    kmp(text, pattern);\n\ncout << pos.size();\n```
+```cpp
+auto pos =
+    kmp(text, pattern);
+
+cout << pos.size();
+```
 
 ---
 
 #### First Occurrence
 
-```cpp\nif (!pos.empty())\n{\n    cout << pos[0];\n}\n```
+```cpp
+if (!pos.empty()) {
+    cout << pos[0];
+}
+```
 
 ---
 
@@ -4449,25 +5295,33 @@ Most used formulas:
 
 #### Longest Border
 
-```cpp\npi.back()\n```
+```cpp
+pi.back()
+```
 
 ---
 
 #### Smallest Period
 
-```cpp\nn - pi.back()\n```
+```cpp
+n - pi.back()
+```
 
 ---
 
 #### Pattern Matching
 
-```cpp\npattern + "#" + text\n```
+```cpp
+pattern + "#" + text
+```
 
 ---
 
 #### Border Chain
 
-```cpp\ncur = pi[cur - 1]\n```
+```cpp
+cur = pi[cur - 1]
+```
 
 These four cover the majority of KMP problems.
 
@@ -4535,14 +5389,12 @@ struct SegTree {
             tree_size *= 2;
 
         seg_data.resize(
-            2 * tree_size
-        );
+            2 * tree_size);
     }
 
     Node merge(
         Node &a,
-        Node &b
-    ) {
+        Node &b) {
 
         Node res;
 
@@ -4556,8 +5408,7 @@ struct SegTree {
         vector<int> &nums,
         int ni,
         int lx,
-        int rx
-    ) {
+        int rx) {
 
         if (rx - lx == 1) {
 
@@ -4572,32 +5423,27 @@ struct SegTree {
             nums,
             LNode(ni),
             lx,
-            md(lx, rx)
-        );
+            md(lx, rx));
 
         init(
             nums,
             RNode(ni),
             md(lx, rx),
-            rx
-        );
+            rx);
 
         seg_data[ni] =
             merge(
                 seg_data[LNode(ni)],
-                seg_data[RNode(ni)]
-            );
+                seg_data[RNode(ni)]);
     }
 
     void init(
-        vector<int> &nums
-    ) {
+        vector<int> &nums) {
         init(
             nums,
             0,
             0,
-            tree_size
-        );
+            tree_size);
     }
 
     void update(
@@ -4605,8 +5451,7 @@ struct SegTree {
         int val,
         int ni,
         int lx,
-        int rx
-    ) {
+        int rx) {
 
         if (rx - lx == 1) {
 
@@ -4618,47 +5463,39 @@ struct SegTree {
 
         if (
             idx <
-            md(lx, rx)
-        )
-        {
+            md(lx, rx)) {
             update(
                 idx,
                 val,
                 LNode(ni),
                 lx,
-                md(lx, rx)
-            );
-        }
-        else {
+                md(lx, rx));
+        } else {
 
             update(
                 idx,
                 val,
                 RNode(ni),
                 md(lx, rx),
-                rx
-            );
+                rx);
         }
 
         seg_data[ni] =
             merge(
                 seg_data[LNode(ni)],
-                seg_data[RNode(ni)]
-            );
+                seg_data[RNode(ni)]);
     }
 
     void update(
         int idx,
-        int val
-    ) {
+        int val) {
 
         update(
             idx,
             val,
             0,
             0,
-            tree_size
-        );
+            tree_size);
     }
 
     Node query(
@@ -4666,22 +5503,17 @@ struct SegTree {
         int r,
         int ni,
         int lx,
-        int rx
-    ) {
+        int rx) {
 
         if (
             lx >= r ||
-            rx <= l
-        )
-        {
+            rx <= l) {
             return Node();
         }
 
         if (
             lx >= l &&
-            rx <= r
-        )
-        {
+            rx <= r) {
             return seg_data[ni];
         }
 
@@ -4691,8 +5523,7 @@ struct SegTree {
                 r,
                 LNode(ni),
                 lx,
-                md(lx, rx)
-            );
+                md(lx, rx));
 
         Node ri =
             query(
@@ -4700,27 +5531,24 @@ struct SegTree {
                 r,
                 RNode(ni),
                 md(lx, rx),
-                rx
-            );
+                rx);
 
         return merge(
             lf,
-            ri
-        );
+            ri);
     }
 
     int query(
         int l,
-        int r
-    ) {
+        int r) {
 
         return query(
-            l,
-            r,
-            0,
-            0,
-            tree_size
-        ).val;
+                   l,
+                   r,
+                   0,
+                   0,
+                   tree_size)
+            .val;
     }
 };
 ```
@@ -4731,41 +5559,61 @@ struct SegTree {
 
 ##### Range Sum
 
-```cpp\nres.val =\n    a.val + b.val;\n```
+```cpp
+res.val =
+    a.val + b.val;
+```
 
 Identity:
 
-```cpp\nval = 0;\n```
+```cpp
+val = 0;
+```
 
 ---
 
 ##### Range Maximum
 
-```cpp\nres.val =\n    max(a.val, b.val);\n```
+```cpp
+res.val =
+    max(a.val, b.val);
+```
 
 Identity:
 
-```cpp\nval = -INF;\n```
+```cpp
+val = -INF;
+```
 
 ---
 
 ##### Range GCD
 
-```cpp\nres.val =\n    gcd(a.val, b.val);\n```
+```cpp
+res.val =
+    gcd(a.val, b.val);
+```
 
 Identity:
 
-```cpp\nval = 0;\n```
+```cpp
+val = 0;
+```
 
 ---
 
 ##### Range XOR
 
-```cpp\nres.val =\n    a.val ^ b.val;\n```
+```cpp
+res.val =
+    a.val ^ b.val;
+```
 
 Identity:
 
-```cpp\nval = 0;\n```
+```cpp
+val = 0;
+```
 
 ---
 
@@ -4866,14 +5714,12 @@ struct SegTree {
             tree_size *= 2;
 
         seg_data.resize(
-            2 * tree_size
-        );
+            2 * tree_size);
     }
 
     Node merge(
         Node &a,
-        Node &b
-    ) {
+        Node &b) {
 
         Node res;
 
@@ -4887,8 +5733,7 @@ struct SegTree {
         vector<int> &nums,
         int ni,
         int lx,
-        int rx
-    ) {
+        int rx) {
 
         if (rx - lx == 1) {
 
@@ -4903,58 +5748,45 @@ struct SegTree {
             nums,
             LNode(ni),
             lx,
-            md(lx, rx)
-        );
+            md(lx, rx));
 
         init(
             nums,
             RNode(ni),
             md(lx, rx),
-            rx
-        );
+            rx);
 
         seg_data[ni] =
             merge(
                 seg_data[LNode(ni)],
-                seg_data[RNode(ni)]
-            );
+                seg_data[RNode(ni)]);
     }
 
     void init(
-        vector<int> &nums
-    ) {
+        vector<int> &nums) {
 
         init(
             nums,
             0,
             0,
-            tree_size
-        );
+            tree_size);
     }
 
     void propagate(
         int ni,
         int lx,
-        int rx
-    ) {
+        int rx) {
 
         if (
             rx - lx == 1 ||
-            !seg_data[ni].is_lazy
-        )
+            !seg_data[ni].is_lazy)
             return;
 
-        seg_data[
-            LNode(ni)
-        ].assign(
-            seg_data[ni].lazy
-        );
+        seg_data[LNode(ni)].assign(
+            seg_data[ni].lazy);
 
-        seg_data[
-            RNode(ni)
-        ].assign(
-            seg_data[ni].lazy
-        );
+        seg_data[RNode(ni)].assign(
+            seg_data[ni].lazy);
 
         seg_data[ni].is_lazy = false;
     }
@@ -4965,20 +5797,16 @@ struct SegTree {
         int val,
         int ni,
         int lx,
-        int rx
-    ) {
+        int rx) {
 
         propagate(
             ni,
             lx,
-            rx
-        );
+            rx);
 
         if (
             lx >= l &&
-            rx <= r
-        )
-        {
+            rx <= r) {
             seg_data[ni]
                 .assign(val);
 
@@ -4987,9 +5815,7 @@ struct SegTree {
 
         if (
             lx >= r ||
-            rx <= l
-        )
-        {
+            rx <= l) {
             return;
         }
 
@@ -4999,8 +5825,7 @@ struct SegTree {
             val,
             LNode(ni),
             lx,
-            md(lx, rx)
-        );
+            md(lx, rx));
 
         update(
             l,
@@ -5008,21 +5833,18 @@ struct SegTree {
             val,
             RNode(ni),
             md(lx, rx),
-            rx
-        );
+            rx);
 
         seg_data[ni] =
             merge(
                 seg_data[LNode(ni)],
-                seg_data[RNode(ni)]
-            );
+                seg_data[RNode(ni)]);
     }
 
     void update(
         int l,
         int r,
-        int val
-    ) {
+        int val) {
 
         update(
             l,
@@ -5030,8 +5852,7 @@ struct SegTree {
             val,
             0,
             0,
-            tree_size
-        );
+            tree_size);
     }
 
     Node query(
@@ -5039,28 +5860,22 @@ struct SegTree {
         int r,
         int ni,
         int lx,
-        int rx
-    ) {
+        int rx) {
 
         propagate(
             ni,
             lx,
-            rx
-        );
+            rx);
 
         if (
             lx >= r ||
-            rx <= l
-        )
-        {
+            rx <= l) {
             return Node();
         }
 
         if (
             lx >= l &&
-            rx <= r
-        )
-        {
+            rx <= r) {
             return seg_data[ni];
         }
 
@@ -5070,8 +5885,7 @@ struct SegTree {
                 r,
                 LNode(ni),
                 lx,
-                md(lx, rx)
-            );
+                md(lx, rx));
 
         Node ri =
             query(
@@ -5079,27 +5893,24 @@ struct SegTree {
                 r,
                 RNode(ni),
                 md(lx, rx),
-                rx
-            );
+                rx);
 
         return merge(
             lf,
-            ri
-        );
+            ri);
     }
 
     int query(
         int l,
-        int r
-    ) {
+        int r) {
 
         return query(
-            l,
-            r,
-            0,
-            0,
-            tree_size
-        ).val;
+                   l,
+                   r,
+                   0,
+                   0,
+                   tree_size)
+            .val;
     }
 };
 ```
@@ -5244,8 +6055,7 @@ struct SparseTable {
 
         st.assign(
             k,
-            vector<int>(n)
-        );
+            vector<int>(n));
 
         st[0] = a;
 
@@ -5254,15 +6064,13 @@ struct SparseTable {
             for (
                 int i = 0;
                 i + (1 << j) <= n;
-                i++
-            ) {
+                i++) {
 
                 st[j][i] =
                     merge(
                         st[j - 1][i],
                         st[j - 1]
-                          [i + (1 << (j - 1))]
-                    );
+                          [i + (1 << (j - 1))]);
             }
         }
     }
@@ -5275,8 +6083,7 @@ struct SparseTable {
         return merge(
             st[k][l],
             st[k]
-              [r - (1 << k) + 1]
-        );
+              [r - (1 << k) + 1]);
     }
 };
 ```
@@ -5285,7 +6092,11 @@ struct SparseTable {
 
 #### Query
 
-```cpp\nSparseTable sp(a);\n\ncout << sp.query(l, r);\n```
+```cpp
+SparseTable sp(a);
+
+cout << sp.query(l, r);
+```
 
 ##### Complexity
 
@@ -5299,7 +6110,12 @@ O(1)
 
 Change only:
 
-```cpp\nint merge(int a, int b){\n\n    return max(a, b);\n}\n```
+```cpp
+int merge(int a, int b) {
+
+    return max(a, b);
+}
+```
 
 ---
 
@@ -5307,7 +6123,12 @@ Change only:
 
 Change only:
 
-```cpp\nint merge(int a, int b){\n\n    return gcd(a, b);\n}\n```
+```cpp
+int merge(int a, int b) {
+
+    return gcd(a, b);
+}
+```
 
 ---
 
@@ -5438,25 +6259,43 @@ LCA (Euler Tour + Sparse Table)
 
 #### Include
 
-```cpp\n#include <ext/pb_ds/assoc_container.hpp>\n#include <ext/pb_ds/tree_policy.hpp>\n\nusing namespace __gnu_pbds;\n```
+```cpp
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+
+using namespace __gnu_pbds;
+```
 
 ---
 
 #### Template
 
-```cpp\ntemplate<typename T>\nusing ordered_set =\ntree<\n    T, \n    null_type, \n    less<T>, \n    rb_tree_tag, \n    tree_order_statistics_node_update\n>;\n```
+```cpp
+template <typename T>
+using ordered_set =
+    tree<
+        T,
+        null_type,
+        less<T>,
+        rb_tree_tag,
+        tree_order_statistics_node_update>;
+```
 
 ---
 
 #### Create
 
-```cpp\nordered_set<int> st;\n```
+```cpp
+ordered_set<int> st;
+```
 
 ---
 
 #### Insert
 
-```cpp\nst.insert(x);\n```
+```cpp
+st.insert(x);
+```
 
 ##### Complexity
 
@@ -5468,7 +6307,9 @@ O(log n)
 
 #### Erase
 
-```cpp\nst.erase(x);\n```
+```cpp
+st.erase(x);
+```
 
 ##### Complexity
 
@@ -5480,11 +6321,15 @@ O(log n)
 
 #### Count Elements Smaller Than x
 
-```cpp\nst.order_of_key(x);\n```
+```cpp
+st.order_of_key(x);
+```
 
 Example:
 
-```cpp\nst.order_of_key(10);\n```
+```cpp
+st.order_of_key(10);
+```
 
 Returns:
 
@@ -5502,11 +6347,15 @@ O(log n)
 
 #### K-th Element
 
-```cpp\n*st.find_by_order(k)\n```
+```cpp
+*st.find_by_order(k)
+```
 
 Example:
 
-```cpp\n*st.find_by_order(0)\n```
+```cpp
+*st.find_by_order(0)
+```
 
 Returns:
 
@@ -5516,7 +6365,9 @@ smallest element
 
 ---
 
-```cpp\n*st.find_by_order(1)\n```
+```cpp
+*st.find_by_order(1)
+```
 
 Returns:
 
@@ -5534,13 +6385,17 @@ O(log n)
 
 #### Size
 
-```cpp\nst.size()\n```
+```cpp
+st.size()
+```
 
 ---
 
 #### Exists
 
-```cpp\nst.find(x) != st.end()\n```
+```cpp
+st.find(x) != st.end()
+```
 
 ---
 
@@ -5548,19 +6403,27 @@ O(log n)
 
 #### Count <= x
 
-```cpp\nst.order_of_key(x + 1)\n```
+```cpp
+st.order_of_key(x + 1)
+```
 
 ---
 
 #### Count > x
 
-```cpp\nst.size()\n-\nst.order_of_key(x + 1)\n```
+```cpp
+st.size() -
+    st.order_of_key(x + 1)
+```
 
 ---
 
 #### Count >= x
 
-```cpp\nst.size()\n-\nst.order_of_key(x)\n```
+```cpp
+st.size() -
+    st.order_of_key(x)
+```
 
 ---
 
@@ -5568,19 +6431,33 @@ O(log n)
 
 Duplicates Allowed
 
-```cpp\ntemplate<typename T>\nusing ordered_multiset =\ntree<\n    pair<T, int>, \n    null_type, \n    less<pair<T, int>>, \n    rb_tree_tag, \n    tree_order_statistics_node_update\n>;\n```
+```cpp
+template <typename T>
+using ordered_multiset =
+    tree<
+        pair<T, int>,
+        null_type,
+        less<pair<T, int>>,
+        rb_tree_tag,
+        tree_order_statistics_node_update>;
+```
 
 ---
 
 #### Insert Duplicate
 
-```cpp\nms.insert({x, id});\n```
+```cpp
+ms.insert({x, id});
+```
 
 ---
 
 #### Erase One Occurrence
 
-```cpp\nms.erase(\n    ms.lower_bound({x, 0})\n);\n```
+```cpp
+ms.erase(
+    ms.lower_bound({x, 0}));
+```
 
 ---
 
@@ -5621,13 +6498,23 @@ Dynamic K-th Element
 
 Store all alive positions.
 
-```cpp\nset<int> st;\n```
+```cpp
+set<int> st;
+```
 
 ---
 
 #### Remove Segment
 
-```cpp\nauto it = st.lower_bound(l);\n\nwhile(\n    it != st.end()\n    &&\n    *it <= r\n){\n    it = st.erase(it);\n}\n```
+```cpp
+auto it = st.lower_bound(l);
+
+while (
+    it != st.end() &&
+    *it <= r) {
+    it = st.erase(it);
+}
+```
 
 ---
 
@@ -5663,13 +6550,17 @@ Skip Processed Nodes
 
 Store all missing values.
 
-```cpp\nset<int> mex;\n```
+```cpp
+set<int> mex;
+```
 
 ---
 
 #### Answer
 
-```cpp\n*mex.begin()\n```
+```cpp
+*mex.begin()
+```
 
 ---
 
@@ -5677,11 +6568,21 @@ Store all missing values.
 
 Insert number:
 
-```cpp\nfreq[x]++;\n\nif(freq[x] == 1)\n    mex.erase(x);\n```
+```cpp
+freq[x]++;
+
+if (freq[x] == 1)
+    mex.erase(x);
+```
 
 Remove number:
 
-```cpp\nfreq[x]--;\n\nif(freq[x] == 0)\n    mex.insert(x);\n```
+```cpp
+freq[x]--;
+
+if (freq[x] == 0)
+    mex.insert(x);
+```
 
 ---
 
@@ -5717,23 +6618,38 @@ Coordinates too large.
 
 Use:
 
-```cpp\nmap<int, int> diff;\n```
+```cpp
+map<int, int> diff;
+```
 
 instead of:
 
-```cpp\nvector<int>\n```
+```cpp
+vector<int>
+```
 
 ---
 
 #### Pattern
 
-```cpp\ndiff[l]++;\n\ndiff[r+1]--;\n```
+```cpp
+diff[l]++;
+
+diff[r + 1]--;
+```
 
 ---
 
 #### Sweep
 
-```cpp\nint cur = 0;\n\nfor(auto [x, val] : diff){\n\n    cur += val;\n}\n```
+```cpp
+int cur = 0;
+
+for (auto [x, val] : diff) {
+
+    cur += val;
+}
+```
 
 ---
 
@@ -5757,11 +6673,15 @@ Sweep Line
 
 Store:
 
-```cpp\nfreq[x]\n```
+```cpp
+freq[x]
+```
 
 and
 
-```cpp\ncnt[f]\n```
+```cpp
+cnt[f]
+```
 
 where:
 
@@ -5775,7 +6695,13 @@ how many numbers appear exactly f times
 
 #### Update
 
-```cpp\ncnt[freq[x]]--;\n\nfreq[x]++;\n\ncnt[freq[x]]++;\n```
+```cpp
+cnt[freq[x]]--;
+
+freq[x]++;
+
+cnt[freq[x]]++;
+```
 
 ---
 
@@ -5783,7 +6709,9 @@ how many numbers appear exactly f times
 
 Check if frequency exists:
 
-```cpp\ncnt[k] > 0\n```
+```cpp
+cnt[k] > 0
+```
 
 ---
 
@@ -5807,23 +6735,39 @@ Equal Frequencies
 
 Priority Queue has no:
 
-```cpp\nerase(x)\n```
+```cpp
+erase(x)
+```
 
 ---
 
 #### Solution
 
-```cpp\npriority_queue<int> pq;\n\nmap<int, int> bad;\n```
+```cpp
+priority_queue<int> pq;
+
+map<int, int> bad;
+```
 
 Delete:
 
-```cpp\nbad[x]++;\n```
+```cpp
+bad[x]++;
+```
 
 ---
 
 #### Clean Top
 
-```cpp\nwhile(\n !pq.empty()\n &&\n bad[pq.top()]\n){\n    bad[pq.top()]--;\n\n    pq.pop();\n}\n```
+```cpp
+while (
+    !pq.empty() &&
+    bad[pq.top()]) {
+    bad[pq.top()]--;
+
+    pq.pop();
+}
+```
 
 ---
 
@@ -5861,23 +6805,45 @@ Together.
 
 #### Pattern
 
-```cpp\nvector<int> comp;\n\nfor(auto x : a)\n    comp.push_back(x);\n\nfor(auto q : queries)\n    comp.push_back(q);\n```
+```cpp
+vector<int> comp;
+
+for (auto x : a)
+    comp.push_back(x);
+
+for (auto q : queries)
+    comp.push_back(q);
+```
 
 ---
 
-```cpp\nsort(all(comp));\n\ncomp.erase(\n    unique(all(comp)), \n    comp.end()\n);\n```
+```cpp
+sort(all(comp));
+
+comp.erase(
+    unique(all(comp)),
+    comp.end());
+```
 
 ---
 
 #### Compress
 
-```cpp\nid =\nlower_bound(\n    all(comp), \n    x\n)\n-\ncomp.begin();\n```
+```cpp
+id =
+    lower_bound(
+        all(comp),
+        x) -
+    comp.begin();
+```
 
 ---
 
 #### Recover
 
-```cpp\ncomp[id]\n```
+```cpp
+comp[id]
+```
 
 ---
 
@@ -5959,11 +6925,19 @@ Always merge smaller container.
 
 #### Pattern
 
-```cpp\nif(\n    a.size()\n    >\n    b.size()\n)\nswap(a, b);\n```
+```cpp
+if (
+    a.size() >
+    b.size())
+    swap(a, b);
+```
 
 ---
 
-```cpp\nfor(auto x : a)\n    b.insert(x);\n```
+```cpp
+for (auto x : a)
+    b.insert(x);
+```
 
 ---
 
@@ -6011,36 +6985,31 @@ can be hacked.
 struct custom_hash {
 
     static uint64_t splitmix64(
-        uint64_t x
-    ) {
+        uint64_t x) {
 
         x +=
-        0x9e3779b97f4a7c15;
+            0x9e3779b97f4a7c15;
 
         x =
-        (x ^ (x >> 30))
-        * 0xbf58476d1ce4e5b9;
+            (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
 
         x =
-        (x ^ (x >> 27))
-        * 0x94d049bb133111eb;
+            (x ^ (x >> 27)) * 0x94d049bb133111eb;
 
         return x ^ (x >> 31);
     }
 
     size_t operator()(
-        uint64_t x
-    ) const {
+        uint64_t x) const {
 
         static const uint64_t FIXED_RANDOM =
-        chrono::steady_clock::
-        now()
-        .time_since_epoch()
-        .count();
+            chrono::steady_clock::
+                now()
+                    .time_since_epoch()
+                    .count();
 
         return splitmix64(
-            x + FIXED_RANDOM
-        );
+            x + FIXED_RANDOM);
     }
 };
 ```
@@ -6049,7 +7018,13 @@ struct custom_hash {
 
 #### Usage
 
-```cpp\nunordered_map<\n    int, \n    int, \n    custom_hash\n> mp;\n```
+```cpp
+unordered_map<
+    int,
+    int,
+    custom_hash>
+    mp;
+```
 
 ---
 
@@ -6096,7 +7071,9 @@ or
 
 #### Median
 
-```cpp\n*left.rbegin()\n```
+```cpp
+*left.rbegin()
+```
 
 ---
 
@@ -6114,13 +7091,18 @@ Running Median
 
 #### Count Inside Range
 
-```cpp\nos.order_of_key(r + 1)\n-\nos.order_of_key(l)\n```
+```cpp
+os.order_of_key(r + 1) -
+    os.order_of_key(l)
+```
 
 ---
 
 #### K-th Element
 
-```cpp\n*os.find_by_order(k)\n```
+```cpp
+*os.find_by_order(k)
+```
 
 ---
 
@@ -6146,19 +7128,26 @@ Maintain window values.
 
 #### Maximum
 
-```cpp\n*ms.rbegin()\n```
+```cpp
+*ms.rbegin()
+```
 
 ---
 
 #### Minimum
 
-```cpp\n*ms.begin()\n```
+```cpp
+*ms.begin()
+```
 
 ---
 
 #### Window Difference
 
-```cpp\n*ms.rbegin()\n-\n*ms.begin()\n```
+```cpp
+*ms.rbegin() -
+    *ms.begin()
+```
 
 ---
 
@@ -6184,15 +7173,22 @@ Nearest Element
 
 #### Pattern
 
-```cpp\nauto it =\nst.lower_bound(x);\n```
+```cpp
+auto it =
+    st.lower_bound(x);
+```
 
 Check:
 
-```cpp\nit\n```
+```cpp
+it
+```
 
 and
 
-```cpp\nprev(it)\n```
+```cpp
+prev(it)
+```
 
 ---
 
@@ -6264,7 +7260,26 @@ Window
 
 #### Pattern
 
-```cpp\nint l = 0;\n\nfor(int r=0;r<n;r++){\n\n    add(a[r]);\n\n    while(!valid){\n\n        remove(a[l]);\n\n        l++;\n    }\n\n    ans =\n    max(\n        ans, \n        r-l+1\n    );\n}\n```
+```cpp
+int l = 0;
+
+for (int r = 0; r < n; r++) {
+
+    add(a[r]);
+
+    while (!valid) {
+
+        remove(a[l]);
+
+        l++;
+    }
+
+    ans =
+        max(
+            ans,
+            r - l + 1);
+}
+```
 
 ---
 
@@ -6287,17 +7302,16 @@ Longest Window
 ```cpp
 int l = 0;
 
-for(int r=0;r<n;r++){
+for (int r = 0; r < n; r++) {
 
     add(a[r]);
 
-    while(valid){
+    while (valid) {
 
         ans =
-        min(
-            ans,
-            r-l+1
-        );
+            min(
+                ans,
+                r - l + 1);
 
         remove(a[l]);
 
@@ -6352,7 +7366,9 @@ are valid.
 
 #### Formula
 
-```cpp\nans += r-l+1;\n```
+```cpp
+ans += r - l + 1;
+```
 
 ---
 
@@ -6406,19 +7422,29 @@ Exactly K Special Elements
 
 #### State
 
-```cpp\nmap<int, int> freq;\n\nint distinct;\n```
+```cpp
+map<int, int> freq;
+
+int distinct;
+```
 
 ---
 
 #### Add
 
-```cpp\nif(++freq[x] == 1)\n    distinct++;\n```
+```cpp
+if (++freq[x] == 1)
+    distinct++;
+```
 
 ---
 
 #### Remove
 
-```cpp\nif(--freq[x] == 0)\n    distinct--;\n```
+```cpp
+if (--freq[x] == 0)
+    distinct--;
+```
 
 ---
 
@@ -6476,7 +7502,11 @@ Negative Numbers
 
 #### Maintain
 
-```cpp\ncnt0\n\ncnt1\n```
+```cpp
+cnt0
+
+    cnt1
+```
 
 ---
 
@@ -6498,7 +7528,12 @@ Maximum Consecutive Ones
 
 #### Pattern
 
-```cpp\nvector<int> b = a;\n\nfor(auto x : a)\n    b.push_back(x);\n```
+```cpp
+vector<int> b = a;
+
+for (auto x : a)
+    b.push_back(x);
+```
 
 ---
 
@@ -6510,7 +7545,9 @@ Two Pointers
 
 on:
 
-```cpp\nb\n```
+```cpp
+b
+```
 
 ---
 
@@ -6530,7 +7567,11 @@ Ring Problems
 
 #### Pattern
 
-```cpp\nint l = 0;\n\nint r = n-1;\n```
+```cpp
+int l = 0;
+
+int r = n - 1;
+```
 
 ---
 
@@ -6550,7 +7591,19 @@ Pair Counting
 
 ### Pair Sum = X
 
-```cpp\nwhile(l < r){\n\n    if(\n        a[l]+a[r]\n        == x\n    )\n    {\n        ...\n    }\n    else if (a[l]+a[r] < x) {\n        l++;\n    }\n    else{\n        r--;\n    }\n}\n```
+```cpp
+while (l < r) {
+
+    if (
+        a[l] + a[r] == x) {
+        ...
+    } else if (a[l] + a[r] < x) {
+        l++;
+    } else {
+        r--;
+    }
+}
+```
 
 ---
 
@@ -6586,7 +7639,11 @@ O(n²)
 
 #### Pattern
 
-```cpp\ni = 0;\n\nj = 0;\n```
+```cpp
+i = 0;
+
+j = 0;
+```
 
 Move smaller pointer.
 
@@ -6678,7 +7735,19 @@ Frequency Constraint
 
 #### Pattern
 
-```cpp\nint sum = 0;\n\nfor(int i=0;i<k;i++)\n    sum += a[i];\n\nfor(int r=k;r<n;r++){\n\n    sum += a[r];\n\n    sum -= a[r-k];\n\n}\n```
+```cpp
+int sum = 0;
+
+for (int i = 0; i < k; i++)
+    sum += a[i];
+
+for (int r = k; r < n; r++) {
+
+    sum += a[r];
+
+    sum -= a[r - k];
+}
+```
 
 ---
 
@@ -6708,7 +7777,21 @@ Fixed Window Problems
 
 #### Pattern
 
-```cpp\nint l = 0;\n\nfor(int r=0;r<n;r++){\n\n    add(a[r]);\n\n    while(!valid){\n\n        remove(a[l]);\n\n        l++;\n    }\n}\n```
+```cpp
+int l = 0;
+
+for (int r = 0; r < n; r++) {
+
+    add(a[r]);
+
+    while (!valid) {
+
+        remove(a[l]);
+
+        l++;
+    }
+}
+```
 
 ---
 
@@ -6776,23 +7859,31 @@ Smallest Valid Segment
 
 #### State
 
-```cpp\nmap<int, int> freq;\n```
+```cpp
+map<int, int> freq;
+```
 
 or
 
-```cpp\nvector<int> freq;\n```
+```cpp
+vector<int> freq;
+```
 
 ---
 
 #### Add
 
-```cpp\nfreq[x]++;\n```
+```cpp
+freq[x]++;
+```
 
 ---
 
 #### Remove
 
-```cpp\nfreq[x]--;\n```
+```cpp
+freq[x]--;
+```
 
 ---
 
@@ -6812,19 +7903,27 @@ Frequency Constraints
 
 #### State
 
-```cpp\nint distinct;\n```
+```cpp
+int distinct;
+```
 
 ---
 
 #### Add
 
-```cpp\nif(++freq[x] == 1)\n    distinct++;\n```
+```cpp
+if (++freq[x] == 1)
+    distinct++;
+```
 
 ---
 
 #### Remove
 
-```cpp\nif(--freq[x] == 0)\n    distinct--;\n```
+```cpp
+if (--freq[x] == 0)
+    distinct--;
+```
 
 ---
 
@@ -6858,7 +7957,9 @@ At Most K
 
 #### Formula
 
-```cpp\nans += r-l+1;\n```
+```cpp
+ans += r - l + 1;
+```
 
 ---
 
@@ -6938,7 +8039,9 @@ Same idea.
 
 Use:
 
-```cpp\ndeque<int>\n```
+```cpp
+deque<int>
+```
 
 ---
 
@@ -6968,7 +8071,9 @@ Right Half
 
 using:
 
-```cpp\nmultiset\n```
+```cpp
+multiset
+```
 
 ---
 
@@ -6998,17 +8103,23 @@ Online Median
 
 Maintain:
 
-```cpp\nfreq[x]\n```
+```cpp
+freq[x]
+```
 
 and:
 
-```cpp\nset<int> missing;\n```
+```cpp
+set<int> missing;
+```
 
 ---
 
 Answer:
 
-```cpp\n*missing.begin()\n```
+```cpp
+*missing.begin()
+```
 
 ---
 
@@ -7024,7 +8135,11 @@ O(log n)
 
 #### State
 
-```cpp\ncnt0\n\ncnt1\n```
+```cpp
+cnt0
+
+    cnt1
+```
 
 ---
 
@@ -7048,13 +8163,20 @@ Maximum Consecutive Ones
 
 Duplicate array.
 
-```cpp\nvector<int> b = a;\n\nfor(auto x : a)\n    b.push_back(x);\n```
+```cpp
+vector<int> b = a;
+
+for (auto x : a)
+    b.push_back(x);
+```
 
 ---
 
 Run window on:
 
-```cpp\nb\n```
+```cpp
+b
+```
 
 ---
 
@@ -7124,7 +8246,9 @@ O(n)
 
 even if there is:
 
-```cpp\nwhile(...)\n```
+```cpp
+while (...)
+```
 
 inside loop.
 
@@ -7228,7 +8352,17 @@ First Greater To The Right
 
 #### Pattern
 
-```cpp\nvector<int> ans(n, -1); stack<int> st;\nfor(int i=n-1;i>=0;i--){\n    while(!st.empty() && a[st.top()]<=a[i]) st.pop();\n    if(!st.empty()) ans[i]=st.top();\n    st.push(i);\n}\n```
+```cpp
+vector<int> ans(n, -1);
+stack<int> st;
+for (int i = n - 1; i >= 0; i--) {
+    while (!st.empty() && a[st.top()] <= a[i])
+        st.pop();
+    if (!st.empty())
+        ans[i] = st.top();
+    st.push(i);
+}
+```
 
 ---
 
@@ -7244,7 +8378,15 @@ O(n)
 
 #### Pattern
 
-```cpp\nfor(int i=0;i<n;i++){\n    while(!st.empty() && a[st.top()]<=a[i]) st.pop();\n    if(!st.empty()) ans[i]=st.top();\n    st.push(i);\n}\n```
+```cpp
+for (int i = 0; i < n; i++) {
+    while (!st.empty() && a[st.top()] <= a[i])
+        st.pop();
+    if (!st.empty())
+        ans[i] = st.top();
+    st.push(i);
+}
+```
 
 ---
 
@@ -7335,13 +8477,18 @@ Next Smaller
 
 Width
 
-```cpp\nr[i]-l[i]-1\n```
+```cpp
+r[i] - l[i] - 1
+```
 
 ---
 
 Area
 
-```cpp\na[i] *\n(\n    r[i]-l[i]-1\n)\n```
+```cpp
+a[i] *
+    (r[i] - l[i] - 1)
+```
 
 ---
 
@@ -7379,7 +8526,11 @@ as minimum.
 
 Contribution
 
-```cpp\na[i]\n*\nleft\n*\nright\n```
+```cpp
+a[i] *
+    left
+        *right
+```
 
 ---
 
@@ -7413,7 +8564,12 @@ Range Contributions
 
 #### Formula
 
-```cpp\nans +=\na[i]\n*\nleft[i]\n*\nright[i];\n```
+```cpp
+ans +=
+    a[i] *
+    left[i] *
+    right[i];
+```
 
 ---
 
@@ -7473,7 +8629,9 @@ Increasing Values
 
 Pop while:
 
-```cpp\nst.top() >= current\n```
+```cpp
+st.top() >= current
+```
 
 ---
 
@@ -7499,7 +8657,9 @@ Decreasing Values
 
 Pop while:
 
-```cpp\nst.top() <= current\n```
+```cpp
+st.top() <= current
+```
 
 ---
 
@@ -7521,7 +8681,12 @@ Classic problem.
 
 Pattern
 
-```cpp\nwhile(k && !st.empty() && st.back()>x){ st.pop_back(); k--; }\n```
+```cpp
+while (k && !st.empty() && st.back() > x) {
+    st.pop_back();
+    k--;
+}
+```
 
 ---
 
@@ -7537,7 +8702,9 @@ Greedy + Stack
 
 #### Pattern
 
-```cpp\nstack<char> st;\n```
+```cpp
+stack<char> st;
+```
 
 Push:
 
@@ -7571,11 +8738,15 @@ Bracket Problems
 
 Loop:
 
-```cpp\nfor(int i=2*n-1;i>=0;i--)\n```
+```cpp
+for (int i = 2 * n - 1; i >= 0; i--)
+```
 
 Use:
 
-```cpp\na[i%n]\n```
+```cpp
+a[i % n]
+```
 
 ---
 
@@ -7693,7 +8864,9 @@ DP Optimization
 
 Window Max using:
 
-```cpp\nmultiset\n```
+```cpp
+multiset
+```
 
 Complexity:
 
@@ -7733,11 +8906,14 @@ maximum
 
 ```cpp
 deque<int> dq;
-for(int i=0;i<n;i++){
-    while(!dq.empty() && a[dq.back()] <= a[i]) dq.pop_back();
+for (int i = 0; i < n; i++) {
+    while (!dq.empty() && a[dq.back()] <= a[i])
+        dq.pop_back();
     dq.push_back(i);
-    while(!dq.empty() && dq.front() <= i-k) dq.pop_front();
-    if(i >= k-1) ans.push_back(a[dq.front()]);
+    while (!dq.empty() && dq.front() <= i - k)
+        dq.pop_front();
+    if (i >= k - 1)
+        ans.push_back(a[dq.front()]);
 }
 ```
 
@@ -7757,17 +8933,23 @@ O(n)
 
 Replace:
 
-```cpp\n<=\n```
+```cpp
+<=
+```
 
 with:
 
-```cpp\n>=\n```
+```cpp
+>=
+```
 
 ---
 
 Answer:
 
-```cpp\na[dq.front()]\n```
+```cpp
+a[dq.front()]
+```
 
 ---
 
@@ -7793,7 +8975,9 @@ not values.
 
 Values are:
 
-```cpp\na[dq.front()]\n```
+```cpp
+a[dq.front()]
+```
 
 ---
 
@@ -7852,7 +9036,9 @@ One Min Queue
 
 Window Difference:
 
-```cpp\nmx - mn\n```
+```cpp
+mx - mn
+```
 
 ---
 
@@ -7901,7 +9087,11 @@ O(n)
 
 #### Form
 
-```cpp\ndp[i]\n=\nmax(\n    dp[j]\n)\n```
+```cpp
+dp[i] =
+    max(
+        dp[j])
+```
 
 inside window.
 
@@ -7909,7 +9099,12 @@ inside window.
 
 Example
 
-```cpp\ndp[i]\n=\nmax(\n    dp[j]\n)\n+\ncost\n```
+```cpp
+dp[i] =
+    max(
+        dp[j]) +
+    cost
+```
 
 for
 
@@ -7981,13 +9176,18 @@ where normal sliding window fails.
 
 Pop:
 
-```cpp\nwhile(!dq.empty() && a[dq.back()] <= a[i]) dq.pop_back();\n```
+```cpp
+while (!dq.empty() && a[dq.back()] <= a[i])
+    dq.pop_back();
+```
 
 ---
 
 Answer
 
-```cpp\na[dq.front()]\n```
+```cpp
+a[dq.front()]
+```
 
 ---
 
@@ -7995,13 +9195,18 @@ Answer
 
 Pop:
 
-```cpp\nwhile(!dq.empty() && a[dq.back()] >= a[i]) dq.pop_back();\n```
+```cpp
+while (!dq.empty() && a[dq.back()] >= a[i])
+    dq.pop_back();
+```
 
 ---
 
 Answer
 
-```cpp\na[dq.front()]\n```
+```cpp
+a[dq.front()]
+```
 
 ---
 
@@ -8009,7 +9214,12 @@ Answer
 
 Duplicate:
 
-```cpp\nb = a;\n\nfor(auto x:a)\n    b.push_back(x);\n```
+```cpp
+b = a;
+
+for (auto x : a)
+    b.push_back(x);
+```
 
 ---
 
@@ -8053,7 +9263,9 @@ window expiration
 
 Must remove:
 
-```cpp\ndq.front()\n```
+```cpp
+dq.front()
+```
 
 when outside window.
 
@@ -8157,7 +9369,11 @@ These appear much more often than the rest.
 
 ##### Function
 
-```cpp\nint gcd(int a, int b){\n    return b?gcd(b, a%b):a;\n}\n```
+```cpp
+int gcd(int a, int b) {
+    return b ? gcd(b, a % b) : a;
+}
+```
 
 ##### Complexity
 
@@ -8174,13 +9390,21 @@ O(log(min(a,b)))
 
 ##### Facts
 
-```cpp\ngcd(a, b)=gcd(b, a%b)\n```
+```cpp
+gcd(a, b) = gcd(b, a % b)
+```
 
-```cpp\ngcd(a, b)=gcd(a-b, b)\n```
+```cpp
+gcd(a, b) = gcd(a - b, b)
+```
 
-```cpp\ngcd(a, b, c)=gcd(gcd(a, b), c)\n```
+```cpp
+gcd(a, b, c) = gcd(gcd(a, b), c)
+```
 
-```cpp\ngcd(n, n+1)=1\n```
+```cpp
+gcd(n, n + 1) = 1
+```
 
 ---
 
@@ -8188,7 +9412,11 @@ O(log(min(a,b)))
 
 ##### Function
 
-```cpp\nint lcm(int a, int b){\n    return a/gcd(a, b)*b;\n}\n```
+```cpp
+int lcm(int a, int b) {
+    return a / gcd(a, b) * b;
+}
+```
 
 ##### Complexity
 
@@ -8198,17 +9426,23 @@ O(log(min(a,b)))
 
 ##### Facts
 
-```cpp\ngcd(a, b)*lcm(a, b)=a*b\n```
+```cpp
+gcd(a, b) * lcm(a, b) = a * b
+```
 
 ##### Warning
 
 Bad
 
-```cpp\na*b/gcd(a, b)\n```
+```cpp
+a *b / gcd(a, b)
+```
 
 Good
 
-```cpp\na/gcd(a, b)*b\n```
+```cpp
+a / gcd(a, b) * b
+```
 
 ---
 
@@ -8216,7 +9450,23 @@ Good
 
 ##### Function
 
-```cpp\nint power(int a, int b){\n\n    int res=1;\n\n    while(b){\n\n        if(b&1)\n            res*=a;\n\n        a*=a;\n        b>>=1;\n    }\n\n    return res;\n}\n```
+```cpp
+int power(int a, int b) {
+
+    int res = 1;
+
+    while (b) {
+
+        if (b & 1)
+            res *= a;
+
+        a *= a;
+        b >>= 1;
+    }
+
+    return res;
+}
+```
 
 ##### Complexity
 
@@ -8236,7 +9486,24 @@ O(log b)
 
 ##### Function
 
-```cpp\nint power(int a, int b, int mod){\n\n    int res=1;\n\n    while(b){\n\n        if(b&1)\n            res=1LL*res*a%mod;\n\n        a=1LL*a*a%mod;\n\n        b>>=1;\n    }\n\n    return res;\n}\n```
+```cpp
+int power(int a, int b, int mod) {
+
+    int res = 1;
+
+    while (b) {
+
+        if (b & 1)
+            res = 1LL * res * a % mod;
+
+        a = 1LL * a * a % mod;
+
+        b >>= 1;
+    }
+
+    return res;
+}
+```
 
 ##### Complexity
 
@@ -8251,22 +9518,22 @@ O(log b)
 #### Function
 
 ```cpp
-int exgcd(int a,int b,int &x,int &y){
+int exgcd(int a, int b, int &x, int &y) {
 
-    if(!b){
+    if (!b) {
 
-        x=1;
-        y=0;
+        x = 1;
+        y = 0;
 
         return a;
     }
 
-    int x1,y1;
+    int x1, y1;
 
-    int g=exgcd(b,a%b,x1,y1);
+    int g = exgcd(b, a % b, x1, y1);
 
-    x=y1;
-    y=x1-y1*(a/b);
+    x = y1;
+    y = x1 - y1 * (a / b);
 
     return g;
 }
@@ -8299,35 +9566,50 @@ O(log n)
 
 #### Normalize Mod
 
-```cpp\nx%=mod;\n\nif(x<0)\n    x+=mod;\n```
+```cpp
+x %= mod;
+
+if (x < 0)
+    x += mod;
+```
 
 ---
 
 #### Addition
 
-```cpp\n(a+b)%mod\n```
+```cpp
+(a + b) % mod
+```
 
 ---
 
 #### Subtraction
 
-```cpp\n((a-b)%mod+mod)%mod\n```
+```cpp
+((a - b) % mod + mod) % mod
+```
 
 ---
 
 #### Multiplication
 
-```cpp\n1LL*a*b%mod\n```
+```cpp
+1LL * a *b % mod
+```
 
 ---
 
 #### Division
 
-```cpp\na*inv(b)%mod\n```
+```cpp
+a *inv(b) % mod
+```
 
 Never:
 
-```cpp\na/b%mod\n```
+```cpp
+a / b % mod
+```
 
 ---
 
@@ -8343,7 +9625,11 @@ mod must be prime
 
 ##### Function
 
-```cpp\nint inv(int x){\n    return power(x, mod-2, mod);\n}\n```
+```cpp
+int inv(int x) {
+    return power(x, mod - 2, mod);
+}
+```
 
 ##### Complexity
 
@@ -8355,7 +9641,11 @@ O(log mod)
 
 #### Recursive Inverse
 
-```cpp\nint inv(int x){\n    return x==1?1:\n    mod-1LL*(mod/x)*inv(mod%x)%mod;\n}\n```
+```cpp
+int inv(int x) {
+    return x == 1 ? 1 : mod - 1LL * (mod / x) * inv(mod % x) % mod;
+}
+```
 
 ##### Complexity
 
@@ -8369,11 +9659,22 @@ O(log mod)
 
 ##### Condition
 
-```cpp\ngcd(a, m)==1\n```
+```cpp
+gcd(a, m) == 1
+```
 
 ##### Function
 
-```cpp\nint inv(int a){\n\n    int x, y;\n\n    exgcd(a, mod, x, y);\n\n    return (x%mod+mod)%mod;\n}\n```
+```cpp
+int inv(int a) {
+
+    int x, y;
+
+    exgcd(a, mod, x, y);
+
+    return (x % mod + mod) % mod;
+}
+```
 
 ##### Works For
 
@@ -8385,7 +9686,12 @@ Non-prime mod
 
 #### Generate All Inverses
 
-```cpp\ninv[1]=1;\n\nfor(int i=2;i<=n;i++)\n    inv[i]=mod-(mod/i)*inv[mod%i]%mod;\n```
+```cpp
+inv[1] = 1;
+
+for (int i = 2; i <= n; i++)
+    inv[i] = mod - (mod / i) * inv[mod % i] % mod;
+```
 
 ##### Complexity
 
@@ -8399,11 +9705,16 @@ O(n)
 
 ##### Inverse Exists iff
 
-```cpp\ngcd(a, m)==1\n```
+```cpp
+gcd(a, m) == 1
+```
 
 ##### Product
 
-```cpp\n(a*b)^-1\n=\na^-1*b^-1\n```
+```cpp
+(a *b) ^ -1 =
+    a ^ -1 * b ^ -1
+```
 
 ---
 
@@ -8411,7 +9722,12 @@ O(n)
 
 #### Build Factorial
 
-```cpp\nfac[0]=1;\n\nfor(int i=1;i<=n;i++)\n    fac[i]=1LL*fac[i-1]*i%mod;\n```
+```cpp
+fac[0] = 1;
+
+for (int i = 1; i <= n; i++)
+    fac[i] = 1LL * fac[i - 1] * i % mod;
+```
 
 ##### Complexity
 
@@ -8423,7 +9739,12 @@ O(n)
 
 #### Inverse Factorials
 
-```cpp\ninvfac[n]=power(fac[n], mod-2);\n\nfor(int i=n;i>=1;i--)\n    invfac[i-1]=1LL*invfac[i]*i%mod;\n```
+```cpp
+invfac[n] = power(fac[n], mod - 2);
+
+for (int i = n; i >= 1; i--)
+    invfac[i - 1] = 1LL * invfac[i] * i % mod;
+```
 
 ##### Complexity
 
@@ -8435,7 +9756,17 @@ O(n)
 
 #### nCr
 
-```cpp\nint C(int n, int r){\n\n    if(r<0||r>n)\n        return 0;\n\n    return 1LL*fac[n]*\n           invfac[r]%mod*\n           invfac[n-r]%mod;\n}\n```
+```cpp
+int C(int n, int r) {
+
+    if (r < 0 || r > n)
+        return 0;
+
+    return 1LL * fac[n] *
+           invfac[r] % mod *
+           invfac[n - r] % mod;
+}
+```
 
 ##### Complexity
 
@@ -8449,7 +9780,20 @@ O(1)
 
 #### Power Of Prime Inside n!
 
-```cpp\nint cnt(int n, int p){\n\n    int res=0;\n\n    while(n){\n\n        n/=p;\n        res+=n;\n    }\n\n    return res;\n}\n```
+```cpp
+int cnt(int n, int p) {
+
+    int res = 0;
+
+    while (n) {
+
+        n /= p;
+        res += n;
+    }
+
+    return res;
+}
+```
 
 ##### Complexity
 
@@ -8467,7 +9811,9 @@ O(logp(n))
 
 #### Trailing Zeros In n!
 
-```cpp\ncnt(n, 5)\n```
+```cpp
+cnt(n, 5)
+```
 
 ##### Why?
 
@@ -8479,7 +9825,9 @@ O(logp(n))
 
 #### Prime Exponent In nCr
 
-```cpp\ncnt(n, p)\n-cnt(r, p)\n-cnt(n-r, p)\n```
+```cpp
+cnt(n, p) - cnt(r, p) - cnt(n - r, p)
+```
 
 ---
 
@@ -8487,11 +9835,15 @@ O(logp(n))
 
 Factorize:
 
-```cpp\nm=p1^a1*p2^a2...\n```
+```cpp
+m = p1 ^ a1 * p2 ^ a2...
+```
 
 Check
 
-```cpp\ncnt(n, pi)>=ai\n```
+```cpp
+cnt(n, pi) >= ai
+```
 
 for every prime.
 
@@ -8509,7 +9861,9 @@ ax+by=c
 
 #### Solution Exists iff
 
-```cpp\nc%gcd(a, b)==0\n```
+```cpp
+c % gcd(a, b) == 0
+```
 
 ---
 
@@ -8517,11 +9871,15 @@ ax+by=c
 
 From
 
-```cpp\nax+by=g\n```
+```cpp
+ax + by = g
+```
 
 Multiply by
 
-```cpp\nc/g\n```
+```cpp
+c / g
+```
 
 ---
 
@@ -8529,11 +9887,17 @@ Multiply by
 
 Let
 
-```cpp\ng=gcd(a, b)\n```
+```cpp
+g = gcd(a, b)
+```
 
 Then
 
-```cpp\nx=x0+k*(b/g)\n\ny=y0-k*(a/g)\n```
+```cpp
+x = x0 + k * (b / g)
+
+                 y = y0 - k * (a / g)
+```
 
 ---
 
@@ -8541,11 +9905,17 @@ Then
 
 Move
 
-```cpp\nk\n```
+```cpp
+k
+```
 
 until
 
-```cpp\nx>0\n\ny>0\n```
+```cpp
+x > 0
+
+    y > 0
+```
 
 ---
 
@@ -8554,23 +9924,23 @@ until
 #### Function
 
 ```cpp
-int phi(int n){
+int phi(int n) {
 
-    int res=n;
+    int res = n;
 
-    for(int i=2;i*i<=n;i++){
+    for (int i = 2; i * i <= n; i++) {
 
-        if(n%i==0){
+        if (n % i == 0) {
 
-            while(n%i==0)
-                n/=i;
+            while (n % i == 0)
+                n /= i;
 
-            res-=res/i;
+            res -= res / i;
         }
     }
 
-    if(n>1)
-        res-=res/n;
+    if (n > 1)
+        res -= res / n;
 
     return res;
 }
@@ -8594,7 +9964,9 @@ Count numbers
 
 such that
 
-```cpp\ngcd(x, n)==1\n```
+```cpp
+gcd(x, n) == 1
+```
 
 ---
 
@@ -8602,25 +9974,35 @@ such that
 
 ##### Prime
 
-```cpp\nphi(p)=p-1\n```
+```cpp
+phi(p) = p - 1
+```
 
 ##### Prime Power
 
-```cpp\nphi(p^k)=p^k-p^(k-1)\n```
+```cpp
+phi(p ^ k) = p ^ k - p ^ (k - 1)
+```
 
 ##### Multiplicative
 
 If
 
-```cpp\ngcd(a, b)==1\n```
+```cpp
+gcd(a, b) == 1
+```
 
 Then
 
-```cpp\nphi(ab)=phi(a)*phi(b)\n```
+```cpp
+phi(ab) = phi(a) * phi(b)
+```
 
 ##### Divisor Identity
 
-```cpp\nΣ phi(d)=n\n```
+```cpp
+Σ phi(d) = n
+```
 
 over all divisors d of n.
 
@@ -8630,11 +10012,15 @@ over all divisors d of n.
 
 If
 
-```cpp\ngcd(a, m)==1\n```
+```cpp
+gcd(a, m) == 1
+```
 
 Then
 
-```cpp\na^phi(m)=1 mod m\n```
+```cpp
+a ^ phi(m) = 1 mod m
+```
 
 ---
 
@@ -8642,7 +10028,19 @@ Then
 
 #### Trial Division
 
-```cpp\nbool prime(int n){\n\n    if(n<2)\n        return false;\n\n    for(int i=2;i*i<=n;i++)\n        if(n%i==0)\n            return false;\n\n    return true;\n}\n```
+```cpp
+bool prime(int n) {
+
+    if (n < 2)
+        return false;
+
+    for (int i = 2; i * i <= n; i++)
+        if (n % i == 0)
+            return false;
+
+    return true;
+}
+```
 
 ##### Complexity
 
@@ -8673,23 +10071,23 @@ up to 1e18
 #### Function
 
 ```cpp
-vector<int> lp(n+1);
+vector<int> lp(n + 1);
 vector<int> primes;
 
-for(int i=2;i<=n;i++){
+for (int i = 2; i <= n; i++) {
 
-    if(!lp[i]){
+    if (!lp[i]) {
 
-        lp[i]=i;
+        lp[i] = i;
         primes.push_back(i);
     }
 
-    for(auto p:primes){
+    for (auto p : primes) {
 
-        if(p>lp[i]||i*p>n)
+        if (p > lp[i] || i * p > n)
             break;
 
-        lp[i*p]=p;
+        lp[i * p] = p;
     }
 }
 ```
@@ -8702,7 +10100,9 @@ O(n)
 
 ##### Gives
 
-```cpp\nlp[x]\n```
+```cpp
+lp[x]
+```
 
 smallest prime factor.
 
@@ -8713,23 +10113,23 @@ smallest prime factor.
 #### Using SPF
 
 ```cpp
-vector<pair<int,int>> factor(int x){
+vector<pair<int, int>> factor(int x) {
 
-    vector<pair<int,int>> res;
+    vector<pair<int, int>> res;
 
-    while(x>1){
+    while (x > 1) {
 
-        int p=lp[x];
+        int p = lp[x];
 
-        int cnt=0;
+        int cnt = 0;
 
-        while(x%p==0){
+        while (x % p == 0) {
 
-            x/=p;
+            x /= p;
             cnt++;
         }
 
-        res.push_back({p,cnt});
+        res.push_back({p, cnt});
     }
 
     return res;
@@ -8756,13 +10156,17 @@ n=p1^a1*p2^a2...
 
 Then
 
-```cpp\nΠ(ai+1)\n```
+```cpp
+Π(ai + 1)
+```
 
 ---
 
 #### Sum Of Divisors
 
-```cpp\nΠ((p^(a+1)-1)/(p-1))\n```
+```cpp
+Π((p ^ (a + 1) - 1) / (p - 1))
+```
 
 ---
 
@@ -8770,11 +10174,15 @@ Then
 
 If
 
-```cpp\nd=d(n)\n```
+```cpp
+d = d(n)
+```
 
 Then
 
-```cpp\nn^(d/2)\n```
+```cpp
+n ^ (d / 2)
+```
 
 ---
 
@@ -8784,7 +10192,9 @@ Then
 
 Distinct values of
 
-```cpp\nn/i\n```
+```cpp
+n / i
+```
 
 are only
 
@@ -8796,7 +10206,14 @@ O(sqrt(n))
 
 #### Loop
 
-```cpp\nfor(int l=1, r;l<=n;l=r+1){\n\n    int k=n/l;\n\n    r=n/k;\n}\n```
+```cpp
+for (int l = 1, r; l <= n; l = r + 1) {
+
+    int k = n / l;
+
+    r = n / k;
+}
+```
 
 ##### Complexity
 
@@ -8810,25 +10227,33 @@ O(sqrt(n))
 
 #### Coprime
 
-```cpp\ngcd(a, b)==1\n```
+```cpp
+gcd(a, b) == 1
+```
 
 ---
 
 #### Consecutive Numbers
 
-```cpp\ngcd(n, n+1)=1\n```
+```cpp
+gcd(n, n + 1) = 1
+```
 
 ---
 
 #### Count Multiples In [1,n]
 
-```cpp\nn/x\n```
+```cpp
+n / x
+```
 
 ---
 
 #### Count Multiples In [l,r]
 
-```cpp\nr/x-(l-1)/x\n```
+```cpp
+r / x - (l - 1) / x
+```
 
 ---
 
@@ -8836,7 +10261,9 @@ O(sqrt(n))
 
 Maximum for
 
-```cpp\nn<=1e18\n```
+```cpp
+n <= 1e18
+```
 
 is
 
@@ -8850,7 +10277,9 @@ is
 
 For
 
-```cpp\nn<=1e18\n```
+```cpp
+n <= 1e18
+```
 
 maximum is approximately
 
@@ -8862,11 +10291,15 @@ maximum is approximately
 
 #### Factorization Limits
 
-```cpp\nsqrt(1e12)=1e6\n```
+```cpp
+sqrt(1e12) = 1e6
+```
 
 usually acceptable.
 
-```cpp\nsqrt(1e18)=1e9\n```
+```cpp
+sqrt(1e18) = 1e9
+```
 
 not acceptable.
 
@@ -8919,24 +10352,23 @@ Answer     -> Which state contains final answer?
 General Memoization Template:
 
 ```cpp
-int solve(state){
+int solve(state) {
 
-    if(base_case)
+    if (base_case)
         return answer;
 
     int &ret = dp[state];
 
-    if(ret != -1)
+    if (ret != -1)
         return ret;
 
     ret = initial_value;
 
-    for(all_possible_choices){
+    for (all_possible_choices) {
 
         ret = combine(
             ret,
-            solve(next_state)
-        );
+            solve(next_state));
     }
 
     return ret;
@@ -8955,7 +10387,9 @@ Time = States × Transitions
 
 Example:
 
-```cpp\ndp[i][sum]\n```
+```cpp
+dp[i][sum]
+```
 
 States:
 
@@ -8985,27 +10419,30 @@ O(N × SUM)
 
 State:
 
-```cpp\ndp[n]\n```
+```cpp
+dp[n]
+```
 
 Transition:
 
-```cpp\nf(n)=f(n-1)+f(n-2)\n```
+```cpp
+f(n) = f(n - 1) + f(n - 2)
+```
 
 ```cpp
-int solve(int n){
+int solve(int n) {
 
-    if(n <= 1)
+    if (n <= 1)
         return n;
 
     int &ret = dp[n];
 
-    if(ret != -1)
+    if (ret != -1)
         return ret;
 
     return ret =
-           solve(n-1)
-           +
-           solve(n-2);
+               solve(n - 1) +
+               solve(n - 2);
 }
 ```
 
@@ -9023,11 +10460,15 @@ O(N)
 
 Instead of:
 
-```cpp\ndp[n]\n```
+```cpp
+dp[n]
+```
 
 Use:
 
-```cpp\na, b, c\n```
+```cpp
+a, b, c
+```
 
 Memory:
 
@@ -9041,11 +10482,15 @@ O(1)
 
 State:
 
-```cpp\ndp[i]\n```
+```cpp
+dp[i]
+```
 
 Transition:
 
-```cpp\ndp[i]=dp[i-1]+dp[i-2]\n```
+```cpp
+dp[i] = dp[i - 1] + dp[i - 2]
+```
 
 Used in:
 
@@ -9061,7 +10506,9 @@ Paths
 
 State:
 
-```cpp\ndp[i]\n```
+```cpp
+dp[i]
+```
 
 Meaning:
 
@@ -9071,11 +10518,16 @@ Answer for first i elements
 
 Common form:
 
-```cpp\ndp[i]=best(\n    dp[j]\n)\n```
+```cpp
+dp[i] = best(
+    dp[j])
+```
 
 where
 
-```cpp\nj < i\n```
+```cpp
+j < i
+```
 
 Examples:
 
@@ -9093,7 +10545,9 @@ Word Break
 
 ### State
 
-```cpp\n(i, rem)\n```
+```cpp
+(i, rem)
+```
 
 Meaning:
 
@@ -9109,30 +10563,27 @@ Remaining capacity
 ```cpp
 int solve(
     int i,
-    int rem
-){
+    int rem) {
 
-    if(i == n)
+    if (i == n)
         return 0;
 
     int &ret =
-    dp[i][rem];
+        dp[i][rem];
 
-    if(ret != -1)
+    if (ret != -1)
         return ret;
 
     ret =
-    solve(i+1,rem);
+        solve(i + 1, rem);
 
-    if(rem >= w[i])
+    if (rem >= w[i])
         ret = max(
             ret,
             val[i] +
-            solve(
-                i+1,
-                rem-w[i]
-            )
-        );
+                solve(
+                    i + 1,
+                    rem - w[i]));
 
     return ret;
 }
@@ -9142,7 +10593,19 @@ int solve(
 
 ### Iterative
 
-```cpp\nfor(int i=0;i<n;i++){\n\n    for(int w=W;\n        w>=cost[i];\n        w--){\n\n        dp[w]=max(\n            dp[w], \n            dp[w-cost[i]]\n            + val[i]\n        );\n    }\n}\n```
+```cpp
+for (int i = 0; i < n; i++) {
+
+    for (int w = W;
+         w >= cost[i];
+         w--) {
+
+        dp[w] = max(
+            dp[w],
+            dp[w - cost[i]] + val[i]);
+    }
+}
+```
 
 ---
 
@@ -9152,7 +10615,9 @@ int solve(
 
 Backward loop:
 
-```cpp\nfor(w=W;w>=cost;w--)\n```
+```cpp
+for (w = W; w >= cost; w--)
+```
 
 means
 
@@ -9166,7 +10631,9 @@ Take Once
 
 Forward loop:
 
-```cpp\nfor(w=cost;w<=W;w++)\n```
+```cpp
+for (w = cost; w <= W; w++)
+```
 
 means
 
@@ -9182,7 +10649,9 @@ Recover Solution
 
 Store:
 
-```cpp\npar[i][w]\n```
+```cpp
+par[i][w]
+```
 
 Then backtrack.
 
@@ -9208,7 +10677,10 @@ Use value DP.
 
 State:
 
-```cpp\ndp[value]\n=\nminimum weight\n```
+```cpp
+dp[value] =
+    minimum weight
+```
 
 ---
 
@@ -9224,7 +10696,9 @@ O(NW)
 
 State:
 
-```cpp\n(i, sum)\n```
+```cpp
+(i, sum)
+```
 
 ---
 
@@ -9233,28 +10707,25 @@ State:
 ```cpp
 bool solve(
     int i,
-    int sum
-){
+    int sum) {
 
-    if(sum == target)
+    if (sum == target)
         return true;
 
-    if(i == n)
+    if (i == n)
         return false;
 
     int &ret =
-    dp[i][sum];
+        dp[i][sum];
 
-    if(ret != -1)
+    if (ret != -1)
         return ret;
 
     return ret =
-           solve(i+1,sum)
-           ||
-           solve(
-               i+1,
-               sum+a[i]
-           );
+               solve(i + 1, sum) ||
+               solve(
+                   i + 1,
+                   sum + a[i]);
 }
 ```
 
@@ -9262,7 +10733,20 @@ bool solve(
 
 ### Iterative
 
-```cpp\ndp[0]=1;\n\nfor(auto x:a){\n\n    for(int s=S;\n        s>=x;\n        s--){\n\n        dp[s] |=\n        dp[s-x];\n    }\n}\n```
+```cpp
+dp[0] = 1;
+
+for (auto x : a) {
+
+    for (int s = S;
+         s >= x;
+         s--) {
+
+        dp[s] |=
+            dp[s - x];
+    }
+}
+```
 
 ---
 
@@ -9272,11 +10756,15 @@ bool solve(
 
 Replace:
 
-```cpp\nbool\n```
+```cpp
+bool
+```
 
 with
 
-```cpp\nlong long\n```
+```cpp
+long long
+```
 
 ---
 
@@ -9284,13 +10772,22 @@ with
 
 Store:
 
-```cpp\ntake[i][sum]\n```
+```cpp
+take[i][sum]
+```
 
 ---
 
 ##### Bitset Optimization
 
-```cpp\nbitset<MAX> bs;\n\nbs[0]=1;\n\nfor(auto x:a)\n    bs |= (bs<<x);\n```
+```cpp
+bitset<MAX> bs;
+
+bs[0] = 1;
+
+for (auto x : a)
+    bs |= (bs << x);
+```
 
 Complexity:
 
@@ -9311,29 +10808,27 @@ Huge optimization.
 ```cpp
 ll solve(
     int i,
-    int rem
-){
+    int rem) {
 
-    if(rem==0)
+    if (rem == 0)
         return 1;
 
-    if(i==n)
+    if (i == n)
         return 0;
 
-    ll &ret=
-    dp[i][rem];
+    ll &ret =
+        dp[i][rem];
 
-    if(ret!=-1)
+    if (ret != -1)
         return ret;
 
-    ret=
-    solve(i+1,rem);
+    ret =
+        solve(i + 1, rem);
 
-    if(rem>=coin[i])
-        ret+=solve(
+    if (rem >= coin[i])
+        ret += solve(
             i,
-            rem-coin[i]
-        );
+            rem - coin[i]);
 
     return ret;
 }
@@ -9345,13 +10840,17 @@ ll solve(
 
 ##### Combination
 
-```cpp\nsolve(i, ...)\n```
+```cpp
+solve(i, ...)
+```
 
 ---
 
 ##### Permutation
 
-```cpp\nsolve(0, ...)\n```
+```cpp
+solve(0, ...)
+```
 
 after choosing.
 
@@ -9363,7 +10862,9 @@ Very common trap.
 
 State:
 
-```cpp\n(i, j)\n```
+```cpp
+(i, j)
+```
 
 ---
 
@@ -9372,28 +10873,26 @@ State:
 ```cpp
 int solve(
     int i,
-    int j
-){
+    int j) {
 
-    if(i==n || j==m)
+    if (i == n || j == m)
         return 0;
 
-    int &ret=
-    dp[i][j];
+    int &ret =
+        dp[i][j];
 
-    if(ret!=-1)
+    if (ret != -1)
         return ret;
 
-    if(a[i]==b[j])
-        return ret=
-               1+
-               solve(i+1,j+1);
+    if (a[i] == b[j])
+        return ret =
+                   1 +
+                   solve(i + 1, j + 1);
 
-    return ret=
-           max(
-               solve(i+1,j),
-               solve(i,j+1)
-           );
+    return ret =
+               max(
+                   solve(i + 1, j),
+                   solve(i, j + 1));
 }
 ```
 
@@ -9415,7 +10914,9 @@ Shortest Common Supersequence
 
 Formula:
 
-```cpp\nn+m-LCS\n```
+```cpp
+n + m - LCS
+```
 
 ---
 
@@ -9427,7 +10928,9 @@ Insert/Delete only
 
 Answer:
 
-```cpp\nn+m-2*LCS\n```
+```cpp
+n + m - 2 * LCS
+```
 
 ---
 
@@ -9445,7 +10948,20 @@ O(NM)
 
 ### O(N²)
 
-```cpp\nfor(int i=0;i<n;i++){\n\n    dp[i]=1;\n\n    for(int j=0;j<i;j++){\n\n        if(a[j]<a[i])\n            dp[i]=max(\n                dp[i], \n                dp[j]+1\n            );\n    }\n}\n```
+```cpp
+for (int i = 0; i < n; i++) {
+
+    dp[i] = 1;
+
+    for (int j = 0; j < i; j++) {
+
+        if (a[j] < a[i])
+            dp[i] = max(
+                dp[i],
+                dp[j] + 1);
+    }
+}
+```
 
 ---
 
@@ -9454,20 +10970,19 @@ O(NM)
 ```cpp
 vector<int> lis;
 
-for(auto x:a){
+for (auto x : a) {
 
-    auto it=
-    lower_bound(
-        lis.begin(),
-        lis.end(),
-        x
-    );
+    auto it =
+        lower_bound(
+            lis.begin(),
+            lis.end(),
+            x);
 
-    if(it==lis.end())
+    if (it == lis.end())
         lis.push_back(x);
 
     else
-        *it=x;
+        *it = x;
 }
 ```
 
@@ -9477,13 +10992,17 @@ for(auto x:a){
 
 ##### Strict LIS
 
-```cpp\nlower_bound\n```
+```cpp
+lower_bound
+```
 
 ---
 
 ##### Non-Decreasing LIS
 
-```cpp\nupper_bound\n```
+```cpp
+upper_bound
+```
 
 ---
 
@@ -9491,7 +11010,9 @@ for(auto x:a){
 
 Store:
 
-```cpp\nparent[]\n```
+```cpp
+parent[]
+```
 
 ---
 
@@ -9505,7 +11026,9 @@ Need another DP.
 
 State:
 
-```cpp\n(i, j)\n```
+```cpp
+(i, j)
+```
 
 ---
 
@@ -9514,27 +11037,25 @@ State:
 ```cpp
 ll solve(
     int i,
-    int j
-){
+    int j) {
 
-    if(i==n-1 &&
-       j==m-1)
+    if (i == n - 1 &&
+        j == m - 1)
         return 1;
 
-    if(i>=n ||
-       j>=m)
+    if (i >= n ||
+        j >= m)
         return 0;
 
-    ll &ret=
-    dp[i][j];
+    ll &ret =
+        dp[i][j];
 
-    if(ret!=-1)
+    if (ret != -1)
         return ret;
 
-    return ret=
-           solve(i+1,j)
-           +
-           solve(i,j+1);
+    return ret =
+               solve(i + 1, j) +
+               solve(i, j + 1);
 }
 ```
 
@@ -9544,7 +11065,10 @@ ll solve(
 
 ##### Obstacles
 
-```cpp\nif(blocked)\n    return 0;\n```
+```cpp
+if (blocked)
+    return 0;
+```
 
 ---
 
@@ -9552,11 +11076,15 @@ ll solve(
 
 Replace:
 
-```cpp\n+\n```
+```cpp
++
+```
 
 with
 
-```cpp\nmin(...)\n```
+```cpp
+min(...)
+```
 
 ---
 
@@ -9564,7 +11092,9 @@ with
 
 Use:
 
-```cpp\nmax(...)\n```
+```cpp
+max(...)
+```
 
 ---
 
@@ -9586,29 +11116,30 @@ O(NM)
 
 State:
 
-```cpp\nu\n```
+```cpp
+u
+```
 
 ---
 
 ### Longest Path
 
 ```cpp
-int solve(int u){
+int solve(int u) {
 
-    int &ret=
-    dp[u];
+    int &ret =
+        dp[u];
 
-    if(ret!=-1)
+    if (ret != -1)
         return ret;
 
-    ret=0;
+    ret = 0;
 
-    for(auto v:adj[u]){
+    for (auto v : adj[u]) {
 
-        ret=max(
+        ret = max(
             ret,
-            1+solve(v)
-        );
+            1 + solve(v));
     }
 
     return ret;
@@ -9621,19 +11152,25 @@ int solve(int u){
 
 ##### Count Paths
 
-```cpp\nret += solve(v);\n```
+```cpp
+ret += solve(v);
+```
 
 ---
 
 ##### Longest Path
 
-```cpp\nret=max(...)\n```
+```cpp
+ret = max(...)
+```
 
 ---
 
 ##### Shortest Path
 
-```cpp\nret=min(...)\n```
+```cpp
+ret = min(...)
+```
 
 ---
 
@@ -9653,7 +11190,9 @@ O(V+E)
 
 State:
 
-```cpp\n(node, take)\n```
+```cpp
+(node, take)
+```
 
 ---
 
@@ -9661,32 +11200,29 @@ State:
 int solve(
     int u,
     int take,
-    int p
-){
+    int p) {
 
-    int &ret=
-    dp[u][take];
+    int &ret =
+        dp[u][take];
 
-    if(ret!=-1)
+    if (ret != -1)
         return ret;
 
-    ret=take;
+    ret = take;
 
-    for(auto v:adj[u]){
+    for (auto v : adj[u]) {
 
-        if(v==p)
+        if (v == p)
             continue;
 
-        if(take)
-            ret+=solve(
-                v,0,u
-            );
+        if (take)
+            ret += solve(
+                v, 0, u);
 
         else
-            ret+=max(
-                solve(v,0,u),
-                solve(v,1,u)
-            );
+            ret += max(
+                solve(v, 0, u),
+                solve(v, 1, u));
     }
 
     return ret;
@@ -9699,7 +11235,9 @@ int solve(
 
 ##### Subtree DP
 
-```cpp\ndp[u]\n```
+```cpp
+dp[u]
+```
 
 ---
 
@@ -9707,7 +11245,9 @@ int solve(
 
 Need:
 
-```cpp\ndp_down\ndp_up\n```
+```cpp
+dp_down dp_up
+```
 
 ---
 
@@ -9715,7 +11255,9 @@ Need:
 
 Keep:
 
-```cpp\nmx1\nmx2\n```
+```cpp
+mx1 mx2
+```
 
 largest depths.
 
@@ -9725,7 +11267,9 @@ largest depths.
 
 State:
 
-```cpp\n(u, take)\n```
+```cpp
+(u, take)
+```
 
 common.
 
@@ -9743,7 +11287,9 @@ O(N)
 
 State:
 
-```cpp\n(l, r)\n```
+```cpp
+(l, r)
+```
 
 ---
 
@@ -9752,28 +11298,25 @@ State:
 ```cpp
 int solve(
     int l,
-    int r
-){
+    int r) {
 
-    if(l==r)
+    if (l == r)
         return 0;
 
-    int &ret=
-    dp[l][r];
+    int &ret =
+        dp[l][r];
 
-    if(ret!=-1)
+    if (ret != -1)
         return ret;
 
-    ret=INF;
+    ret = INF;
 
-    for(int k=l;k<r;k++){
+    for (int k = l; k < r; k++) {
 
-        ret=min(
+        ret = min(
             ret,
-            solve(l,k)
-            +
-            solve(k+1,r)
-        );
+            solve(l, k) +
+                solve(k + 1, r));
     }
 
     return ret;
@@ -9802,7 +11345,9 @@ Split
 
 Always build:
 
-```cpp\nlen=1..n\n```
+```cpp
+len = 1..n
+```
 
 ---
 
@@ -9810,7 +11355,9 @@ Always build:
 
 Usually:
 
-```cpp\nfor(k=l;k<r;k++)\n```
+```cpp
+for (k = l; k < r; k++)
+```
 
 ---
 
@@ -9818,7 +11365,9 @@ Usually:
 
 State:
 
-```cpp\ndp[l][r]\n```
+```cpp
+dp[l][r]
+```
 
 ---
 
@@ -9843,36 +11392,33 @@ N ≤ 20
 ### Assignment DP
 
 ```cpp
-int solve(int mask){
+int solve(int mask) {
 
-    if(mask==
-       (1<<n)-1)
+    if (mask ==
+        (1 << n) - 1)
         return 0;
 
-    int &ret=
-    dp[mask];
+    int &ret =
+        dp[mask];
 
-    if(ret!=-1)
+    if (ret != -1)
         return ret;
 
-    ret=INF;
+    ret = INF;
 
-    int pos=
-    __builtin_popcount(mask);
+    int pos =
+        __builtin_popcount(mask);
 
-    for(int i=0;i<n;i++){
+    for (int i = 0; i < n; i++) {
 
-        if(mask&(1<<i))
+        if (mask & (1 << i))
             continue;
 
-        ret=min(
+        ret = min(
             ret,
-            cost[pos][i]
-            +
-            solve(
-                mask|(1<<i)
-            )
-        );
+            cost[pos][i] +
+                solve(
+                    mask | (1 << i)));
     }
 
     return ret;
@@ -9885,25 +11431,39 @@ int solve(int mask){
 
 Check:
 
-```cpp\nmask&(1<<i)\n```
+```cpp
+mask & (1 << i)
+```
 
 Set:
 
-```cpp\nmask|(1<<i)\n```
+```cpp
+mask | (1 << i)
+```
 
 Remove:
 
-```cpp\nmask^(1<<i)\n```
+```cpp
+mask ^ (1 << i)
+```
 
 Count:
 
-```cpp\n__builtin_popcount(mask)\n```
+```cpp
+__builtin_popcount(mask)
+```
 
 ---
 
 ### Submask Enumeration
 
-```cpp\nfor(\n    int sub=mask;\n    sub;\n    sub=(sub-1)&mask\n){\n}\n```
+```cpp
+for (
+    int sub = mask;
+    sub;
+    sub = (sub - 1) & mask) {
+}
+```
 
 ---
 
@@ -9913,7 +11473,9 @@ Count:
 
 State:
 
-```cpp\n(mask, last)\n```
+```cpp
+(mask, last)
+```
 
 ---
 
@@ -9921,7 +11483,9 @@ State:
 
 State:
 
-```cpp\n(mask)\n```
+```cpp
+(mask)
+```
 
 ---
 
@@ -9953,7 +11517,9 @@ satisfying property
 
 ### State
 
-```cpp\n(pos, tight, sum)\n```
+```cpp
+(pos, tight, sum)
+```
 
 ---
 
@@ -9963,43 +11529,41 @@ satisfying property
 ll solve(
     int pos,
     int tight,
-    int sum
-){
+    int sum) {
 
-    if(pos==
-       num.size())
+    if (pos ==
+        num.size())
         return condition;
 
-    ll &ret=
-    dp[pos]
-      [tight]
-      [sum];
+    ll &ret =
+        dp[pos]
+          [tight]
+          [sum];
 
-    if(!tight &&
-       ret!=-1)
+    if (!tight &&
+        ret != -1)
         return ret;
 
-    ll ans=0;
+    ll ans = 0;
 
-    int mx=
-    tight
-    ? num[pos]-'0'
-    : 9;
+    int mx =
+        tight
+            ? num[pos] - '0'
+            : 9;
 
-    for(int d=0;
-        d<=mx;
-        d++){
+    for (int d = 0;
+         d <= mx;
+         d++) {
 
-        ans+=solve(
-            pos+1,
+        ans += solve(
+            pos + 1,
             tight &&
-            d==mx,
-            sum+d
-        );
+                d == mx,
+            sum + d);
     }
 
-    if(!tight)
-        ret=ans;
+    if (!tight)
+        ret = ans;
 
     return ret;
 }
@@ -10011,7 +11575,9 @@ ll solve(
 
 ##### Count [L,R]
 
-```cpp\nf(R)-f(L-1)\n```
+```cpp
+f(R) - f(L - 1)
+```
 
 Always.
 
@@ -10021,9 +11587,13 @@ Always.
 
 Add state:
 
-```cpp\nstarted\n```
+```cpp
+started
+```
 
-```cpp\ndp[pos][tight][started]\n```
+```cpp
+dp[pos][tight][started]
+```
 
 ---
 
@@ -10031,9 +11601,13 @@ Add state:
 
 Add:
 
-```cpp\nmod\n```
+```cpp
+mod
+```
 
-```cpp\ndp[pos][tight][mod]\n```
+```cpp
+dp[pos][tight][mod]
+```
 
 ---
 
@@ -10041,7 +11615,9 @@ Add:
 
 Add:
 
-```cpp\nsum\n```
+```cpp
+sum
+```
 
 ---
 
@@ -10049,7 +11625,9 @@ Add:
 
 Add:
 
-```cpp\nmask\n```
+```cpp
+mask
+```
 
 ---
 
@@ -10077,11 +11655,15 @@ Digits × States
 
 Before:
 
-```cpp\ndp[n][m]\n```
+```cpp
+dp[n][m]
+```
 
 After:
 
-```cpp\ndp[2][m]\n```
+```cpp
+dp[2][m]
+```
 
 Memory:
 
@@ -10095,11 +11677,15 @@ O(M)
 
 Before:
 
-```cpp\ndp[i][j][k]\n```
+```cpp
+dp[i][j][k]
+```
 
 After:
 
-```cpp\ndp[j][k]\n```
+```cpp
+dp[j][k]
+```
 
 ---
 
@@ -10172,12 +11758,24 @@ using prefix sums.
 
 ```cpp
 struct Fenwick {
-    int n; vector<long long> bit;
-    Fenwick(int n=0){ init(n); }
-    void init(int n_){ n=n_; bit.assign(n+1,0); }
-    void add(int idx,long long val){ for(;idx<=n;idx+=idx&-idx) bit[idx]+=val; }
-    long long sumPrefix(int idx) const { long long r=0; for(;idx>0;idx-=idx&-idx) r+=bit[idx]; return r; }
-    long long rangeSum(int l,int r) const { return sumPrefix(r)-sumPrefix(l-1); }
+    int n;
+    vector<long long> bit;
+    Fenwick(int n = 0) { init(n); }
+    void init(int n_) {
+        n = n_;
+        bit.assign(n + 1, 0);
+    }
+    void add(int idx, long long val) {
+        for (; idx <= n; idx += idx & -idx)
+            bit[idx] += val;
+    }
+    long long sumPrefix(int idx) const {
+        long long r = 0;
+        for (; idx > 0; idx -= idx & -idx)
+            r += bit[idx];
+        return r;
+    }
+    long long rangeSum(int l, int r) const { return sumPrefix(r) - sumPrefix(l - 1); }
 };
 ```
 
@@ -10193,17 +11791,32 @@ struct Fenwick {
 vector<vector<int>> g, rg;
 vector<int> vis, order, comp;
 
-void dfs1(int u){ vis[u]=1; for(int v:g[u]) if(!vis[v]) dfs1(v); order.push_back(u); }
-void dfs2(int u,int c){ comp[u]=c; for(int v:rg[u]) if(comp[v]==-1) dfs2(v,c); }
+void dfs1(int u) {
+    vis[u] = 1;
+    for (int v : g[u])
+        if (!vis[v])
+            dfs1(v);
+    order.push_back(u);
+}
+void dfs2(int u, int c) {
+    comp[u] = c;
+    for (int v : rg[u])
+        if (comp[v] == -1)
+            dfs2(v, c);
+}
 
-int kosaraju(int n){
-    vis.assign(n+1,0); order.clear();
-    for(int i=1;i<=n;i++) if(!vis[i]) dfs1(i);
-    comp.assign(n+1,-1);
-    int scc=0;
-    for(int i=n-1;i>=0;i--){
-        int u=order[i];
-        if(comp[u]==-1) dfs2(u, scc++);
+int kosaraju(int n) {
+    vis.assign(n + 1, 0);
+    order.clear();
+    for (int i = 1; i <= n; i++)
+        if (!vis[i])
+            dfs1(i);
+    comp.assign(n + 1, -1);
+    int scc = 0;
+    for (int i = n - 1; i >= 0; i--) {
+        int u = order[i];
+        if (comp[u] == -1)
+            dfs2(u, scc++);
     }
     return scc;
 }
@@ -10215,25 +11828,55 @@ int kosaraju(int n){
 
 ```cpp
 struct TwoSAT {
-    int n; vector<vector<int>> g, rg; vector<int> comp, order, vis, ans;
-    TwoSAT(int n=0){ init(n); }
-    void init(int n_){ n=n_; g.assign(2*n,{}); rg.assign(2*n,{}); }
-    int id(int x,bool t){ return 2*x + (t?1:0); }
-    void addImp(int u,int v){ g[u].push_back(v); rg[v].push_back(u); }
-    void imply(int a,bool av,int b,bool bv){ addImp(id(a,av), id(b,bv)); }
-    void either(int a,bool av,int b,bool bv){ imply(a,!av,b,bv); imply(b,!bv,a,av); }
-    void forceVar(int a,bool av){ imply(a,!av,a,av); }
-    void dfs1(int u){ vis[u]=1; for(int v:g[u]) if(!vis[v]) dfs1(v); order.push_back(u); }
-    void dfs2(int u,int c){ comp[u]=c; for(int v:rg[u]) if(comp[v]==-1) dfs2(v,c); }
-    bool satisfiable(){
-        vis.assign(2*n,0); order.clear();
-        for(int i=0;i<2*n;i++) if(!vis[i]) dfs1(i);
-        comp.assign(2*n,-1); int c=0;
-        for(int i=2*n-1;i>=0;i--) if(comp[order[i]]==-1) dfs2(order[i],c++);
-        ans.assign(n,0);
-        for(int i=0;i<n;i++){
-            if(comp[id(i,false)]==comp[id(i,true)]) return false;
-            ans[i] = comp[id(i,false)] < comp[id(i,true)];
+    int n;
+    vector<vector<int>> g, rg;
+    vector<int> comp, order, vis, ans;
+    TwoSAT(int n = 0) { init(n); }
+    void init(int n_) {
+        n = n_;
+        g.assign(2 * n, {});
+        rg.assign(2 * n, {});
+    }
+    int id(int x, bool t) { return 2 * x + (t ? 1 : 0); }
+    void addImp(int u, int v) {
+        g[u].push_back(v);
+        rg[v].push_back(u);
+    }
+    void imply(int a, bool av, int b, bool bv) { addImp(id(a, av), id(b, bv)); }
+    void either(int a, bool av, int b, bool bv) {
+        imply(a, !av, b, bv);
+        imply(b, !bv, a, av);
+    }
+    void forceVar(int a, bool av) { imply(a, !av, a, av); }
+    void dfs1(int u) {
+        vis[u] = 1;
+        for (int v : g[u])
+            if (!vis[v])
+                dfs1(v);
+        order.push_back(u);
+    }
+    void dfs2(int u, int c) {
+        comp[u] = c;
+        for (int v : rg[u])
+            if (comp[v] == -1)
+                dfs2(v, c);
+    }
+    bool satisfiable() {
+        vis.assign(2 * n, 0);
+        order.clear();
+        for (int i = 0; i < 2 * n; i++)
+            if (!vis[i])
+                dfs1(i);
+        comp.assign(2 * n, -1);
+        int c = 0;
+        for (int i = 2 * n - 1; i >= 0; i--)
+            if (comp[order[i]] == -1)
+                dfs2(order[i], c++);
+        ans.assign(n, 0);
+        for (int i = 0; i < n; i++) {
+            if (comp[id(i, false)] == comp[id(i, true)])
+                return false;
+            ans[i] = comp[id(i, false)] < comp[id(i, true)];
         }
         return true;
     }
@@ -10250,39 +11893,59 @@ struct TwoSAT {
 
 ```cpp
 struct Dinic {
-    struct E{ int to, rev; long long cap; };
-    int n; vector<vector<E>> g; vector<int> lvl, it;
-    Dinic(int n=0){ init(n); }
-    void init(int n_){ n=n_; g.assign(n,{}); }
-    void addEdge(int u,int v,long long c){
-        E a{v,(int)g[v].size(),c}, b{u,(int)g[u].size(),0};
-        g[u].push_back(a); g[v].push_back(b);
+    struct E {
+        int to, rev;
+        long long cap;
+    };
+    int n;
+    vector<vector<E>> g;
+    vector<int> lvl, it;
+    Dinic(int n = 0) { init(n); }
+    void init(int n_) {
+        n = n_;
+        g.assign(n, {});
     }
-    bool bfs(int s,int t){
-        lvl.assign(n,-1); queue<int> q; q.push(s); lvl[s]=0;
-        while(!q.empty()){
-            int u=q.front(); q.pop();
-            for(auto &e:g[u]) if(e.cap>0 && lvl[e.to]==-1) lvl[e.to]=lvl[u]+1, q.push(e.to);
+    void addEdge(int u, int v, long long c) {
+        E a{v, (int)g[v].size(), c}, b{u, (int)g[u].size(), 0};
+        g[u].push_back(a);
+        g[v].push_back(b);
+    }
+    bool bfs(int s, int t) {
+        lvl.assign(n, -1);
+        queue<int> q;
+        q.push(s);
+        lvl[s] = 0;
+        while (!q.empty()) {
+            int u = q.front();
+            q.pop();
+            for (auto &e : g[u])
+                if (e.cap > 0 && lvl[e.to] == -1)
+                    lvl[e.to] = lvl[u] + 1, q.push(e.to);
         }
-        return lvl[t]!=-1;
+        return lvl[t] != -1;
     }
-    long long dfs(int u,int t,long long f){
-        if(!f || u==t) return f;
-        for(int &i=it[u]; i<(int)g[u].size(); i++){
-            E &e=g[u][i];
-            if(lvl[e.to]!=lvl[u]+1 || e.cap==0) continue;
-            long long got=dfs(e.to,t,min(f,e.cap));
-            if(!got) continue;
-            e.cap-=got; g[e.to][e.rev].cap+=got;
+    long long dfs(int u, int t, long long f) {
+        if (!f || u == t)
+            return f;
+        for (int &i = it[u]; i < (int)g[u].size(); i++) {
+            E &e = g[u][i];
+            if (lvl[e.to] != lvl[u] + 1 || e.cap == 0)
+                continue;
+            long long got = dfs(e.to, t, min(f, e.cap));
+            if (!got)
+                continue;
+            e.cap -= got;
+            g[e.to][e.rev].cap += got;
             return got;
         }
         return 0;
     }
-    long long maxflow(int s,int t){
-        long long flow=0;
-        while(bfs(s,t)){
-            it.assign(n,0);
-            while(long long pushed=dfs(s,t,(long long)4e18)) flow+=pushed;
+    long long maxflow(int s, int t) {
+        long long flow = 0;
+        while (bfs(s, t)) {
+            it.assign(n, 0);
+            while (long long pushed = dfs(s, t, (long long)4e18))
+                flow += pushed;
         }
         return flow;
     }
@@ -10299,10 +11962,34 @@ struct Dinic {
 
 ```cpp
 struct Trie {
-    struct Node { int nxt[26]; bool end=false; Node(){ memset(nxt,-1,sizeof(nxt)); } };
+    struct Node {
+        int nxt[26];
+        bool end = false;
+        Node() { memset(nxt, -1, sizeof(nxt)); }
+    };
     vector<Node> t{Node()};
-    void add(const string& s){ int u=0; for(char c:s){ int x=c-'a'; if(t[u].nxt[x]==-1){ t[u].nxt[x]=t.size(); t.push_back(Node()); } u=t[u].nxt[x]; } t[u].end=true; }
-    bool has(const string& s) const { int u=0; for(char c:s){ int x=c-'a'; if(t[u].nxt[x]==-1) return false; u=t[u].nxt[x]; } return t[u].end; }
+    void add(const string &s) {
+        int u = 0;
+        for (char c : s) {
+            int x = c - 'a';
+            if (t[u].nxt[x] == -1) {
+                t[u].nxt[x] = t.size();
+                t.push_back(Node());
+            }
+            u = t[u].nxt[x];
+        }
+        t[u].end = true;
+    }
+    bool has(const string &s) const {
+        int u = 0;
+        for (char c : s) {
+            int x = c - 'a';
+            if (t[u].nxt[x] == -1)
+                return false;
+            u = t[u].nxt[x];
+        }
+        return t[u].end;
+    }
 };
 ```
 
@@ -10312,27 +11999,53 @@ struct Trie {
 
 ```cpp
 struct Aho {
-    struct Node { int nxt[26], link=0, out=0; Node(){ memset(nxt,-1,sizeof(nxt)); } };
+    struct Node {
+        int nxt[26], link = 0, out = 0;
+        Node() { memset(nxt, -1, sizeof(nxt)); }
+    };
     vector<Node> t{Node()};
-    void add(const string& s){ int u=0; for(char c:s){ int x=c-'a'; if(t[u].nxt[x]==-1){ t[u].nxt[x]=t.size(); t.push_back(Node()); } u=t[u].nxt[x]; } t[u].out++; }
-    void build(){
-        queue<int> q;
-        for(int c=0;c<26;c++){
-            int v=t[0].nxt[c];
-            if(v==-1) t[0].nxt[c]=0;
-            else q.push(v);
+    void add(const string &s) {
+        int u = 0;
+        for (char c : s) {
+            int x = c - 'a';
+            if (t[u].nxt[x] == -1) {
+                t[u].nxt[x] = t.size();
+                t.push_back(Node());
+            }
+            u = t[u].nxt[x];
         }
-        while(!q.empty()){
-            int u=q.front(); q.pop();
+        t[u].out++;
+    }
+    void build() {
+        queue<int> q;
+        for (int c = 0; c < 26; c++) {
+            int v = t[0].nxt[c];
+            if (v == -1)
+                t[0].nxt[c] = 0;
+            else
+                q.push(v);
+        }
+        while (!q.empty()) {
+            int u = q.front();
+            q.pop();
             t[u].out += t[t[u].link].out;
-            for(int c=0;c<26;c++){
-                int v=t[u].nxt[c];
-                if(v==-1) t[u].nxt[c]=t[t[u].link].nxt[c];
-                else t[v].link=t[t[u].link].nxt[c], q.push(v);
+            for (int c = 0; c < 26; c++) {
+                int v = t[u].nxt[c];
+                if (v == -1)
+                    t[u].nxt[c] = t[t[u].link].nxt[c];
+                else
+                    t[v].link = t[t[u].link].nxt[c], q.push(v);
             }
         }
     }
-    int countMatches(const string& s){ int u=0, ans=0; for(char c:s){ u=t[u].nxt[c-'a']; ans+=t[u].out; } return ans; }
+    int countMatches(const string &s) {
+        int u = 0, ans = 0;
+        for (char c : s) {
+            u = t[u].nxt[c - 'a'];
+            ans += t[u].out;
+        }
+        return ans;
+    }
 };
 ```
 
@@ -10343,32 +12056,43 @@ struct Aho {
 ```cpp
 vector<vector<int>> g;
 vector<int> parent, depth, heavy, head, pos, sz;
-int timer=0;
+int timer = 0;
 
-int dfs_sz(int u,int p){
-    parent[u]=p; sz[u]=1; int mx=0;
-    for(int v:g[u]) if(v!=p){
-        depth[v]=depth[u]+1;
-        int s=dfs_sz(v,u); sz[u]+=s;
-        if(s>mx) mx=s, heavy[u]=v;
-    }
+int dfs_sz(int u, int p) {
+    parent[u] = p;
+    sz[u] = 1;
+    int mx = 0;
+    for (int v : g[u])
+        if (v != p) {
+            depth[v] = depth[u] + 1;
+            int s = dfs_sz(v, u);
+            sz[u] += s;
+            if (s > mx)
+                mx = s, heavy[u] = v;
+        }
     return sz[u];
 }
 
-void dfs_hld(int u,int h){
-    head[u]=h; pos[u]=++timer;
-    if(heavy[u]!=-1) dfs_hld(heavy[u],h);
-    for(int v:g[u]) if(v!=parent[u] && v!=heavy[u]) dfs_hld(v,v);
+void dfs_hld(int u, int h) {
+    head[u] = h;
+    pos[u] = ++timer;
+    if (heavy[u] != -1)
+        dfs_hld(heavy[u], h);
+    for (int v : g[u])
+        if (v != parent[u] && v != heavy[u])
+            dfs_hld(v, v);
 }
 
-vector<pair<int,int>> path_segments(int u,int v){
-    vector<pair<int,int>> segs;
-    while(head[u]!=head[v]){
-        if(depth[head[u]]<depth[head[v]]) swap(u,v);
+vector<pair<int, int>> path_segments(int u, int v) {
+    vector<pair<int, int>> segs;
+    while (head[u] != head[v]) {
+        if (depth[head[u]] < depth[head[v]])
+            swap(u, v);
         segs.push_back({pos[head[u]], pos[u]});
-        u=parent[head[u]];
+        u = parent[head[u]];
     }
-    if(depth[u]>depth[v]) swap(u,v);
+    if (depth[u] > depth[v])
+        swap(u, v);
     segs.push_back({pos[u], pos[v]});
     return segs;
 }
@@ -10379,12 +12103,15 @@ vector<pair<int,int>> path_segments(int u,int v){
 ### Mo's Algorithm
 
 ```cpp
-struct Query { int l, r, idx; };
+struct Query {
+    int l, r, idx;
+};
 int B;
-bool operator<(const Query& a, const Query& b){
-    int A=a.l/B, C=b.l/B;
-    if(A!=C) return A<C;
-    return (A&1)? a.r>b.r : a.r<b.r;
+bool operator<(const Query &a, const Query &b) {
+    int A = a.l / B, C = b.l / B;
+    if (A != C)
+        return A < C;
+    return (A & 1) ? a.r > b.r : a.r < b.r;
 }
 // Maintain current [L,R] with add(pos)/remove(pos), store answers by original idx.
 ```
@@ -10394,22 +12121,31 @@ bool operator<(const Query& a, const Query& b){
 ### Meet in the Middle
 
 ```cpp
-long long bestSubsetSumLE(const vector<long long>& a, long long S){
-    int n=a.size(), m=n/2;
+long long bestSubsetSumLE(const vector<long long> &a, long long S) {
+    int n = a.size(), m = n / 2;
     vector<long long> L, R;
-    for(int mask=0; mask<(1<<m); mask++){
-        long long s=0; for(int i=0;i<m;i++) if(mask>>i&1) s+=a[i];
-        if(s<=S) L.push_back(s);
+    for (int mask = 0; mask < (1 << m); mask++) {
+        long long s = 0;
+        for (int i = 0; i < m; i++)
+            if (mask >> i & 1)
+                s += a[i];
+        if (s <= S)
+            L.push_back(s);
     }
-    for(int mask=0; mask<(1<<(n-m)); mask++){
-        long long s=0; for(int i=0;i<n-m;i++) if(mask>>i&1) s+=a[m+i];
-        if(s<=S) R.push_back(s);
+    for (int mask = 0; mask < (1 << (n - m)); mask++) {
+        long long s = 0;
+        for (int i = 0; i < n - m; i++)
+            if (mask >> i & 1)
+                s += a[m + i];
+        if (s <= S)
+            R.push_back(s);
     }
     sort(R.begin(), R.end());
-    long long ans=0;
-    for(long long x:L){
-        auto it=upper_bound(R.begin(), R.end(), S-x);
-        if(it!=R.begin()) ans=max(ans, x+*prev(it));
+    long long ans = 0;
+    for (long long x : L) {
+        auto it = upper_bound(R.begin(), R.end(), S - x);
+        if (it != R.begin())
+            ans = max(ans, x + *prev(it));
     }
     return ans;
 }
@@ -10420,11 +12156,43 @@ long long bestSubsetSumLE(const vector<long long>& a, long long S){
 ### Foundations & Utilities: extra useful functions
 
 ```cpp
-template<class T> bool chmin(T& a,const T& b){ if(b<a){ a=b; return true; } return false; }
-template<class T> bool chmax(T& a,const T& b){ if(b>a){ a=b; return true; } return false; }
-long long mod_pow(long long a,long long e,long long mod){ long long r=1%mod; a%=mod; while(e){ if(e&1) r=r*a%mod; a=a*a%mod; e>>=1; } return r; }
-long long ceil_div(long long a,long long b){ if(b<0) a=-a,b=-b; return a>=0 ? (a+b-1)/b : a/b; }
-long long floor_div(long long a,long long b){ if(b<0) a=-a,b=-b; return a>=0 ? a/b : -(( -a + b - 1)/b); }
+template <class T>
+bool chmin(T &a, const T &b) {
+    if (b < a) {
+        a = b;
+        return true;
+    }
+    return false;
+}
+template <class T>
+bool chmax(T &a, const T &b) {
+    if (b > a) {
+        a = b;
+        return true;
+    }
+    return false;
+}
+long long mod_pow(long long a, long long e, long long mod) {
+    long long r = 1 % mod;
+    a %= mod;
+    while (e) {
+        if (e & 1)
+            r = r * a % mod;
+        a = a * a % mod;
+        e >>= 1;
+    }
+    return r;
+}
+long long ceil_div(long long a, long long b) {
+    if (b < 0)
+        a = -a, b = -b;
+    return a >= 0 ? (a + b - 1) / b : a / b;
+}
+long long floor_div(long long a, long long b) {
+    if (b < 0)
+        a = -a, b = -b;
+    return a >= 0 ? a / b : -((-a + b - 1) / b);
+}
 ```
 
 #### Extra ideas
@@ -10448,19 +12216,29 @@ long long floor_div(long long a,long long b){ if(b<0) a=-a,b=-b; return a>=0 ? a
 
 ```cpp
 // Bridge / articulation skeleton (Tarjan low-link)
-vector<vector<pair<int,int>>> g;
-vector<int> tin, low, isCut; vector<pair<int,int>> bridges; int timerDFS=0;
-void dfsBridge(int u,int pe=-1){
-    tin[u]=low[u]=++timerDFS; int children=0;
-    for(auto [v,id]:g[u]) if(id!=pe){
-        if(tin[v]) low[u]=min(low[u],tin[v]);
-        else {
-            dfsBridge(v,id); low[u]=min(low[u],low[v]); children++;
-            if(low[v]>tin[u]) bridges.push_back({u,v});
-            if(pe!=-1 && low[v]>=tin[u]) isCut[u]=1;
+vector<vector<pair<int, int>>> g;
+vector<int> tin, low, isCut;
+vector<pair<int, int>> bridges;
+int timerDFS = 0;
+void dfsBridge(int u, int pe = -1) {
+    tin[u] = low[u] = ++timerDFS;
+    int children = 0;
+    for (auto [v, id] : g[u])
+        if (id != pe) {
+            if (tin[v])
+                low[u] = min(low[u], tin[v]);
+            else {
+                dfsBridge(v, id);
+                low[u] = min(low[u], low[v]);
+                children++;
+                if (low[v] > tin[u])
+                    bridges.push_back({u, v});
+                if (pe != -1 && low[v] >= tin[u])
+                    isCut[u] = 1;
+            }
         }
-    }
-    if(pe==-1 && children>1) isCut[u]=1;
+    if (pe == -1 && children > 1)
+        isCut[u] = 1;
 }
 ```
 
@@ -10485,16 +12263,17 @@ void dfsBridge(int u,int pe=-1){
 
 ```cpp
 // Binary lifting helper: kth node on path(u,v)
-int kth_on_path(int u,int v,int k,
-                function<int(int,int)> lca,
-                function<int(int,int)> jump,
-                const vector<int>& depth){
-    int w=lca(u,v);
-    int left=depth[u]-depth[w]+1;
-    if(k<=left) return jump(u,k-1);
-    int right=depth[v]-depth[w];
-    int need=left+right-k;
-    return jump(v,need);
+int kth_on_path(int u, int v, int k,
+                function<int(int, int)> lca,
+                function<int(int, int)> jump,
+                const vector<int> &depth) {
+    int w = lca(u, v);
+    int left = depth[u] - depth[w] + 1;
+    if (k <= left)
+        return jump(u, k - 1);
+    int right = depth[v] - depth[w];
+    int need = left + right - k;
+    return jump(v, need);
 }
 ```
 
@@ -10503,12 +12282,17 @@ int kth_on_path(int u,int v,int k,
 ### Strings: missed functions and patterns
 
 ```cpp
-vector<int> z_function(const string& s){
-    int n=s.size(); vector<int> z(n); int l=0,r=0;
-    for(int i=1;i<n;i++){
-        if(i<=r) z[i]=min(r-i+1,z[i-l]);
-        while(i+z[i]<n && s[z[i]]==s[i+z[i]]) z[i]++;
-        if(i+z[i]-1>r) l=i,r=i+z[i]-1;
+vector<int> z_function(const string &s) {
+    int n = s.size();
+    vector<int> z(n);
+    int l = 0, r = 0;
+    for (int i = 1; i < n; i++) {
+        if (i <= r)
+            z[i] = min(r - i + 1, z[i - l]);
+        while (i + z[i] < n && s[z[i]] == s[i + z[i]])
+            z[i]++;
+        if (i + z[i] - 1 > r)
+            l = i, r = i + z[i] - 1;
     }
     return z;
 }
@@ -10532,18 +12316,39 @@ vector<int> z_function(const string& s){
 
 ```cpp
 struct FenwickRange {
-    int n; vector<long long> b1,b2;
-    FenwickRange(int n=0){ init(n); }
-    void init(int n_){ n=n_; b1.assign(n+1,0); b2.assign(n+1,0); }
-    void add(vector<long long>& b,int i,long long v){ for(;i<=n;i+=i&-i) b[i]+=v; }
-    long long sum(const vector<long long>& b,int i) const { long long r=0; for(;i>0;i-=i&-i) r+=b[i]; return r; }
-    void range_add(int l,int r,long long v){ add(b1,l,v); add(b1,r+1,-v); add(b2,l,v*(l-1)); add(b2,r+1,-v*r); }
-    long long pref(int i) const { return sum(b1,i)*i - sum(b2,i); }
-    long long range_sum(int l,int r) const { return pref(r)-pref(l-1); }
+    int n;
+    vector<long long> b1, b2;
+    FenwickRange(int n = 0) { init(n); }
+    void init(int n_) {
+        n = n_;
+        b1.assign(n + 1, 0);
+        b2.assign(n + 1, 0);
+    }
+    void add(vector<long long> &b, int i, long long v) {
+        for (; i <= n; i += i & -i)
+            b[i] += v;
+    }
+    long long sum(const vector<long long> &b, int i) const {
+        long long r = 0;
+        for (; i > 0; i -= i & -i)
+            r += b[i];
+        return r;
+    }
+    void range_add(int l, int r, long long v) {
+        add(b1, l, v);
+        add(b1, r + 1, -v);
+        add(b2, l, v * (l - 1));
+        add(b2, r + 1, -v * r);
+    }
+    long long pref(int i) const { return sum(b1, i) * i - sum(b2, i); }
+    long long range_sum(int l, int r) const { return pref(r) - pref(l - 1); }
 };
 ```
 
-```cpp\n// DSU rollback idea (for offline dynamic connectivity):\n// keep stack of parent/size changes, no path compression, union by size only, rollback to checkpoint.\n```
+```cpp
+// DSU rollback idea (for offline dynamic connectivity):
+// keep stack of parent/size changes, no path compression, union by size only, rollback to checkpoint.
+```
 
 #### DS problem-type checklist
 
@@ -10557,23 +12362,37 @@ struct FenwickRange {
 ### Number Theory (NS): missed functions and ideas
 
 ```cpp
-long long ext_gcd(long long a,long long b,long long& x,long long& y){
-    if(!b){ x=1; y=0; return a; }
-    long long x1,y1,g=ext_gcd(b,a%b,x1,y1);
-    x=y1; y=x1-(a/b)*y1; return g;
+long long ext_gcd(long long a, long long b, long long &x, long long &y) {
+    if (!b) {
+        x = 1;
+        y = 0;
+        return a;
+    }
+    long long x1, y1, g = ext_gcd(b, a % b, x1, y1);
+    x = y1;
+    y = x1 - (a / b) * y1;
+    return g;
 }
 
 // Solve a*x + b*y = c
-bool diophantine(long long a,long long b,long long c,long long& x,long long& y){
-    long long g=ext_gcd(abs(a),abs(b),x,y);
-    if(c%g) return false;
-    x*=c/g; y*=c/g;
-    if(a<0) x=-x; if(b<0) y=-y;
+bool diophantine(long long a, long long b, long long c, long long &x, long long &y) {
+    long long g = ext_gcd(abs(a), abs(b), x, y);
+    if (c % g)
+        return false;
+    x *= c / g;
+    y *= c / g;
+    if (a < 0)
+        x = -x;
+    if (b < 0)
+        y = -y;
     return true;
 }
 ```
 
-```cpp\n// CRT merge (x ≡ a1 mod m1, x ≡ a2 mod m2) can be built using ext_gcd.\n// Keep answer modulo lcm(m1, m2) and check consistency by gcd divisibility.\n```
+```cpp
+// CRT merge (x ≡ a1 mod m1, x ≡ a2 mod m2) can be built using ext_gcd.
+// Keep answer modulo lcm(m1, m2) and check consistency by gcd divisibility.
+```
 
 #### Number theory recognition
 
@@ -10587,20 +12406,29 @@ bool diophantine(long long a,long long b,long long c,long long& x,long long& y){
 
 ```cpp
 // Reconstruction helper (1D choice DP)
-vector<int> restore_choice(int target,const vector<int>& from){
+vector<int> restore_choice(int target, const vector<int> &from) {
     vector<int> pick;
-    while(target!=-1 && from[target]!=-1){
-        pick.push_back(target-from[target]);
-        target=from[target];
+    while (target != -1 && from[target] != -1) {
+        pick.push_back(target - from[target]);
+        target = from[target];
     }
-    reverse(pick.begin(),pick.end());
+    reverse(pick.begin(), pick.end());
     return pick;
 }
 ```
 
-```cpp\n// Bitset knapsack idea:\n// bitset<MAXS+1> bs; bs[0]=1;\n// for(int w:weights) bs |= (bs<<w);\n// reachable sum queries in O(N*MAXS/word_size).\n```
+```cpp
+// Bitset knapsack idea:
+// bitset<MAXS+1> bs; bs[0]=1;
+// for(int w:weights) bs |= (bs<<w);
+// reachable sum queries in O(N*MAXS/word_size).
+```
 
-```cpp\n// Divide & Conquer DP optimization condition:\n// dp[i][j] = min_{k<j}(dp[i-1][k] + cost(k+1, j))\n// with monotone opt: opt[i][j] <= opt[i][j+1].\n```
+```cpp
+// Divide & Conquer DP optimization condition:
+// dp[i][j] = min_{k<j}(dp[i-1][k] + cost(k+1, j))
+// with monotone opt: opt[i][j] <= opt[i][j+1].
+```
 
 #### DP problem-type recognition (high-value)
 
@@ -10627,23 +12455,23 @@ vector<int> restore_choice(int target,const vector<int>& from){
 
 ```cpp
 // read/set/clear/toggle bit i (0-indexed)
-bool getBit(long long x,int i){ return (x>>i)&1LL; }
-long long setBit(long long x,int i){ return x | (1LL<<i); }
-long long clearBit(long long x,int i){ return x & ~(1LL<<i); }
-long long toggleBit(long long x,int i){ return x ^ (1LL<<i); }
+bool getBit(long long x, int i) { return (x >> i) & 1LL; }
+long long setBit(long long x, int i) { return x | (1LL << i); }
+long long clearBit(long long x, int i) { return x & ~(1LL << i); }
+long long toggleBit(long long x, int i) { return x ^ (1LL << i); }
 
 // lowbit and common predicates
-long long lowbit(long long x){ return x & -x; }
-bool isPowerOfTwo(long long x){ return x>0 && (x&(x-1))==0; }
+long long lowbit(long long x) { return x & -x; }
+bool isPowerOfTwo(long long x) { return x > 0 && (x & (x - 1)) == 0; }
 ```
 
 ```cpp
 // builtins (GCC/Clang)
-int cnt1(unsigned int x){ return __builtin_popcount(x); }
-int cnt1ll(unsigned long long x){ return __builtin_popcountll(x); }
-int lsbIndex(unsigned int x){ return __builtin_ctz(x); }      // x != 0
-int msbIndex(unsigned int x){ return 31 - __builtin_clz(x); } // x != 0
-int parity(unsigned int x){ return __builtin_parity(x); }     // 1 if odd count of bits
+int cnt1(unsigned int x) { return __builtin_popcount(x); }
+int cnt1ll(unsigned long long x) { return __builtin_popcountll(x); }
+int lsbIndex(unsigned int x) { return __builtin_ctz(x); }      // x != 0
+int msbIndex(unsigned int x) { return 31 - __builtin_clz(x); } // x != 0
+int parity(unsigned int x) { return __builtin_parity(x); }     // 1 if odd count of bits
 ```
 
 #### Notes
@@ -10658,9 +12486,10 @@ int parity(unsigned int x){ return __builtin_parity(x); }     // 1 if odd count 
 
 ```cpp
 // iterate all submasks of mask
-for (int sub = mask; ; sub = (sub - 1) & mask) {
+for (int sub = mask;; sub = (sub - 1) & mask) {
     // use sub
-    if (sub == 0) break;
+    if (sub == 0)
+        break;
 }
 
 // iterate all masks of n bits
@@ -10669,7 +12498,13 @@ for (int mask = 0; mask < (1 << n); mask++) {
 }
 ```
 
-```cpp\n// iterate set bits of mask in O(number_of_set_bits)\nfor (int m = mask; m; m &= (m - 1)) {\n    int b = __builtin_ctz(m);\n    // bit b is set\n}\n```
+```cpp
+// iterate set bits of mask in O(number_of_set_bits)
+for (int m = mask; m; m &= (m - 1)) {
+    int b = __builtin_ctz(m);
+    // bit b is set
+}
+```
 
 #### Use Cases
 
@@ -10683,16 +12518,21 @@ for (int mask = 0; mask < (1 << n); mask++) {
 
 ```cpp
 // next combination with same popcount (Gosper's hack), x > 0
-unsigned int nextComb(unsigned int x){
+unsigned int nextComb(unsigned int x) {
     unsigned int c = x & -x;
     unsigned int r = x + c;
     return (((r ^ x) >> 2) / c) | r;
 }
 ```
 
-```cpp\n// compress coordinates into bit positions and store chosen values in a mask\n// when n <= 20..24, brute force on masks can be feasible with pruning\n```
+```cpp
+// compress coordinates into bit positions and store chosen values in a mask
+// when n <= 20..24, brute force on masks can be feasible with pruning
+```
 
-```cpp\n// XOR swap trick exists but DO NOT use in CP production; prefer std::swap.\n```
+```cpp
+// XOR swap trick exists but DO NOT use in CP production; prefer std::swap.
+```
 
 #### Problem Recognition
 
@@ -10707,20 +12547,28 @@ unsigned int nextComb(unsigned int x){
 ```cpp
 // TSP-style DP: dp[mask][last]
 const long long BIG = (long long)4e18;
-vector<vector<long long>> dp(1<<n, vector<long long>(n, BIG));
-for(int s=0;s<n;s++) dp[1<<s][s]=0;
-for(int mask=0; mask<(1<<n); mask++){
-    for(int u=0; u<n; u++) if((mask>>u)&1){
-        if(dp[mask][u]==BIG) continue;
-        for(int v=0; v<n; v++) if(((mask>>v)&1)==0){
-            int nmask = mask | (1<<v);
-            dp[nmask][v] = min(dp[nmask][v], dp[mask][u] + cost[u][v]);
+vector<vector<long long>> dp(1 << n, vector<long long>(n, BIG));
+for (int s = 0; s < n; s++)
+    dp[1 << s][s] = 0;
+for (int mask = 0; mask < (1 << n); mask++) {
+    for (int u = 0; u < n; u++)
+        if ((mask >> u) & 1) {
+            if (dp[mask][u] == BIG)
+                continue;
+            for (int v = 0; v < n; v++)
+                if (((mask >> v) & 1) == 0) {
+                    int nmask = mask | (1 << v);
+                    dp[nmask][v] = min(dp[nmask][v], dp[mask][u] + cost[u][v]);
+                }
         }
-    }
 }
 ```
 
-```cpp\n// SOS DP (sum over subsets) idea:\n// for(int i=0;i<n;i++) for(int mask=0;mask<(1<<n);mask++)\n//   if(mask&(1<<i)) f[mask]+=f[mask^(1<<i)];\n```
+```cpp
+// SOS DP (sum over subsets) idea:
+// for(int i=0;i<n;i++) for(int mask=0;mask<(1<<n);mask++)
+//   if(mask&(1<<i)) f[mask]+=f[mask^(1<<i)];
+```
 
 #### Complexity
 
@@ -10735,18 +12583,21 @@ for(int mask=0; mask<(1<<n); mask++){
 const int MAXN = 200005;
 bitset<MAXN> bs;
 
-bs.set(5);         // set bit 5
-bs.reset(5);       // clear bit 5
-bs.flip(5);        // toggle bit 5
-bs[10] = 1;        // direct access
+bs.set(5);   // set bit 5
+bs.reset(5); // clear bit 5
+bs.flip(5);  // toggle bit 5
+bs[10] = 1;  // direct access
 
 int ones = (int)bs.count();
 bool any = bs.any();
 bool none = bs.none();
 
 bitset<MAXN> a, b;
-a |= b; a &= b; a ^= b;
-a <<= 3; a >>= 2;
+a |= b;
+a &= b;
+a ^= b;
+a <<= 3;
+a >>= 2;
 ```
 
 ```cpp
@@ -10754,7 +12605,8 @@ a <<= 3; a >>= 2;
 // reachable sums after processing each weight
 bitset<200001> can;
 can[0] = 1;
-for (int w : weights) can |= (can << w);
+for (int w : weights)
+    can |= (can << w);
 // can[s] tells whether sum s is achievable
 ```
 
@@ -10773,21 +12625,28 @@ struct XorBasis {
     static const int LOG = 60;
     long long b[LOG]{};
 
-    void add(long long x){
-        for(int i=LOG-1;i>=0;i--){
-            if(((x>>i)&1)==0) continue;
-            if(!b[i]){ b[i]=x; return; }
+    void add(long long x) {
+        for (int i = LOG - 1; i >= 0; i--) {
+            if (((x >> i) & 1) == 0)
+                continue;
+            if (!b[i]) {
+                b[i] = x;
+                return;
+            }
             x ^= b[i];
         }
     }
 
     bool canMake(long long x) const {
-        for(int i=LOG-1;i>=0;i--) if((x^b[i])<x) x^=b[i];
-        return x==0;
+        for (int i = LOG - 1; i >= 0; i--)
+            if ((x ^ b[i]) < x)
+                x ^= b[i];
+        return x == 0;
     }
 
-    long long maxXor(long long x=0) const {
-        for(int i=LOG-1;i>=0;i--) x=max(x, x^b[i]);
+    long long maxXor(long long x = 0) const {
+        for (int i = LOG - 1; i >= 0; i--)
+            x = max(x, x ^ b[i]);
         return x;
     }
 };
