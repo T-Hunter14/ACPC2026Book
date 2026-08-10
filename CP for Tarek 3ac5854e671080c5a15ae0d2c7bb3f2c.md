@@ -1,90 +1,114 @@
-# CP for Tarek
+# ACPC 2026 Competitive Programming Handbook
 
-# Index
+## Book Style Guide
 
-- General Template
-- Custom Sort
-- Coordinate Compression (Restore Values)
-- Coordinate Compression (In-place)
-- Debug
-- Random
-- Shuffle
-- ckmin / ckmax
-- Next / Previous Permutation
-- Useful STL Tricks
-- Binary Search Template (First True)
-- Binary Search Template (Last True)
-- Ternary Search
-- DSU (Standard)
-- DSU (Component Tracking)
-- BFS (Breadth First Search)
-- DFS (Depth First Search)
-- Topological Sort
-- Dijkstra
-- Kruskal (Minimum Spanning Tree)
-- Bellman Ford
-- Floyd Warshall
-- Binary Lifting
-- LCA (Lowest Common Ancestor)
-- KMP (Knuth-Morris-Pratt)
-- Segment Tree
-- Lazy Segment Tree
-- Sparse Table
-- Ordered Set (PBDS)
-- STL Advanced Tricks
-- Two Pointers Advanced Patterns
-- Sliding Window Advanced Patterns
-- Monotonic Stack
-- Monotonic Queue (Deque Tricks)
+- Use a clear hierarchy: chapter (`##`) → topic (`###`) → details (`####`/`#####`).
+- Keep every technique in one canonical snippet first, then add variants.
+- Every major topic should keep: **When to use**, **Complexity**, **Notes/Tricks**.
+- Use `cpp` fenced blocks for C++ and keep variable naming consistent (`n, m, u, v, dist, par`).
+- Prefer compact contest-ready snippets that stay readable (no unnecessary blank lines).
+- Keep examples minimal and focused on one idea per block.
+
+## Table of Contents
+
+- [1) Foundations & Utilities](#1-foundations--utilities)
+- [2) Graph Algorithms](#2-graph-algorithms)
+- [3) Trees & Binary Lifting](#3-trees--binary-lifting)
+- [4) Strings](#4-strings)
+- [5) Range Query Data Structures](#5-range-query-data-structures)
+- [6) STL, Two Pointers & Monotonic Techniques](#6-stl-two-pointers--monotonic-techniques)
+- [7) Math & Number Theory](#7-math--number-theory)
+- [8) Dynamic Programming](#8-dynamic-programming)
+- [9) Missing Topics (Added)](#9-missing-topics-added)
+- [10) Comprehensive Missing Tricks & Function Ideas](#10-comprehensive-missing-tricks--function-ideas)
+- [11) Bit Manipulation & Bitset](#11-bit-manipulation--bitset)
+
+### Foundation quick links
+
+- [General Template (clean)](#general-template-clean)
+- [Coordinate Compression (Restore Values)](#coordinate-compression-restore-values)
+- [Binary Search Template (First True)](#binary-search-template-first-true)
+- [Ternary Search](#ternary-search)
+
+### Graph quick links
+
+- [BFS (Breadth First Search)](#bfs-breadth-first-search)
+- [DFS (Depth First Search)](#dfs-depth-first-search)
+- [Topological Sort](#topological-sort)
+- [Dijkstra](#dijkstra)
+- [Kruskal (Minimum Spanning Tree)](#kruskal-minimum-spanning-tree)
+- [Bellman Ford](#bellman-ford)
+- [Floyd Warshall](#floyd-warshall)
+
+### Trees / Strings / Data structures quick links
+
+- [Binary Lifting](#binary-lifting)
+- [LCA (Lowest Common Ancestor)](#lca-lowest-common-ancestor)
+- [KMP (Knuth-Morris-Pratt)](#kmp-knuth-morris-pratt)
+- [Segment Tree](#segment-tree)
+- [Lazy Segment Tree](#lazy-segment-tree)
+- [Sparse Table](#sparse-table)
+
+### Algorithmic patterns quick links
+
+- [Two Pointers Advanced Patterns](#two-pointers-advanced-patterns)
+- [Sliding Window Advanced Patterns](#sliding-window-advanced-patterns)
+- [Monotonic Stack](#monotonic-stack)
+- [Monotonic Queue (Deque Tricks)](#monotonic-queue-deque-tricks)
+- [Modular Arithmetic](#modular-arithmetic)
+- [DP Mindset](#dp-mindset)
 
 ---
 
-# General Template (clean)
+
+
+
+## 1) Foundations & Utilities
+
+### General Template (clean)
 
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-
 using ll = long long;
 constexpr ll INF = (ll)4e18;
 constexpr int MOD = 1'000'000'007;
-
 #define all(x) (x).begin(), (x).end()
+
+void solve() {
+    // ...
+}
 
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-
-    int t = 1;
-    cin >> t;
-    while (t--) {
-        // solve();
-    }
+    int t = 1; cin >> t;
+    while (t--) solve();
     return 0;
 }
 ```
 
 ---
 
-# Custom Sort
+### Custom Sort
 
 ```cpp
 struct node{ int x,y; };
 sort(all(v), [](const node& a, const node& b){ return a.x!=b.x ? a.x<b.x : a.y>b.y; });
 ```
 
-### Use
+##### Use
 
 - Sort struct.
 - Multi-key sorting.
 
-### Complexity
+##### Complexity
 
 - `O(n log n)`
 
 ---
 
-# Coordinate Compression (Restore Values)
+### Coordinate Compression (Restore Values)
 
 ```cpp
 struct compressor{
@@ -95,7 +119,7 @@ struct compressor{
 };
 ```
 
-### Use
+##### Use
 
 ```cpp
 compressor cp;
@@ -107,7 +131,7 @@ int id = cp.get(x);
 int val = cp.rev(id);
 ```
 
-### Complexity
+##### Complexity
 
 ```
 Build : O(n log n)
@@ -115,32 +139,32 @@ Query : O(log n)
 Memory : O(n)
 ```
 
-### Notes
+##### Notes
 
 - Use when original values are needed.
 - Common with Fenwick Tree, Segment Tree, Sweep Line.
 
 ---
 
-# Coordinate Compression (In-place)
+### Coordinate Compression (In-place)
 
 ```cpp
 auto vals=a; sort(all(vals)); vals.erase(unique(all(vals)), vals.end());
 for(auto &x:a) x = lower_bound(all(vals), x) - vals.begin();
 ```
 
-### Complexity
+##### Complexity
 
 - `O(n log n)`
 
-### Notes
+##### Notes
 
 - Cannot restore original values.
 - Faster to write during contests.
 
 ---
 
-# Debug
+### Debug
 
 ```cpp
 #ifndef ONLINE_JUDGE
@@ -152,7 +176,7 @@ template<class T> void dbg(const vector<T>& v){ cerr<<"[ "; for(const auto& x:v)
 #endif
 ```
 
-### Use
+##### Use
 
 ```cpp
 debug(n);
@@ -161,61 +185,61 @@ debug(ans);
 dbg(v);
 ```
 
-### Notes
+##### Notes
 
 - Disabled automatically on Online Judge.
 
 ---
 
-# Random (RNG helper)
+### Random (RNG helper)
 
 ```cpp
 mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
 long long rnd(long long l,long long r){ return uniform_int_distribution<long long>(l,r)(rng); }
 ```
 
-### Use
+##### Use
 
 ```cpp
 long long x = rnd(1, 100);
 ```
 
-### Complexity
+##### Complexity
 
 - `O(1)`
 
-### Notes
+##### Notes
 
 - Stress testing
 - Randomized algorithms
 
 ---
 
-# Shuffle
+### Shuffle
 
 ```cpp
 shuffle(all(v), rng);
 ```
 
-### Complexity
+##### Complexity
 
 - `O(n)`
 
-### Notes
+##### Notes
 
 - Generate random permutation.
 - Useful for anti-hack.
 
 ---
 
-# ckmin / ckmax
+### ckmin / ckmax
 
 ```cpp
 template<class T> bool ckmin(T& a,const T& b){ return b<a ? (a=b,true) : false; }
 template<class T> bool ckmax(T& a,const T& b){ return a<b ? (a=b,true) : false; }
 ```
 
-### Use
+##### Use
 
 ```cpp
 ckmin(ans, cur);
@@ -223,17 +247,17 @@ ckmin(ans, cur);
 ckmax(ans, cur);
 ```
 
-### Complexity
+##### Complexity
 
 - `O(1)`
 
-### Notes
+##### Notes
 
 - Very common in DP and Graphs.
 
 ---
 
-# Next / Previous Permutation
+### Next / Previous Permutation
 
 ```cpp
 next_permutation(all(v));
@@ -241,18 +265,18 @@ next_permutation(all(v));
 prev_permutation(all(v));
 ```
 
-### Complexity
+##### Complexity
 
 - `O(n)`
 
-### Notes
+##### Notes
 
 - Generate permutations.
 - Useful in brute force.
 
 ---
 
-# Useful STL Tricks
+### Useful STL Tricks
 
 ```cpp
 *max_element(all(v));
@@ -268,7 +292,7 @@ rotate(v.begin(), v.begin() + k, v.end());
 iota(all(v), 0);
 ```
 
-### Complexity
+##### Complexity
 
 | Function | Complexity |
 | --- | --- |
@@ -281,7 +305,7 @@ iota(all(v), 0);
 
 ---
 
-# Binary Search Template (First True)
+### Binary Search Template (First True)
 
 ```cpp
 long long l=0,r=(long long)1e18,ans=-1;
@@ -292,17 +316,17 @@ while(l<=r){
 }
 ```
 
-### Complexity
+##### Complexity
 
 - `O(log Range)`
 
-### Notes
+##### Notes
 
 - Finds first valid value.
 
 ---
 
-# Binary Search Template (Last True)
+### Binary Search Template (Last True)
 
 ```cpp
 long long l=0,r=(long long)1e18,ans=-1;
@@ -313,17 +337,17 @@ while(l<=r){
 }
 ```
 
-### Complexity
+##### Complexity
 
 - `O(log Range)`
 
-### Notes
+##### Notes
 
 - Finds last valid value.
 
 ---
 
-# Ternary Search
+### Ternary Search
 
 ```cpp
 while(r-l>3){
@@ -332,18 +356,21 @@ while(r-l>3){
 }
 ```
 
-### Complexity
+##### Complexity
 
 - `O(log Range)`
 
-### Notes
+##### Notes
 
 - Convex / Concave functions only.
 - Usually for optimization problems.
 
 ---
 
-# DSU (Standard)
+
+## 2) Graph Algorithms
+
+### DSU (Standard)
 
 ```cpp
 struct dsu {
@@ -397,14 +424,14 @@ struct dsu {
 };
 ```
 
-### Features
+##### Features
 
 - Path Compression
 - Union By Size
 - Component Count
 - Component Size Query
 
-### Complexity
+##### Complexity
 
 | Operation | Complexity |
 | --- | --- |
@@ -413,13 +440,13 @@ struct dsu {
 | same | O(α(n)) |
 | size | O(α(n)) |
 
-### Memory
+##### Memory
 
 ```
 O(n)
 ```
 
-### Common Uses
+##### Common Uses
 
 #### Connectivity
 
@@ -462,7 +489,7 @@ if (d.unite(u, v))
 
 ---
 
-# DSU (Component Tracking)
+### DSU (Component Tracking)
 
 ```cpp
 struct dsu {
@@ -548,7 +575,7 @@ struct dsu {
 };
 ```
 
-### Features
+##### Features
 
 - Path Compression
 - Union By Size
@@ -557,7 +584,7 @@ struct dsu {
 - Get All Members of a Component
 - Get All Components
 
-### Complexity
+##### Complexity
 
 | Operation | Complexity |
 | --- | --- |
@@ -567,13 +594,13 @@ struct dsu {
 | unite | O(log n) amortized |
 | members | O(1) |
 
-### Memory
+##### Memory
 
 ```
 O(n)
 ```
 
-### Common Uses
+##### Common Uses
 
 #### Get Members of Component
 
@@ -601,7 +628,7 @@ Uses Small-To-Large Merging
 Each node moves at most O(log n) times
 ```
 
-### When To Use
+##### When To Use
 
 ```
 Need actual vertices of each component
@@ -610,7 +637,7 @@ Need to process all nodes inside a component
 Need offline merging with component contents
 ```
 
-### When NOT To Use
+##### When NOT To Use
 
 ```
 Connectivity only
@@ -622,9 +649,9 @@ Standard DSU problems
 Use Standard DSU by default.
 Use Tracking DSU only when component members are explicitly required.
 
-# BFS (Breadth First Search)
+### BFS (Breadth First Search)
 
-## When To Use
+#### When To Use
 
 ```
 Unweighted Graph
@@ -637,44 +664,33 @@ Multi Source Expansion
 
 ---
 
-# Normal BFS
+### Normal BFS
 
 ```cpp
-vector<int> bfs(int src, vector<vector<int>> &adj) {
-    int n = adj.size() - 1;
-
+vector<int> bfs(int src, const vector<vector<int>>& adj) {
+    int n = (int)adj.size() - 1;
     vector<int> dist(n + 1, -1);
-
     queue<int> q;
-
-    q.push(src);
-    dist[src] = 0;
-
+    q.push(src); dist[src] = 0;
     while (!q.empty()) {
-        int u = q.front();
-        q.pop();
-
-        for (auto v : adj[u]) {
-            if (dist[v] != -1)
-                continue;
-
+        int u = q.front(); q.pop();
+        for (int v : adj[u]) if (dist[v] == -1) {
             dist[v] = dist[u] + 1;
             q.push(v);
         }
     }
-
     return dist;
 }
 ```
 
-### Complexity
+##### Complexity
 
 ```
 Time  : O(V + E)
 Memory: O(V)
 ```
 
-### Use
+##### Use
 
 ```cpp
 auto dist = bfs(1, adj);
@@ -682,7 +698,7 @@ auto dist = bfs(1, adj);
 
 ---
 
-# BFS With Parent (Restore Path)
+### BFS With Parent (Restore Path)
 
 ```cpp
 vector<int> dist(n + 1, -1);
@@ -709,7 +725,7 @@ while (!q.empty()) {
 }
 ```
 
-### Restore Path
+##### Restore Path
 
 ```cpp
 vector<int> path;
@@ -720,7 +736,7 @@ for (int cur = dest; cur != -1; cur = par[cur])
 reverse(all(path));
 ```
 
-### Use
+##### Use
 
 ```
 Print shortest path
@@ -729,7 +745,7 @@ Find route
 
 ---
 
-# Multi Source BFS
+### Multi Source BFS
 
 ```cpp
 vector<int> dist(n + 1, -1);
@@ -756,7 +772,7 @@ while (!q.empty()) {
 }
 ```
 
-### Use
+##### Use
 
 ```
 Nearest Hospital
@@ -765,7 +781,7 @@ Nearest Special Node
 Spread Problems
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(V + E)
@@ -773,7 +789,7 @@ O(V + E)
 
 ---
 
-# Grid BFS
+### Grid BFS
 
 ```cpp
 int dx[] = {1,-1,0,0};
@@ -811,13 +827,13 @@ while (!q.empty()) {
 }
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(N * M)
 ```
 
-### Tricks
+##### Tricks
 
 ```
 8 Directions => add diagonals
@@ -827,9 +843,9 @@ Maze Problems
 
 ---
 
-# BFS On State Graph
+### BFS On State Graph
 
-## Example
+#### Example
 
 ```
 (node , mask)
@@ -875,7 +891,7 @@ while (!q.empty()) {
 }
 ```
 
-### Use
+##### Use
 
 ```
 Collect Keys
@@ -886,9 +902,9 @@ Shortest State Transition
 
 ---
 
-# 0-1 BFS
+### 0-1 BFS
 
-## Condition
+#### Condition
 
 ```
 Edge Weight = 0 or 1 only
@@ -925,13 +941,13 @@ while (!dq.empty()) {
 }
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(V + E)
 ```
 
-### Use
+##### Use
 
 ```
 Reverse Edges
@@ -941,9 +957,9 @@ Binary Weight Graphs
 
 ---
 
-# Useful Snippets
+### Useful Snippets
 
-## Count Connected Components
+#### Count Connected Components
 
 ```cpp
 int cc = 0;
@@ -979,7 +995,7 @@ for (int i = 1; i <= n; i++) {
 
 ---
 
-## Find Farthest Node
+#### Find Farthest Node
 
 ```cpp
 int mx = 0;
@@ -993,7 +1009,7 @@ for (int i = 1; i <= n; i++) {
 }
 ```
 
-### Use
+##### Use
 
 ```
 Tree Diameter
@@ -1001,7 +1017,7 @@ Tree Diameter
 
 ---
 
-# Common BFS Tricks
+### Common BFS Tricks
 
 ```
 dist = -1  => unvisited
@@ -1026,7 +1042,7 @@ not nodes
 
 ---
 
-# Common Problems
+### Common Problems
 
 ```
 Labyrinth
@@ -1040,9 +1056,9 @@ Minimum Moves
 Shortest Transformation
 ```
 
-# DFS (Depth First Search)
+### DFS (Depth First Search)
 
-## When To Use
+#### When To Use
 
 ```
 Connected Components
@@ -1058,34 +1074,26 @@ Articulation Points
 
 ---
 
-# Normal DFS
+### Normal DFS
 
 ```cpp
 vector<vector<int>> adj;
 vector<int> vis;
 
 void dfs(int u) {
-
     vis[u] = 1;
-
-    for (auto v : adj[u]) {
-
-        if (vis[v])
-            continue;
-
-        dfs(v);
-    }
+    for (int v : adj[u]) if (!vis[v]) dfs(v);
 }
 ```
 
-### Complexity
+##### Complexity
 
 ```
 Time  : O(V + E)
 Memory: O(V)
 ```
 
-### Use
+##### Use
 
 ```cpp
 dfs(1);
@@ -1093,7 +1101,7 @@ dfs(1);
 
 ---
 
-# Connected Components
+### Connected Components
 
 ```cpp
 vector<int> vis;
@@ -1110,7 +1118,7 @@ void dfs(int u) {
 }
 ```
 
-### Count Components
+##### Count Components
 
 ```cpp
 int cc = 0;
@@ -1126,7 +1134,7 @@ for (int i = 1; i <= n; i++) {
 }
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(V + E)
@@ -1134,7 +1142,7 @@ O(V + E)
 
 ---
 
-# DFS With Parent
+### DFS With Parent
 
 ```cpp
 void dfs(int u, int p) {
@@ -1149,7 +1157,7 @@ void dfs(int u, int p) {
 }
 ```
 
-### Use
+##### Use
 
 ```
 Tree DFS
@@ -1158,7 +1166,7 @@ Avoid Going Back To Parent
 
 ---
 
-# Subtree Size
+### Subtree Size
 
 ```cpp
 vector<int> sz;
@@ -1179,13 +1187,13 @@ void dfs(int u, int p) {
 }
 ```
 
-### Use
+##### Use
 
 ```cpp
 cout << sz[u];
 ```
 
-### Meaning
+##### Meaning
 
 ```
 Number Of Nodes In Subtree(u)
@@ -1193,7 +1201,7 @@ Number Of Nodes In Subtree(u)
 
 ---
 
-# Entry / Exit Time
+### Entry / Exit Time
 
 ```cpp
 int timer = 0;
@@ -1216,7 +1224,7 @@ void dfs(int u, int p) {
 }
 ```
 
-### Check Ancestor
+##### Check Ancestor
 
 ```cpp
 bool is_ancestor(int u, int v) {
@@ -1226,7 +1234,7 @@ bool is_ancestor(int u, int v) {
 }
 ```
 
-### Use
+##### Use
 
 ```
 Ancestor Queries
@@ -1237,7 +1245,7 @@ LCA
 
 ---
 
-# Euler Tour (Flatten Tree)
+### Euler Tour (Flatten Tree)
 
 ```cpp
 vector<int> tin;
@@ -1264,13 +1272,13 @@ void dfs(int u, int p) {
 }
 ```
 
-### Subtree Range
+##### Subtree Range
 
 ```cpp
 [tin[u] , tout[u]]
 ```
 
-### Use
+##### Use
 
 ```
 Segment Tree On Tree
@@ -1280,7 +1288,7 @@ Subtree Queries
 
 ---
 
-# Cycle Detection (Undirected)
+### Cycle Detection (Undirected)
 
 ```cpp
 bool dfs(int u, int p) {
@@ -1303,7 +1311,7 @@ bool dfs(int u, int p) {
 }
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(V + E)
@@ -1311,7 +1319,7 @@ O(V + E)
 
 ---
 
-# Cycle Detection (Directed)
+### Cycle Detection (Directed)
 
 ```cpp
 vector<int> vis;
@@ -1335,7 +1343,7 @@ bool dfs(int u) {
 }
 ```
 
-### States
+##### States
 
 ```
 0 = Unvisited
@@ -1343,7 +1351,7 @@ bool dfs(int u) {
 2 = Finished
 ```
 
-### Use
+##### Use
 
 ```
 Detect Directed Cycle
@@ -1352,7 +1360,7 @@ Check DAG
 
 ---
 
-# Topological Sort (DFS)
+### Topological Sort (DFS)
 
 ```cpp
 vector<int> vis;
@@ -1372,7 +1380,7 @@ void dfs(int u) {
 }
 ```
 
-### Build Topological Order
+##### Build Topological Order
 
 ```cpp
 for (int i = 1; i <= n; i++) {
@@ -1384,7 +1392,7 @@ for (int i = 1; i <= n; i++) {
 reverse(all(topo));
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(V + E)
@@ -1392,9 +1400,9 @@ O(V + E)
 
 ---
 
-# Tree Diameter
+### Tree Diameter
 
-## First DFS
+#### First DFS
 
 ```cpp
 dfs(1);
@@ -1410,7 +1418,7 @@ int a = max_element(
 
 ---
 
-## Second DFS
+#### Second DFS
 
 ```cpp
 dfs(a);
@@ -1426,13 +1434,13 @@ int b = max_element(
 
 ---
 
-## Diameter Length
+#### Diameter Length
 
 ```cpp
 dist[b]
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(N)
@@ -1440,7 +1448,7 @@ O(N)
 
 ---
 
-# DFS Order
+### DFS Order
 
 ```cpp
 vector<int> ord;
@@ -1459,7 +1467,7 @@ void dfs(int u, int p) {
 }
 ```
 
-### Use
+##### Use
 
 ```
 Tree Traversal
@@ -1469,7 +1477,7 @@ Offline Queries
 
 ---
 
-# Bipartite Check (DFS)
+### Bipartite Check (DFS)
 
 ```cpp
 vector<int> color(n + 1, -1);
@@ -1496,7 +1504,7 @@ bool dfs(int u, int c) {
 }
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(V + E)
@@ -1504,9 +1512,9 @@ O(V + E)
 
 ---
 
-# Useful Snippets
+### Useful Snippets
 
-## Collect Nodes Of Component
+#### Collect Nodes Of Component
 
 ```cpp
 vector<int> comp;
@@ -1527,7 +1535,7 @@ void dfs(int u) {
 
 ---
 
-## Leaf Detection
+#### Leaf Detection
 
 ```cpp
 if (adj[u].size() == 1 && u != root)
@@ -1538,7 +1546,7 @@ if (adj[u].size() == 1 && u != root)
 
 ---
 
-## Count Leaves
+#### Count Leaves
 
 ```cpp
 int leaves = 0;
@@ -1552,7 +1560,7 @@ for (int i = 2; i <= n; i++) {
 
 ---
 
-# Common DFS Tricks
+### Common DFS Tricks
 
 ```
 DFS = Explore Entire Component
@@ -1578,7 +1586,7 @@ Topo Sort
 
 ---
 
-# Common Problems
+### Common Problems
 
 ```
 Connected Components
@@ -1604,9 +1612,9 @@ Articulation Points
 SCC
 ```
 
-# Topological Sort
+### Topological Sort
 
-## When To Use
+#### When To Use
 
 ```
 DAG (Directed Acyclic Graph)
@@ -1620,7 +1628,7 @@ Longest Path In DAG
 
 ---
 
-# Kahn's Algorithm (BFS)
+### Kahn's Algorithm (BFS)
 
 ```cpp
 vector<int> topo;
@@ -1657,7 +1665,7 @@ while (!q.empty()) {
 }
 ```
 
-### Complexity
+##### Complexity
 
 ```
 Time  : O(V + E)
@@ -1666,7 +1674,7 @@ Memory: O(V)
 
 ---
 
-# Check If DAG
+### Check If DAG
 
 ```cpp
 if ((int)topo.size() != n)
@@ -1675,7 +1683,7 @@ if ((int)topo.size() != n)
 }
 ```
 
-### Idea
+##### Idea
 
 ```
 A graph has a topological order
@@ -1684,7 +1692,7 @@ iff it is a DAG.
 
 ---
 
-# Lexicographically Smallest Topological Order
+### Lexicographically Smallest Topological Order
 
 ```cpp
 priority_queue<
@@ -1715,13 +1723,13 @@ while (!pq.empty()) {
 }
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O((V + E) log V)
 ```
 
-### Use
+##### Use
 
 ```
 Smallest Valid Ordering
@@ -1729,7 +1737,7 @@ Smallest Valid Ordering
 
 ---
 
-# DFS Topological Sort
+### DFS Topological Sort
 
 ```cpp
 vector<int> vis;
@@ -1749,7 +1757,7 @@ void dfs(int u) {
 }
 ```
 
-### Build Order
+##### Build Order
 
 ```cpp
 for (int i = 1; i <= n; i++) {
@@ -1761,7 +1769,7 @@ for (int i = 1; i <= n; i++) {
 reverse(all(topo));
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(V + E)
@@ -1769,7 +1777,7 @@ O(V + E)
 
 ---
 
-# Cycle Detection In DAG
+### Cycle Detection In DAG
 
 ```cpp
 vector<int> vis;
@@ -1793,7 +1801,7 @@ bool dfs(int u) {
 }
 ```
 
-### States
+##### States
 
 ```
 0 = Unvisited
@@ -1803,7 +1811,7 @@ bool dfs(int u) {
 
 ---
 
-# Longest Path In DAG
+### Longest Path In DAG
 
 ```cpp
 vector<int> dp(n + 1, 0);
@@ -1819,13 +1827,13 @@ for (auto u : topo) {
 }
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(V + E)
 ```
 
-### Use
+##### Use
 
 ```
 AtCoder DP G
@@ -1834,7 +1842,7 @@ Longest Dependency Chain
 
 ---
 
-# Shortest Path In DAG
+### Shortest Path In DAG
 
 ```cpp
 vector<int> dist(n + 1, INF);
@@ -1855,13 +1863,13 @@ for (auto u : topo) {
 }
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(V + E)
 ```
 
-### Notes
+##### Notes
 
 ```
 Works even with negative weights
@@ -1870,7 +1878,7 @@ Works even with negative weights
 
 ---
 
-# Count Number Of Paths In DAG
+### Count Number Of Paths In DAG
 
 ```cpp
 vector<int> dp(n + 1);
@@ -1887,7 +1895,7 @@ for (auto u : topo) {
 }
 ```
 
-### Use
+##### Use
 
 ```
 Count Paths
@@ -1896,7 +1904,7 @@ DP On DAG
 
 ---
 
-# Path Restoration In DAG
+### Path Restoration In DAG
 
 ```cpp
 vector<int> par(n + 1, -1);
@@ -1914,7 +1922,7 @@ for (auto u : topo) {
 }
 ```
 
-### Restore Path
+##### Restore Path
 
 ```cpp
 vector<int> path;
@@ -1931,9 +1939,9 @@ reverse(all(path));
 
 ---
 
-# Useful Snippets
+### Useful Snippets
 
-## Sources (Indegree = 0)
+#### Sources (Indegree = 0)
 
 ```cpp
 vector<int> srcs;
@@ -1947,7 +1955,7 @@ for (int i = 1; i <= n; i++) {
 
 ---
 
-## Sinks (Outdegree = 0)
+#### Sinks (Outdegree = 0)
 
 ```cpp
 vector<int> sinks;
@@ -1961,7 +1969,7 @@ for (int i = 1; i <= n; i++) {
 
 ---
 
-## Check Unique Topological Order
+#### Check Unique Topological Order
 
 ```cpp
 bool unique_order = true;
@@ -1978,7 +1986,7 @@ while (!q.empty()) {
 }
 ```
 
-### Meaning
+##### Meaning
 
 ```
 More than one valid order exists.
@@ -1986,7 +1994,7 @@ More than one valid order exists.
 
 ---
 
-# Common Tricks
+### Common Tricks
 
 ```
 Kahn => BFS Topological Sort
@@ -2011,7 +2019,7 @@ if graph is DAG
 
 ---
 
-# Common Problems
+### Common Problems
 
 ```
 Course Schedule
@@ -2035,9 +2043,9 @@ DAG Shortest Path
 Build Order
 ```
 
-# Dijkstra
+### Dijkstra
 
-## When To Use
+#### When To Use
 
 ```
 Shortest Path
@@ -2049,60 +2057,34 @@ Multi Source Shortest Path
 
 ---
 
-# Standard Dijkstra
+### Standard Dijkstra
 
 ```cpp
-vector<int> dijkstra(int src,
-                     vector<vector<pair<int,int>>> &adj) {
-
-    int n = adj.size() - 1;
-
-    vector<int> dist(n + 1, INF);
-
-    priority_queue<
-        pair<int,int>,
-        vector<pair<int,int>>,
-        greater<pair<int,int>>
-    > pq;
-
-    dist[src] = 0;
-
-    pq.push({0, src});
-
+vector<long long> dijkstra(int src, const vector<vector<pair<int,int>>>& adj) {
+    int n = (int)adj.size() - 1;
+    vector<long long> dist(n + 1, INF);
+    priority_queue<pair<long long,int>, vector<pair<long long,int>>, greater<pair<long long,int>>> pq;
+    dist[src] = 0; pq.push({0, src});
     while (!pq.empty()) {
-
-        auto [d, u] = pq.top();
-        pq.pop();
-
-        if (d != dist[u])
-            continue;
-
-        for (auto [v, w] : adj[u]) {
-
-            if (dist[v] > dist[u] + w) {
-
-                dist[v] = dist[u] + w;
-
-                pq.push({
-                    dist[v],
-                    v
-                });
-            }
+        auto [d, u] = pq.top(); pq.pop();
+        if (d != dist[u]) continue;
+        for (auto [v, w] : adj[u]) if (dist[v] > d + w) {
+            dist[v] = d + w;
+            pq.push({dist[v], v});
         }
     }
-
     return dist;
 }
 ```
 
-### Complexity
+##### Complexity
 
 ```
 Time  : O((V + E) log V)
 Memory: O(V)
 ```
 
-### Requirements
+##### Requirements
 
 ```
 All weights >= 0
@@ -2110,7 +2092,7 @@ All weights >= 0
 
 ---
 
-# Path Restore
+### Path Restore
 
 ```cpp
 vector<int> dist(n + 1, INF);
@@ -2151,7 +2133,7 @@ while (!pq.empty()) {
 }
 ```
 
-### Restore Path
+##### Restore Path
 
 ```cpp
 vector<int> path;
@@ -2168,7 +2150,7 @@ reverse(all(path));
 
 ---
 
-# Multi Source Dijkstra
+### Multi Source Dijkstra
 
 ```cpp
 vector<int> dist(n + 1, INF);
@@ -2212,7 +2194,7 @@ while (!pq.empty()) {
 }
 ```
 
-### Use
+##### Use
 
 ```
 Nearest Hospital
@@ -2222,9 +2204,9 @@ Spread Problems
 
 ---
 
-# State Graph Dijkstra
+### State Graph Dijkstra
 
-## Example States
+#### Example States
 
 ```
 (node , fuel)
@@ -2266,7 +2248,7 @@ while (!pq.empty()) {
 }
 ```
 
-### Use
+##### Use
 
 ```
 Fuel Problems
@@ -2277,7 +2259,7 @@ Extended Graphs
 
 ---
 
-# Dense Graph Dijkstra
+### Dense Graph Dijkstra
 
 ```cpp
 vector<int> dist(n + 1, INF);
@@ -2312,13 +2294,13 @@ for (int it = 1; it <= n; it++) {
 }
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(V²)
 ```
 
-### Use
+##### Use
 
 ```
 Dense Graph
@@ -2328,7 +2310,7 @@ Adjacency Matrix
 
 ---
 
-# Count Number Of Shortest Paths
+### Count Number Of Shortest Paths
 
 ```cpp
 vector<int> dist(n + 1, INF);
@@ -2370,7 +2352,7 @@ while (!pq.empty()) {
 }
 ```
 
-### Use
+##### Use
 
 ```
 CSES Investigation
@@ -2379,7 +2361,7 @@ Count Shortest Paths
 
 ---
 
-# Shortest Path DAG After Dijkstra
+### Shortest Path DAG After Dijkstra
 
 ```cpp
 if (
@@ -2391,7 +2373,7 @@ if (
 }
 ```
 
-### Use
+##### Use
 
 ```
 All Shortest Paths
@@ -2400,7 +2382,7 @@ DP On Shortest Paths
 
 ---
 
-# Dijkstra On Grid
+### Dijkstra On Grid
 
 ```cpp
 priority_queue<
@@ -2418,7 +2400,7 @@ pq.push({
 });
 ```
 
-### Use
+##### Use
 
 ```
 Weighted Grid
@@ -2427,7 +2409,7 @@ Minimum Cost Path
 
 ---
 
-# K Shortest Paths (Intro)
+### K Shortest Paths (Intro)
 
 ```cpp
 vector<int> cnt(n + 1);
@@ -2460,7 +2442,7 @@ while (!pq.empty()) {
 }
 ```
 
-### Use
+##### Use
 
 ```
 CSES Flight Routes
@@ -2469,9 +2451,9 @@ K Shortest Paths
 
 ---
 
-# Useful Snippets
+### Useful Snippets
 
-## Unreachable Nodes
+#### Unreachable Nodes
 
 ```cpp
 if (dist[u] == INF)
@@ -2482,7 +2464,7 @@ if (dist[u] == INF)
 
 ---
 
-## Farthest Reachable Node
+#### Farthest Reachable Node
 
 ```cpp
 int mx = -1;
@@ -2503,7 +2485,7 @@ for (int i = 1; i <= n; i++) {
 
 ---
 
-## Shortest Path Length
+#### Shortest Path Length
 
 ```cpp
 cout << dist[dest];
@@ -2511,7 +2493,7 @@ cout << dist[dest];
 
 ---
 
-## Check Negative Edge
+#### Check Negative Edge
 
 ```cpp
 if (w < 0)
@@ -2522,7 +2504,7 @@ if (w < 0)
 
 ---
 
-# Common Tricks
+### Common Tricks
 
 ```
 Weights >= 0
@@ -2552,7 +2534,7 @@ Shortest Path DAG
 
 ---
 
-# Common Problems
+### Common Problems
 
 ```
 Shortest Routes I
@@ -2576,9 +2558,9 @@ Coupon Problems
 State Graph Problems
 ```
 
-# Kruskal (Minimum Spanning Tree)
+### Kruskal (Minimum Spanning Tree)
 
-## When To Use
+#### When To Use
 
 ```
 Minimum Spanning Tree (MST)
@@ -2591,7 +2573,7 @@ Build MST from weighted graph
 
 ---
 
-# DSU Required
+### DSU Required
 
 ```cpp
 struct dsu {
@@ -2629,7 +2611,7 @@ struct dsu {
 
 ---
 
-# Standard Kruskal
+### Standard Kruskal
 
 ```cpp
 struct edge {
@@ -2656,7 +2638,7 @@ for (auto [u, v, w] : edges) {
 }
 ```
 
-### Complexity
+##### Complexity
 
 ```
 Sorting : O(E log E)
@@ -2666,7 +2648,7 @@ DSU     : O(E α(N))
 Total   : O(E log E)
 ```
 
-### Memory
+##### Memory
 
 ```
 O(E)
@@ -2674,7 +2656,7 @@ O(E)
 
 ---
 
-# Check If MST Exists
+### Check If MST Exists
 
 ```cpp
 int used = 0;
@@ -2694,7 +2676,7 @@ if (used != n - 1)
 }
 ```
 
-### Meaning
+##### Meaning
 
 ```
 Graph is disconnected
@@ -2703,7 +2685,7 @@ No spanning tree exists
 
 ---
 
-# Store MST Edges
+### Store MST Edges
 
 ```cpp
 vector<edge> mst_edges;
@@ -2721,7 +2703,7 @@ for (auto [u, v, w] : edges) {
 }
 ```
 
-### Use
+##### Use
 
 ```
 Need actual MST
@@ -2732,7 +2714,7 @@ LCA on MST
 
 ---
 
-# Build MST Graph
+### Build MST Graph
 
 ```cpp
 vector<vector<pair<int,int>>> mst_adj(n + 1);
@@ -2752,7 +2734,7 @@ for (auto [u, v, w] : edges) {
 }
 ```
 
-### Use
+##### Use
 
 ```
 LCA
@@ -2763,7 +2745,7 @@ Tree Queries
 
 ---
 
-# Maximum Spanning Tree
+### Maximum Spanning Tree
 
 ```cpp
 sort(all(edges), [&](auto a, auto b) {
@@ -2773,7 +2755,7 @@ sort(all(edges), [&](auto a, auto b) {
 
 Everything else remains the same.
 
-### Use
+##### Use
 
 ```
 Maximum total weight tree
@@ -2781,7 +2763,7 @@ Maximum total weight tree
 
 ---
 
-# Number Of Connected Components
+### Number Of Connected Components
 
 ```cpp
 dsu d(n);
@@ -2800,7 +2782,7 @@ for (int i = 1; i <= n; i++) {
 
 ---
 
-# Forest Cost
+### Forest Cost
 
 ```cpp
 int cost = 0;
@@ -2812,13 +2794,13 @@ for (auto [u, v, w] : edges) {
 }
 ```
 
-### Meaning
+##### Meaning
 
 ```
 Minimum Spanning Forest
 ```
 
-### Use
+##### Use
 
 ```
 Disconnected Graph
@@ -2826,9 +2808,9 @@ Disconnected Graph
 
 ---
 
-# Second MST Idea
+### Second MST Idea
 
-## Observation
+#### Observation
 
 ```
 MST + One Extra Edge
@@ -2853,7 +2835,7 @@ Binary Lifting
 Maximum Edge Query
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(E log N)
@@ -2861,9 +2843,9 @@ O(E log N)
 
 ---
 
-# Useful Snippets
+### Useful Snippets
 
-## Sort Edges
+#### Sort Edges
 
 ```cpp
 sort(all(edges));
@@ -2871,7 +2853,7 @@ sort(all(edges));
 
 ---
 
-## MST Cost
+#### MST Cost
 
 ```cpp
 cout << mst;
@@ -2879,7 +2861,7 @@ cout << mst;
 
 ---
 
-## Number Of MST Edges
+#### Number Of MST Edges
 
 ```cpp
 cout << mst_edges.size();
@@ -2895,7 +2877,7 @@ for connected graph.
 
 ---
 
-## Check Same Component
+#### Check Same Component
 
 ```cpp
 if (d.find(u) == d.find(v))
@@ -2905,7 +2887,7 @@ if (d.find(u) == d.find(v))
 
 ---
 
-## Detect Cycle
+#### Detect Cycle
 
 ```cpp
 if (!d.unite(u, v))
@@ -2916,7 +2898,7 @@ if (!d.unite(u, v))
 
 ---
 
-# Common Tricks
+### Common Tricks
 
 ```
 Sort edges by weight
@@ -2940,7 +2922,7 @@ Self loops never help
 
 ---
 
-# Common Problems
+### Common Problems
 
 ```
 Road Reparation
@@ -2964,7 +2946,7 @@ Satellite Network
 
 ---
 
-# Prim vs Kruskal
+### Prim vs Kruskal
 
 | Feature | Kruskal | Prim |
 | --- | --- | --- |
@@ -2974,7 +2956,7 @@ Satellite Network
 | Sparse Graph | Excellent | Excellent |
 | Most CP Problems | ✅ | Less Common |
 
-### Rule
+##### Rule
 
 ```
 Sparse Graph
@@ -2984,9 +2966,9 @@ Dense Graph
 => Prim
 ```
 
-# Bellman Ford
+### Bellman Ford
 
-## When To Use
+#### When To Use
 
 ```
 Negative Edge Weights
@@ -3002,7 +2984,7 @@ When Dijkstra Cannot Be Used
 
 ---
 
-# Edge Structure
+### Edge Structure
 
 ```cpp
 struct edge {
@@ -3012,7 +2994,7 @@ struct edge {
 
 ---
 
-# Standard Bellman Ford
+### Standard Bellman Ford
 
 ```cpp
 vector<int> dist(n + 1, INF);
@@ -3041,7 +3023,7 @@ for (int i = 1; i <= n - 1; i++) {
 }
 ```
 
-### Complexity
+##### Complexity
 
 ```
 Time  : O(V * E)
@@ -3051,7 +3033,7 @@ Memory: O(V)
 
 ---
 
-# Negative Cycle Detection
+### Negative Cycle Detection
 
 ```cpp
 bool neg_cycle = false;
@@ -3068,7 +3050,7 @@ for (auto [u, v, w] : edges) {
 }
 ```
 
-### Meaning
+##### Meaning
 
 ```
 There exists a reachable negative cycle.
@@ -3076,7 +3058,7 @@ There exists a reachable negative cycle.
 
 ---
 
-# Path Restore
+### Path Restore
 
 ```cpp
 vector<int> dist(n + 1, INF);
@@ -3101,7 +3083,7 @@ for (int i = 1; i <= n - 1; i++) {
 }
 ```
 
-### Restore Path
+##### Restore Path
 
 ```cpp
 vector<int> path;
@@ -3118,7 +3100,7 @@ reverse(all(path));
 
 ---
 
-# Restore Negative Cycle
+### Restore Negative Cycle
 
 ```cpp
 int x = -1;
@@ -3144,7 +3126,7 @@ for (int i = 1; i <= n; i++) {
 }
 ```
 
-### No Cycle
+##### No Cycle
 
 ```cpp
 if (x == -1)
@@ -3155,7 +3137,7 @@ if (x == -1)
 
 ---
 
-### Move Inside Cycle
+##### Move Inside Cycle
 
 ```cpp
 for (int i = 1; i <= n; i++)
@@ -3164,7 +3146,7 @@ for (int i = 1; i <= n; i++)
 
 ---
 
-### Extract Cycle
+##### Extract Cycle
 
 ```cpp
 vector<int> cyc;
@@ -3184,7 +3166,7 @@ cyc.push_back(x);
 reverse(all(cyc));
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(V * E)
@@ -3192,9 +3174,9 @@ O(V * E)
 
 ---
 
-# Difference Constraints
+### Difference Constraints
 
-## Constraints
+#### Constraints
 
 ```
 x[v] - x[u] <= w
@@ -3212,7 +3194,7 @@ Then run:
 Bellman Ford
 ```
 
-### Use
+##### Use
 
 ```
 Scheduling
@@ -3222,7 +3204,7 @@ Constraint Systems
 
 ---
 
-# Detect Any Negative Cycle
+### Detect Any Negative Cycle
 
 Sometimes source is unknown.
 
@@ -3239,7 +3221,7 @@ Then:
 Bellman Ford(0)
 ```
 
-### Meaning
+##### Meaning
 
 ```
 Detect cycle anywhere in graph
@@ -3247,7 +3229,7 @@ Detect cycle anywhere in graph
 
 ---
 
-# Longest Path Trick
+### Longest Path Trick
 
 If graph has no positive cycle:
 
@@ -3267,7 +3249,7 @@ Then:
 Bellman Ford
 ```
 
-### Warning
+##### Warning
 
 ```
 Need cycle handling
@@ -3275,7 +3257,7 @@ Need cycle handling
 
 ---
 
-# Reachability From Negative Cycle
+### Reachability From Negative Cycle
 
 After detecting cycle nodes:
 
@@ -3285,7 +3267,7 @@ BFS / DFS
 
 from cycle vertices.
 
-### Use
+##### Use
 
 ```
 Infinite Profit
@@ -3295,9 +3277,9 @@ CSES High Score
 
 ---
 
-# Useful Snippets
+### Useful Snippets
 
-## Unreachable Node
+#### Unreachable Node
 
 ```cpp
 if (dist[u] == INF)
@@ -3307,7 +3289,7 @@ if (dist[u] == INF)
 
 ---
 
-## Reachable Node
+#### Reachable Node
 
 ```cpp
 if (dist[u] != INF)
@@ -3317,7 +3299,7 @@ if (dist[u] != INF)
 
 ---
 
-## Early Stop Optimization
+#### Early Stop Optimization
 
 ```cpp
 bool changed = false;
@@ -3328,7 +3310,7 @@ if (!changed)
     break;
 ```
 
-### Benefit
+##### Benefit
 
 ```
 Much faster in practice
@@ -3336,7 +3318,7 @@ Much faster in practice
 
 ---
 
-# Common Tricks
+### Common Tricks
 
 ```
 Negative Edge
@@ -3360,7 +3342,7 @@ Infinite Profit
 
 ---
 
-# Common Problems
+### Common Problems
 
 ```
 Cycle Finding
@@ -3380,7 +3362,7 @@ System Of Inequalities
 
 ---
 
-# Dijkstra vs Bellman
+### Dijkstra vs Bellman
 
 | Feature | Dijkstra | Bellman |
 | --- | --- | --- |
@@ -3389,7 +3371,7 @@ System Of Inequalities
 | Complexity | O(E log V) | O(VE) |
 | Path Restore | ✅ | ✅ |
 
-### Rule
+##### Rule
 
 ```
 Weights >= 0
@@ -3399,9 +3381,9 @@ Negative Edge Exists
 => Bellman Ford
 ```
 
-# Floyd Warshall
+### Floyd Warshall
 
-## When To Use
+#### When To Use
 
 ```
 All Pairs Shortest Path (APSP)
@@ -3421,7 +3403,7 @@ Character Transformations
 
 ---
 
-# Standard Floyd Warshall
+### Standard Floyd Warshall
 
 ```cpp
 vector<vector<int>> dist(
@@ -3441,7 +3423,7 @@ for (auto [u, v, w] : edges) {
 
 ---
 
-### Main Floyd
+##### Main Floyd
 
 ```cpp
 for (int k = 1; k <= n; k++) {
@@ -3461,7 +3443,7 @@ for (int k = 1; k <= n; k++) {
 }
 ```
 
-### Complexity
+##### Complexity
 
 ```
 Time  : O(N³)
@@ -3471,7 +3453,7 @@ Memory: O(N²)
 
 ---
 
-# Undirected Graph
+### Undirected Graph
 
 ```cpp
 dist[u][v] =
@@ -3480,7 +3462,7 @@ dist[v][u] = w;
 
 ---
 
-# Multiple Edges
+### Multiple Edges
 
 ```cpp
 dist[u][v] =
@@ -3489,7 +3471,7 @@ min(dist[u][v], w);
 
 ---
 
-# Query Distance
+### Query Distance
 
 ```cpp
 cout << dist[u][v];
@@ -3497,7 +3479,7 @@ cout << dist[u][v];
 
 ---
 
-# Unreachable Nodes
+### Unreachable Nodes
 
 ```cpp
 if (dist[u][v] == INF)
@@ -3507,7 +3489,7 @@ if (dist[u][v] == INF)
 
 ---
 
-# Negative Cycle Detection
+### Negative Cycle Detection
 
 After Floyd:
 
@@ -3521,7 +3503,7 @@ for (int i = 1; i <= n; i++) {
 }
 ```
 
-### Why?
+##### Why?
 
 ```
 Shortest path
@@ -3534,9 +3516,9 @@ unless negative cycle exists
 
 ---
 
-# Path Restoration
+### Path Restoration
 
-## Parent Matrix
+#### Parent Matrix
 
 ```cpp
 vector<vector<int>> nxt(
@@ -3547,7 +3529,7 @@ vector<vector<int>> nxt(
 
 ---
 
-### Initialization
+##### Initialization
 
 ```cpp
 for (auto [u, v, w] : edges) {
@@ -3560,7 +3542,7 @@ for (auto [u, v, w] : edges) {
 
 ---
 
-### Floyd Update
+##### Floyd Update
 
 ```cpp
 if (
@@ -3580,7 +3562,7 @@ if (
 
 ---
 
-### Restore Path
+##### Restore Path
 
 ```cpp
 vector<int> path;
@@ -3597,7 +3579,7 @@ while (cur != v) {
 path.push_back(v);
 ```
 
-### No Path
+##### No Path
 
 ```cpp
 if (nxt[u][v] == -1)
@@ -3607,7 +3589,7 @@ if (nxt[u][v] == -1)
 
 ---
 
-# Transitive Closure
+### Transitive Closure
 
 Instead of shortest path:
 
@@ -3620,7 +3602,7 @@ vector<vector<int>> reach(
 
 ---
 
-### Initialization
+##### Initialization
 
 ```cpp
 reach[u][v] = 1;
@@ -3628,7 +3610,7 @@ reach[u][v] = 1;
 
 ---
 
-### Floyd
+##### Floyd
 
 ```cpp
 for (int k = 1; k <= n; k++) {
@@ -3645,7 +3627,7 @@ for (int k = 1; k <= n; k++) {
 }
 ```
 
-### Meaning
+##### Meaning
 
 ```
 Can i reach j from i ?
@@ -3653,7 +3635,7 @@ Can i reach j from i ?
 
 ---
 
-# Minimum Directed Cycle
+### Minimum Directed Cycle
 
 After Floyd:
 
@@ -3667,7 +3649,7 @@ for (int i = 1; i <= n; i++) {
 }
 ```
 
-### Note
+##### Note
 
 ```
 Works if cycle exists
@@ -3675,7 +3657,7 @@ Works if cycle exists
 
 ---
 
-# Character Conversion Problems
+### Character Conversion Problems
 
 Example:
 
@@ -3690,7 +3672,7 @@ to convert strings
 
 ---
 
-### Build Graph
+##### Build Graph
 
 ```cpp
 dist[a][b] = cost;
@@ -3698,7 +3680,7 @@ dist[a][b] = cost;
 
 Run Floyd.
 
-### Use
+##### Use
 
 ```
 26 letters only
@@ -3708,7 +3690,7 @@ Perfect Floyd problem
 
 ---
 
-# Floyd On States
+### Floyd On States
 
 Example:
 
@@ -3732,7 +3714,7 @@ Floyd Warshall
 
 ---
 
-# APSP Queries
+### APSP Queries
 
 ```cpp
 run Floyd once
@@ -3746,7 +3728,7 @@ answer Q queries
 O(1)
 ```
 
-### Total
+##### Total
 
 ```
 Preprocess : O(N³)
@@ -3756,9 +3738,9 @@ Query      : O(1)
 
 ---
 
-# Useful Snippets
+### Useful Snippets
 
-## Check Reachability
+#### Check Reachability
 
 ```cpp
 if (dist[u][v] != INF)
@@ -3768,7 +3750,7 @@ if (dist[u][v] != INF)
 
 ---
 
-## Check Same SCC (small graph)
+#### Check Same SCC (small graph)
 
 ```cpp
 if (
@@ -3779,7 +3761,7 @@ if (
 }
 ```
 
-### Meaning
+##### Meaning
 
 ```
 Mutually reachable
@@ -3787,7 +3769,7 @@ Mutually reachable
 
 ---
 
-## Count Reachable Nodes
+#### Count Reachable Nodes
 
 ```cpp
 int cnt = 0;
@@ -3801,7 +3783,7 @@ for (int v = 1; v <= n; v++) {
 
 ---
 
-# Common Tricks
+### Common Tricks
 
 ```
 APSP
@@ -3828,7 +3810,7 @@ Small Graph
 
 ---
 
-# Common Problems
+### Common Problems
 
 ```
 Shortest Routes II
@@ -3850,7 +3832,7 @@ String Transformation
 
 ---
 
-# Dijkstra vs Floyd
+### Dijkstra vs Floyd
 
 | Feature | Dijkstra | Floyd |
 | --- | --- | --- |
@@ -3860,7 +3842,7 @@ String Transformation
 | Negative Cycle Detection | ❌ | ✅ |
 | Complexity | O(E log V) | O(N³) |
 
-### Rule
+##### Rule
 
 ```
 One Source
@@ -3872,7 +3854,7 @@ All Pairs
 
 ---
 
-# Bellman vs Floyd
+### Bellman vs Floyd
 
 | Feature | Bellman | Floyd |
 | --- | --- | --- |
@@ -3881,7 +3863,7 @@ All Pairs
 | Negative Cycle | ✅ | ✅ |
 | Complexity | O(VE) | O(N³) |
 
-### Rule
+##### Rule
 
 ```
 Need all pairs
@@ -3891,9 +3873,12 @@ Need one source
 => Bellman
 ```
 
-# Binary Lifting
 
-## When To Use
+## 3) Trees & Binary Lifting
+
+### Binary Lifting
+
+#### When To Use
 
 ```
 Kth Ancestor
@@ -3909,7 +3894,7 @@ Fast Ancestor Queries
 
 ---
 
-# Idea
+### Idea
 
 Instead of moving:
 
@@ -3935,7 +3920,7 @@ Then jump using binary representation of k.
 
 ---
 
-# Template
+### Template
 
 ```cpp
 const int LG = 20;
@@ -3982,7 +3967,7 @@ void build(int n, int root = 1) {
 
 ---
 
-# Jump K Levels
+### Jump K Levels
 
 ```cpp
 int jump(int u, int k) {
@@ -3997,7 +3982,7 @@ int jump(int u, int k) {
 }
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(log N)
@@ -4005,7 +3990,7 @@ O(log N)
 
 ---
 
-# Kth Ancestor
+### Kth Ancestor
 
 ```cpp
 int kth_ancestor(int u, int k) {
@@ -4014,7 +3999,7 @@ int kth_ancestor(int u, int k) {
 }
 ```
 
-### Example
+##### Example
 
 ```cpp
 cout << kth_ancestor(10, 3);
@@ -4028,7 +4013,7 @@ Meaning:
 
 ---
 
-# Check Ancestor
+### Check Ancestor
 
 Needs Euler Tour.
 
@@ -4040,7 +4025,7 @@ bool is_ancestor(int u, int v) {
 }
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(1)
@@ -4048,7 +4033,7 @@ O(1)
 
 ---
 
-# Lift To Same Depth
+### Lift To Same Depth
 
 ```cpp
 if (dep[u] < dep[v])
@@ -4060,7 +4045,7 @@ u = jump(
 );
 ```
 
-### Use
+##### Use
 
 ```
 LCA
@@ -4069,13 +4054,13 @@ Path Queries
 
 ---
 
-# Distance To Root
+### Distance To Root
 
 ```cpp
 dep[u]
 ```
 
-### Meaning
+##### Meaning
 
 ```
 Number of edges
@@ -4084,7 +4069,7 @@ from root to u
 
 ---
 
-# Build Complexity
+### Build Complexity
 
 ```
 O(N log N)
@@ -4092,7 +4077,7 @@ O(N log N)
 
 ---
 
-# Query Complexity
+### Query Complexity
 
 ```
 Jump
@@ -4104,7 +4089,7 @@ O(log N)
 
 ---
 
-# Memory
+### Memory
 
 ```
 O(N log N)
@@ -4112,9 +4097,9 @@ O(N log N)
 
 ---
 
-# Useful Snippets
+### Useful Snippets
 
-## Parent
+#### Parent
 
 ```cpp
 up[u][0]
@@ -4122,7 +4107,7 @@ up[u][0]
 
 ---
 
-## Grand Parent
+#### Grand Parent
 
 ```cpp
 up[u][1]
@@ -4130,7 +4115,7 @@ up[u][1]
 
 ---
 
-## 4th Ancestor
+#### 4th Ancestor
 
 ```cpp
 up[u][2]
@@ -4144,7 +4129,7 @@ because:
 
 ---
 
-## Move Up One Level
+#### Move Up One Level
 
 ```cpp
 u = up[u][0];
@@ -4152,7 +4137,7 @@ u = up[u][0];
 
 ---
 
-## Move Up 13 Levels
+#### Move Up 13 Levels
 
 ```cpp
 u = jump(u, 13);
@@ -4160,7 +4145,7 @@ u = jump(u, 13);
 
 ---
 
-## Root Check
+#### Root Check
 
 ```cpp
 if (u == root)
@@ -4170,7 +4155,7 @@ if (u == root)
 
 ---
 
-# Common Tricks
+### Common Tricks
 
 ```
 up[u][j]
@@ -4196,7 +4181,7 @@ Depth + LCA
 
 ---
 
-# Common Problems
+### Common Problems
 
 ```
 Company Queries I
@@ -4216,7 +4201,7 @@ Path Queries
 
 ---
 
-# Maximum N Guide
+### Maximum N Guide
 
 | N | LG |
 | --- | --- |
@@ -4225,7 +4210,7 @@ Path Queries
 | 5e5 | 19 |
 | 1e6 | 20 |
 
-### Safe Choice
+##### Safe Choice
 
 ```cpp
 const int LG = 20;
@@ -4239,9 +4224,9 @@ N <= 1e6
 
 ---
 
-# Common Mistakes
+### Common Mistakes
 
-## Wrong
+#### Wrong
 
 ```cpp
 dfs(root, 0);
@@ -4257,7 +4242,7 @@ may be accessed.
 
 ---
 
-## Safer
+#### Safer
 
 ```cpp
 dfs(root, root);
@@ -4265,7 +4250,7 @@ dfs(root, root);
 
 ---
 
-## Wrong LG
+#### Wrong LG
 
 ```cpp
 const int LG = 17;
@@ -4279,7 +4264,7 @@ N = 2e5
 
 ---
 
-## Safe
+#### Safe
 
 ```cpp
 const int LG = 20;
@@ -4287,7 +4272,7 @@ const int LG = 20;
 
 ---
 
-# Notes
+### Notes
 
 ```
 Binary Lifting alone does NOT solve LCA.
@@ -4298,9 +4283,9 @@ Next topic:
 LCA
 ```
 
-# LCA (Lowest Common Ancestor)
+### LCA (Lowest Common Ancestor)
 
-## When To Use
+#### When To Use
 
 ```
 Tree Queries
@@ -4318,7 +4303,7 @@ Query On Path
 
 ---
 
-# Idea
+### Idea
 
 ```
 LCA(u,v)
@@ -4347,7 +4332,7 @@ LCA(4,3) = 1
 
 ---
 
-# Template
+### Template
 
 ```cpp
 const int LG = 20;
@@ -4395,7 +4380,7 @@ void build(int n, int root = 1) {
 
 ---
 
-# LCA Query
+### LCA Query
 
 ```cpp
 int lca(int u, int v) {
@@ -4431,7 +4416,7 @@ int lca(int u, int v) {
 }
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(log N)
@@ -4439,7 +4424,7 @@ O(log N)
 
 ---
 
-# Distance Between Two Nodes
+### Distance Between Two Nodes
 
 ```cpp
 int dist(int u, int v) {
@@ -4455,7 +4440,7 @@ int dist(int u, int v) {
 }
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(log N)
@@ -4463,7 +4448,7 @@ O(log N)
 
 ---
 
-# Kth Ancestor
+### Kth Ancestor
 
 ```cpp
 int jump(int u, int k) {
@@ -4480,7 +4465,7 @@ int jump(int u, int k) {
 
 ---
 
-# Check Ancestor
+### Check Ancestor
 
 Needs Euler Tour.
 
@@ -4494,7 +4479,7 @@ bool is_ancestor(int u, int v) {
 }
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(1)
@@ -4502,7 +4487,7 @@ O(1)
 
 ---
 
-# Kth Node On Path
+### Kth Node On Path
 
 Path:
 
@@ -4518,7 +4503,7 @@ int p = lca(u, v);
 
 ---
 
-### Lengths
+##### Lengths
 
 ```cpp
 int left =
@@ -4530,7 +4515,7 @@ int right =
 
 ---
 
-### Query
+##### Query
 
 ```cpp
 int kth(int u,
@@ -4557,7 +4542,7 @@ int kth(int u,
 }
 ```
 
-### Use
+##### Use
 
 ```
 SPOJ QTREE2
@@ -4565,7 +4550,7 @@ SPOJ QTREE2
 
 ---
 
-# Length Of Path
+### Length Of Path
 
 ```cpp
 dist(u, v)
@@ -4579,7 +4564,7 @@ number of edges
 
 ---
 
-# Number Of Nodes On Path
+### Number Of Nodes On Path
 
 ```cpp
 dist(u, v) + 1
@@ -4587,7 +4572,7 @@ dist(u, v) + 1
 
 ---
 
-# Check If Node Lies On Path
+### Check If Node Lies On Path
 
 ```cpp
 dist(u, x)
@@ -4597,7 +4582,7 @@ dist(x, v)
 dist(u, v)
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(log N)
@@ -4605,7 +4590,7 @@ O(log N)
 
 ---
 
-# Find Parent
+### Find Parent
 
 ```cpp
 up[u][0]
@@ -4613,7 +4598,7 @@ up[u][0]
 
 ---
 
-# Find Root Distance
+### Find Root Distance
 
 ```cpp
 dep[u]
@@ -4621,7 +4606,7 @@ dep[u]
 
 ---
 
-# Path Through LCA
+### Path Through LCA
 
 Every path:
 
@@ -4639,9 +4624,9 @@ Used everywhere.
 
 ---
 
-# Useful Snippets
+### Useful Snippets
 
-## LCA
+#### LCA
 
 ```cpp
 int p = lca(u, v);
@@ -4649,7 +4634,7 @@ int p = lca(u, v);
 
 ---
 
-## Distance
+#### Distance
 
 ```cpp
 cout << dist(u, v);
@@ -4657,7 +4642,7 @@ cout << dist(u, v);
 
 ---
 
-## Parent
+#### Parent
 
 ```cpp
 cout << up[u][0];
@@ -4665,7 +4650,7 @@ cout << up[u][0];
 
 ---
 
-## Grand Parent
+#### Grand Parent
 
 ```cpp
 cout << up[u][1];
@@ -4673,7 +4658,7 @@ cout << up[u][1];
 
 ---
 
-## Jump 10 Levels
+#### Jump 10 Levels
 
 ```cpp
 cout << jump(u, 10);
@@ -4681,7 +4666,7 @@ cout << jump(u, 10);
 
 ---
 
-## Same Depth
+#### Same Depth
 
 ```cpp
 u = jump(
@@ -4692,7 +4677,7 @@ u = jump(
 
 ---
 
-# Common Tricks
+### Common Tricks
 
 ```
 Distance
@@ -4756,7 +4741,7 @@ LCA + Jump
 
 ---
 
-# Complexity Summary
+### Complexity Summary
 
 | Operation | Complexity |
 | --- | --- |
@@ -4769,7 +4754,7 @@ LCA + Jump
 
 ---
 
-# Memory
+### Memory
 
 ```
 O(N log N)
@@ -4777,7 +4762,7 @@ O(N log N)
 
 ---
 
-# Common Problems
+### Common Problems
 
 ```
 Distance Queries
@@ -4799,11 +4784,11 @@ Tree Navigation
 
 ---
 
-# ACPC Notes
+### ACPC Notes
 
 Most common formulas:
 
-## Distance
+#### Distance
 
 ```cpp
 dep[u]
@@ -4815,7 +4800,7 @@ dep[v]
 
 ---
 
-## Number Of Nodes
+#### Number Of Nodes
 
 ```cpp
 dist(u,v)+1
@@ -4823,7 +4808,7 @@ dist(u,v)+1
 
 ---
 
-## Node On Path
+#### Node On Path
 
 ```cpp
 dist(u,x)
@@ -4835,7 +4820,7 @@ dist(u,v)
 
 ---
 
-## Path
+#### Path
 
 ```
 u -> lca -> v
@@ -4844,9 +4829,12 @@ u -> lca -> v
 If you remember only these four,
 you can solve a huge number of tree problems.
 
-# KMP (Knuth-Morris-Pratt)
 
-## When To Use
+## 4) Strings
+
+### KMP (Knuth-Morris-Pratt)
+
+#### When To Use
 
 ```
 Pattern Matching
@@ -4864,9 +4852,9 @@ String DP
 
 ---
 
-# Prefix Function
+### Prefix Function
 
-## Definition
+#### Definition
 
 ```
 pi[i]
@@ -4893,7 +4881,7 @@ pi =
 
 ---
 
-# Prefix Function Template
+### Prefix Function Template
 
 ```cpp
 vector<int> prefix_function(string s) {
@@ -4924,13 +4912,13 @@ vector<int> prefix_function(string s) {
 }
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(N)
 ```
 
-### Memory
+##### Memory
 
 ```
 O(N)
@@ -4938,7 +4926,7 @@ O(N)
 
 ---
 
-# Pattern Matching
+### Pattern Matching
 
 Find all occurrences of:
 
@@ -4952,7 +4940,7 @@ text t
 
 ---
 
-### Build String
+##### Build String
 
 ```cpp
 string s =
@@ -4961,7 +4949,7 @@ string s =
 
 ---
 
-### Compute Prefix
+##### Compute Prefix
 
 ```cpp
 auto pi =
@@ -4970,7 +4958,7 @@ auto pi =
 
 ---
 
-### Occurrences
+##### Occurrences
 
 ```cpp
 vector<int> pos;
@@ -4990,7 +4978,7 @@ for (int i = m + 1;
 }
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(N + M)
@@ -4998,7 +4986,7 @@ O(N + M)
 
 ---
 
-# KMP Search Template
+### KMP Search Template
 
 ```cpp
 vector<int> kmp(
@@ -5034,7 +5022,7 @@ vector<int> kmp(
 
 ---
 
-# Longest Border
+### Longest Border
 
 Border means:
 
@@ -5050,7 +5038,7 @@ but not entire string.
 
 ---
 
-### Answer
+##### Answer
 
 ```cpp
 auto pi =
@@ -5059,7 +5047,7 @@ auto pi =
 cout << pi.back();
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(N)
@@ -5067,7 +5055,7 @@ O(N)
 
 ---
 
-# All Borders
+### All Borders
 
 ```cpp
 auto pi =
@@ -5085,7 +5073,7 @@ while (cur > 0) {
 }
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(N)
@@ -5093,7 +5081,7 @@ O(N)
 
 ---
 
-# Count Occurrences Of Every Prefix
+### Count Occurrences Of Every Prefix
 
 ```cpp
 auto pi =
@@ -5123,7 +5111,7 @@ for (int i = 0;
 }
 ```
 
-### Meaning
+##### Meaning
 
 ```
 cnt[len]
@@ -5136,7 +5124,7 @@ of prefix length len
 
 ---
 
-# String Period
+### String Period
 
 Example:
 
@@ -5158,7 +5146,7 @@ Length:
 
 ---
 
-### Formula
+##### Formula
 
 ```cpp
 int n = s.size();
@@ -5172,7 +5160,7 @@ int len =
 
 ---
 
-### Check
+##### Check
 
 ```cpp
 if (n % len == 0)
@@ -5183,7 +5171,7 @@ if (n % len == 0)
 
 ---
 
-# Smallest Period
+### Smallest Period
 
 ```cpp
 int n = s.size();
@@ -5202,13 +5190,13 @@ else
 
 ---
 
-# Prefix Automaton Jump
+### Prefix Automaton Jump
 
 ```cpp
 j = pi[j - 1];
 ```
 
-### Meaning
+##### Meaning
 
 ```
 Go to next valid border
@@ -5218,7 +5206,7 @@ This is the whole magic of KMP.
 
 ---
 
-# Distinct Prefix-Suffix Chain
+### Distinct Prefix-Suffix Chain
 
 ```cpp
 int cur = pi.back();
@@ -5231,7 +5219,7 @@ while (cur > 0) {
 }
 ```
 
-### Use
+##### Use
 
 ```
 Borders Problems
@@ -5239,9 +5227,9 @@ Borders Problems
 
 ---
 
-# Useful Snippets
+### Useful Snippets
 
-## Prefix Array
+#### Prefix Array
 
 ```cpp
 auto pi =
@@ -5250,7 +5238,7 @@ auto pi =
 
 ---
 
-## Longest Border
+#### Longest Border
 
 ```cpp
 cout << pi.back();
@@ -5258,7 +5246,7 @@ cout << pi.back();
 
 ---
 
-## Check Border Length K
+#### Check Border Length K
 
 ```cpp
 if (pi.back() >= k)
@@ -5268,7 +5256,7 @@ if (pi.back() >= k)
 
 ---
 
-## Number Of Occurrences
+#### Number Of Occurrences
 
 ```cpp
 auto pos =
@@ -5279,7 +5267,7 @@ cout << pos.size();
 
 ---
 
-## First Occurrence
+#### First Occurrence
 
 ```cpp
 if (!pos.empty())
@@ -5290,7 +5278,7 @@ if (!pos.empty())
 
 ---
 
-# Common Tricks
+### Common Tricks
 
 ```
 Longest Border
@@ -5346,7 +5334,7 @@ linear time matching
 
 ---
 
-# Complexity Summary
+### Complexity Summary
 
 | Operation | Complexity |
 | --- | --- |
@@ -5357,7 +5345,7 @@ linear time matching
 
 ---
 
-# Common Problems
+### Common Problems
 
 ```
 Finding Borders
@@ -5379,11 +5367,11 @@ Prefix-Suffix Problems
 
 ---
 
-# ACPC Notes
+### ACPC Notes
 
 Most used formulas:
 
-## Longest Border
+#### Longest Border
 
 ```cpp
 pi.back()
@@ -5391,7 +5379,7 @@ pi.back()
 
 ---
 
-## Smallest Period
+#### Smallest Period
 
 ```cpp
 n - pi.back()
@@ -5399,7 +5387,7 @@ n - pi.back()
 
 ---
 
-## Pattern Matching
+#### Pattern Matching
 
 ```cpp
 pattern + "#" + text
@@ -5407,7 +5395,7 @@ pattern + "#" + text
 
 ---
 
-## Border Chain
+#### Border Chain
 
 ```cpp
 cur = pi[cur - 1]
@@ -5415,23 +5403,26 @@ cur = pi[cur - 1]
 
 These four cover the majority of KMP problems.
 
-# Segment Tree
 
-## Basic Segment Tree
+## 5) Range Query Data Structures
 
-### Operation
+### Segment Tree
+
+#### Basic Segment Tree
+
+##### Operation
 
 ```
 Point Update
 ```
 
-### Query
+##### Query
 
 ```
 Range Minimum
 ```
 
-### Complexity
+##### Complexity
 
 | Operation | Complexity |
 | --- | --- |
@@ -5442,7 +5433,7 @@ Range Minimum
 
 ---
 
-### Template
+##### Template
 
 ```cpp
 #define LNode(n) (2 * (n) + 1)
@@ -5668,9 +5659,9 @@ struct SegTree {
 
 ---
 
-## Common Modifications
+#### Common Modifications
 
-### Range Sum
+##### Range Sum
 
 ```cpp
 res.val =
@@ -5685,7 +5676,7 @@ val = 0;
 
 ---
 
-### Range Maximum
+##### Range Maximum
 
 ```cpp
 res.val =
@@ -5700,7 +5691,7 @@ val = -INF;
 
 ---
 
-### Range GCD
+##### Range GCD
 
 ```cpp
 res.val =
@@ -5715,7 +5706,7 @@ val = 0;
 
 ---
 
-### Range XOR
+##### Range XOR
 
 ```cpp
 res.val =
@@ -5730,7 +5721,7 @@ val = 0;
 
 ---
 
-# Notes
+### Notes
 
 ```
 Most Segment Trees
@@ -5743,23 +5734,23 @@ merge()
 identity value
 ```
 
-# Lazy Segment Tree
+### Lazy Segment Tree
 
-## Range Assign + Range Minimum
+#### Range Assign + Range Minimum
 
-### Operation
+##### Operation
 
 ```
 Assign value to range
 ```
 
-### Query
+##### Query
 
 ```
 Minimum on range
 ```
 
-### Complexity
+##### Complexity
 
 | Operation | Complexity |
 | --- | --- |
@@ -5770,7 +5761,7 @@ Minimum on range
 
 ---
 
-### Template
+##### Template
 
 ```cpp
 #define LNode(n) (2 * (n) + 1)
@@ -6067,7 +6058,7 @@ struct SegTree {
 
 ---
 
-## Other Important Lazy Versions
+#### Other Important Lazy Versions
 
 ```
 Range Add + Sum
@@ -6081,7 +6072,7 @@ Range Assign + Min
 
 ---
 
-## Rule
+#### Rule
 
 ```
 Lazy Segment Tree
@@ -6105,9 +6096,9 @@ propagate()
 
 change.
 
-# Sparse Table
+### Sparse Table
 
-## Usage
+#### Usage
 
 ```
 Static Array
@@ -6131,7 +6122,7 @@ AND / OR Query
 
 ---
 
-## Complexity
+#### Complexity
 
 | Operation | Complexity |
 | --- | --- |
@@ -6141,7 +6132,7 @@ AND / OR Query
 
 ---
 
-## Requirement
+#### Requirement
 
 ```
 Operation must be idempotent
@@ -6167,9 +6158,9 @@ Do NOT work with O(1) sparse table
 
 ---
 
-# Range Minimum Query
+### Range Minimum Query
 
-### Template
+##### Template
 
 ```cpp
 struct SparseTable {
@@ -6244,7 +6235,7 @@ struct SparseTable {
 
 ---
 
-## Query
+#### Query
 
 ```cpp
 SparseTable sp(a);
@@ -6252,7 +6243,7 @@ SparseTable sp(a);
 cout << sp.query(l,r);
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(1)
@@ -6260,7 +6251,7 @@ O(1)
 
 ---
 
-# Range Maximum Query
+### Range Maximum Query
 
 Change only:
 
@@ -6273,7 +6264,7 @@ int merge(int a,int b){
 
 ---
 
-# Range GCD Query
+### Range GCD Query
 
 Change only:
 
@@ -6286,9 +6277,9 @@ int merge(int a,int b){
 
 ---
 
-# Tricks
+### Tricks
 
-## Maximum Frequency Of Query
+#### Maximum Frequency Of Query
 
 Many problems:
 
@@ -6312,7 +6303,7 @@ O(log n)
 
 ---
 
-## Binary Search + Sparse Table
+#### Binary Search + Sparse Table
 
 Very common.
 
@@ -6338,7 +6329,7 @@ Sparse Table
 
 ---
 
-## GCD Segment Problems
+#### GCD Segment Problems
 
 Common pattern:
 
@@ -6352,7 +6343,7 @@ Sparse Table is ideal.
 
 ---
 
-# Memory
+### Memory
 
 ```
 n log n
@@ -6374,7 +6365,7 @@ Safe.
 
 ---
 
-# Limitations
+### Limitations
 
 ```
 No Updates
@@ -6390,7 +6381,7 @@ Use Segment Tree
 
 ---
 
-# Most Common Uses
+### Most Common Uses
 
 ```
 RMQ
@@ -6406,9 +6397,12 @@ Binary Search + GCD
 LCA (Euler Tour + Sparse Table)
 ```
 
-# Ordered Set (PBDS)
 
-## Include
+## 6) STL, Two Pointers & Monotonic Techniques
+
+### Ordered Set (PBDS)
+
+#### Include
 
 ```cpp
 #include <ext/pb_ds/assoc_container.hpp>
@@ -6419,7 +6413,7 @@ using namespace __gnu_pbds;
 
 ---
 
-## Template
+#### Template
 
 ```cpp
 template<typename T>
@@ -6435,7 +6429,7 @@ tree<
 
 ---
 
-## Create
+#### Create
 
 ```cpp
 ordered_set<int> st;
@@ -6443,13 +6437,13 @@ ordered_set<int> st;
 
 ---
 
-## Insert
+#### Insert
 
 ```cpp
 st.insert(x);
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(log n)
@@ -6457,13 +6451,13 @@ O(log n)
 
 ---
 
-## Erase
+#### Erase
 
 ```cpp
 st.erase(x);
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(log n)
@@ -6471,7 +6465,7 @@ O(log n)
 
 ---
 
-## Count Elements Smaller Than x
+#### Count Elements Smaller Than x
 
 ```cpp
 st.order_of_key(x);
@@ -6489,7 +6483,7 @@ Returns:
 count of elements < 10
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(log n)
@@ -6497,7 +6491,7 @@ O(log n)
 
 ---
 
-## K-th Element
+#### K-th Element
 
 ```cpp
 *st.find_by_order(k)
@@ -6527,7 +6521,7 @@ Returns:
 second smallest
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(log n)
@@ -6535,7 +6529,7 @@ O(log n)
 
 ---
 
-## Size
+#### Size
 
 ```cpp
 st.size()
@@ -6543,7 +6537,7 @@ st.size()
 
 ---
 
-## Exists
+#### Exists
 
 ```cpp
 st.find(x) != st.end()
@@ -6551,9 +6545,9 @@ st.find(x) != st.end()
 
 ---
 
-# Common Tricks
+### Common Tricks
 
-## Count <= x
+#### Count <= x
 
 ```cpp
 st.order_of_key(x + 1)
@@ -6561,7 +6555,7 @@ st.order_of_key(x + 1)
 
 ---
 
-## Count > x
+#### Count > x
 
 ```cpp
 st.size()
@@ -6571,7 +6565,7 @@ st.order_of_key(x + 1)
 
 ---
 
-## Count >= x
+#### Count >= x
 
 ```cpp
 st.size()
@@ -6581,7 +6575,7 @@ st.order_of_key(x)
 
 ---
 
-# Ordered Multiset
+### Ordered Multiset
 
 Duplicates Allowed
 
@@ -6599,7 +6593,7 @@ tree<
 
 ---
 
-## Insert Duplicate
+#### Insert Duplicate
 
 ```cpp
 ms.insert({x,id});
@@ -6607,7 +6601,7 @@ ms.insert({x,id});
 
 ---
 
-## Erase One Occurrence
+#### Erase One Occurrence
 
 ```cpp
 ms.erase(
@@ -6617,7 +6611,7 @@ ms.erase(
 
 ---
 
-# Complexity
+### Complexity
 
 | Operation | Complexity |
 | --- | --- |
@@ -6628,7 +6622,7 @@ ms.erase(
 
 ---
 
-# Most Common Uses
+### Most Common Uses
 
 ```
 K-th Smallest
@@ -6644,13 +6638,13 @@ Dynamic Median
 Dynamic K-th Element
 ```
 
-# STL Advanced Tricks
+### STL Advanced Tricks
 
 ---
 
-# Set As Next Pointer
+### Set As Next Pointer
 
-## Idea
+#### Idea
 
 Store all alive positions.
 
@@ -6660,7 +6654,7 @@ set<int> st;
 
 ---
 
-## Remove Segment
+#### Remove Segment
 
 ```cpp
 auto it = st.lower_bound(l);
@@ -6676,7 +6670,7 @@ while(
 
 ---
 
-## Complexity
+#### Complexity
 
 ```
 O(total_removed * log n)
@@ -6686,7 +6680,7 @@ Each element removed once.
 
 ---
 
-## Uses
+#### Uses
 
 ```
 Destroy Array
@@ -6702,9 +6696,9 @@ Skip Processed Nodes
 
 ---
 
-# Dynamic Mex
+### Dynamic Mex
 
-## Idea
+#### Idea
 
 Store all missing values.
 
@@ -6714,7 +6708,7 @@ set<int> mex;
 
 ---
 
-## Answer
+#### Answer
 
 ```cpp
 *mex.begin()
@@ -6722,7 +6716,7 @@ set<int> mex;
 
 ---
 
-## Update
+#### Update
 
 Insert number:
 
@@ -6744,7 +6738,7 @@ if(freq[x] == 0)
 
 ---
 
-## Complexity
+#### Complexity
 
 ```
 O(log n)
@@ -6752,7 +6746,7 @@ O(log n)
 
 ---
 
-## Uses
+#### Uses
 
 ```
 Online Mex
@@ -6764,9 +6758,9 @@ Replacement Operations
 
 ---
 
-# Difference Map
+### Difference Map
 
-## Idea
+#### Idea
 
 Coordinates too large.
 
@@ -6788,7 +6782,7 @@ vector<int>
 
 ---
 
-## Pattern
+#### Pattern
 
 ```cpp
 diff[l]++;
@@ -6798,7 +6792,7 @@ diff[r+1]--;
 
 ---
 
-## Sweep
+#### Sweep
 
 ```cpp
 int cur = 0;
@@ -6811,7 +6805,7 @@ for(auto [x,val] : diff){
 
 ---
 
-## Uses
+#### Uses
 
 ```
 Intervals
@@ -6825,9 +6819,9 @@ Sweep Line
 
 ---
 
-# Frequency Of Frequency
+### Frequency Of Frequency
 
-## Idea
+#### Idea
 
 Store:
 
@@ -6851,7 +6845,7 @@ how many numbers appear exactly f times
 
 ---
 
-## Update
+#### Update
 
 ```cpp
 cnt[freq[x]]--;
@@ -6863,7 +6857,7 @@ cnt[freq[x]]++;
 
 ---
 
-## Query
+#### Query
 
 Check if frequency exists:
 
@@ -6873,7 +6867,7 @@ cnt[k] > 0
 
 ---
 
-## Uses
+#### Uses
 
 ```
 Mo Algorithm
@@ -6887,9 +6881,9 @@ Equal Frequencies
 
 ---
 
-# Lazy Deletion
+### Lazy Deletion
 
-## Problem
+#### Problem
 
 Priority Queue has no:
 
@@ -6899,7 +6893,7 @@ erase(x)
 
 ---
 
-## Solution
+#### Solution
 
 ```cpp
 priority_queue<int> pq;
@@ -6915,7 +6909,7 @@ bad[x]++;
 
 ---
 
-## Clean Top
+#### Clean Top
 
 ```cpp
 while(
@@ -6931,7 +6925,7 @@ while(
 
 ---
 
-## Uses
+#### Uses
 
 ```
 Sliding Window Maximum
@@ -6943,9 +6937,9 @@ Median Problems
 
 ---
 
-# Coordinate Compression
+### Coordinate Compression
 
-## Important Rule
+#### Important Rule
 
 Compress:
 
@@ -6963,7 +6957,7 @@ Together.
 
 ---
 
-## Pattern
+#### Pattern
 
 ```cpp
 vector<int> comp;
@@ -6988,7 +6982,7 @@ comp.erase(
 
 ---
 
-## Compress
+#### Compress
 
 ```cpp
 id =
@@ -7002,7 +6996,7 @@ comp.begin();
 
 ---
 
-## Recover
+#### Recover
 
 ```cpp
 comp[id]
@@ -7010,7 +7004,7 @@ comp[id]
 
 ---
 
-## Uses
+#### Uses
 
 ```
 Fenwick
@@ -7024,9 +7018,9 @@ Offline Queries
 
 ---
 
-# Offline Sort Trick
+### Offline Sort Trick
 
-## Idea
+#### Idea
 
 Sort:
 
@@ -7040,7 +7034,7 @@ by same key.
 
 ---
 
-## Example
+#### Example
 
 Count elements:
 
@@ -7052,7 +7046,7 @@ inside range.
 
 ---
 
-## Process
+#### Process
 
 ```
 Sort values descending
@@ -7064,7 +7058,7 @@ Insert values gradually
 
 ---
 
-## Uses
+#### Uses
 
 ```
 Fenwick
@@ -7078,15 +7072,15 @@ Range Queries
 
 ---
 
-# Small To Large
+### Small To Large
 
-## Idea
+#### Idea
 
 Always merge smaller container.
 
 ---
 
-## Pattern
+#### Pattern
 
 ```cpp
 if(
@@ -7106,7 +7100,7 @@ for(auto x : a)
 
 ---
 
-## Complexity
+#### Complexity
 
 ```
 O(n log² n)
@@ -7120,7 +7114,7 @@ O(n²)
 
 ---
 
-## Uses
+#### Uses
 
 ```
 DSU On Tree
@@ -7134,9 +7128,9 @@ Color Frequency Problems
 
 ---
 
-# Custom Hash
+### Custom Hash
 
-## Problem
+#### Problem
 
 unordered_map
 
@@ -7144,7 +7138,7 @@ can be hacked.
 
 ---
 
-## Template
+#### Template
 
 ```cpp
 struct custom_hash {
@@ -7186,7 +7180,7 @@ struct custom_hash {
 
 ---
 
-## Usage
+#### Usage
 
 ```cpp
 unordered_map<
@@ -7198,7 +7192,7 @@ unordered_map<
 
 ---
 
-## Uses
+#### Uses
 
 ```
 Codeforces Hacks
@@ -7210,9 +7204,9 @@ Fast Frequency Maps
 
 ---
 
-# Multiset Median Trick
+### Multiset Median Trick
 
-## Idea
+#### Idea
 
 Maintain:
 
@@ -7224,7 +7218,7 @@ Right Half
 
 ---
 
-## Invariant
+#### Invariant
 
 ```
 |left|
@@ -7239,7 +7233,7 @@ or
 
 ---
 
-## Median
+#### Median
 
 ```cpp
 *left.rbegin()
@@ -7247,7 +7241,7 @@ or
 
 ---
 
-## Uses
+#### Uses
 
 ```
 Sliding Window Median
@@ -7257,9 +7251,9 @@ Running Median
 
 ---
 
-# Order Statistics Trick
+### Order Statistics Trick
 
-## Count Inside Range
+#### Count Inside Range
 
 ```cpp
 os.order_of_key(r + 1)
@@ -7269,7 +7263,7 @@ os.order_of_key(l)
 
 ---
 
-## K-th Element
+#### K-th Element
 
 ```cpp
 *os.find_by_order(k)
@@ -7277,7 +7271,7 @@ os.order_of_key(l)
 
 ---
 
-## Uses
+#### Uses
 
 ```
 Dynamic Ranking
@@ -7289,15 +7283,15 @@ Online Queries
 
 ---
 
-# Multiset Min-Max Window
+### Multiset Min-Max Window
 
-## Idea
+#### Idea
 
 Maintain window values.
 
 ---
 
-## Maximum
+#### Maximum
 
 ```cpp
 *ms.rbegin()
@@ -7305,7 +7299,7 @@ Maintain window values.
 
 ---
 
-## Minimum
+#### Minimum
 
 ```cpp
 *ms.begin()
@@ -7313,7 +7307,7 @@ Maintain window values.
 
 ---
 
-## Window Difference
+#### Window Difference
 
 ```cpp
 *ms.rbegin()
@@ -7323,7 +7317,7 @@ Maintain window values.
 
 ---
 
-## Uses
+#### Uses
 
 ```
 Longest Window
@@ -7335,15 +7329,15 @@ Sliding Window Constraints
 
 ---
 
-# Set + Binary Search
+### Set + Binary Search
 
-## Idea
+#### Idea
 
 Nearest Element
 
 ---
 
-## Pattern
+#### Pattern
 
 ```cpp
 auto it =
@@ -7364,7 +7358,7 @@ prev(it)
 
 ---
 
-## Uses
+#### Uses
 
 ```
 Closest Number
@@ -7376,7 +7370,7 @@ Nearest Value
 
 ---
 
-# Top 5 Must-Know STL Tricks
+### Top 5 Must-Know STL Tricks
 
 ```
 Set As Next Pointer
@@ -7400,11 +7394,11 @@ ACPC
 Codeforces Div2/Div1
 ```
 
-# Two Pointers Advanced Patterns
+### Two Pointers Advanced Patterns
 
 ---
 
-# Recognition Checklist
+### Recognition Checklist
 
 Think about Two Pointers if you see:
 
@@ -7428,9 +7422,9 @@ Window
 
 ---
 
-# Longest Valid Segment
+### Longest Valid Segment
 
-## Pattern
+#### Pattern
 
 ```cpp
 int l = 0;
@@ -7456,7 +7450,7 @@ for(int r=0;r<n;r++){
 
 ---
 
-## Uses
+#### Uses
 
 ```
 Longest Distinct Subarray
@@ -7468,9 +7462,9 @@ Longest Window
 
 ---
 
-# Shortest Valid Segment
+### Shortest Valid Segment
 
-## Pattern
+#### Pattern
 
 ```cpp
 int l = 0;
@@ -7496,7 +7490,7 @@ for(int r=0;r<n;r++){
 
 ---
 
-## Uses
+#### Uses
 
 ```
 Minimum Window
@@ -7508,9 +7502,9 @@ Cover All Characters
 
 ---
 
-# Count Subarrays Trick
+### Count Subarrays Trick
 
-## Observation
+#### Observation
 
 When window:
 
@@ -7538,7 +7532,7 @@ are valid.
 
 ---
 
-## Formula
+#### Formula
 
 ```cpp
 ans += r-l+1;
@@ -7546,7 +7540,7 @@ ans += r-l+1;
 
 ---
 
-## Uses
+#### Uses
 
 ```
 Count Subarrays
@@ -7560,9 +7554,9 @@ At Most K Zeros
 
 ---
 
-# Exactly K Trick
+### Exactly K Trick
 
-## Formula
+#### Formula
 
 ```
 Exactly(K)
@@ -7578,7 +7572,7 @@ AtMost(K-1)
 
 ---
 
-## Uses
+#### Uses
 
 ```
 Exactly K Distinct
@@ -7592,9 +7586,9 @@ Exactly K Special Elements
 
 ---
 
-# Distinct Elements Window
+### Distinct Elements Window
 
-## State
+#### State
 
 ```cpp
 map<int,int> freq;
@@ -7604,7 +7598,7 @@ int distinct;
 
 ---
 
-## Add
+#### Add
 
 ```cpp
 if(++freq[x] == 1)
@@ -7613,7 +7607,7 @@ if(++freq[x] == 1)
 
 ---
 
-## Remove
+#### Remove
 
 ```cpp
 if(--freq[x] == 0)
@@ -7622,7 +7616,7 @@ if(--freq[x] == 0)
 
 ---
 
-## Uses
+#### Uses
 
 ```
 K Distinct
@@ -7634,9 +7628,9 @@ Longest Distinct
 
 ---
 
-# Positive Sum Window
+### Positive Sum Window
 
-## Condition
+#### Condition
 
 Array must be:
 
@@ -7652,7 +7646,7 @@ Non Negative
 
 ---
 
-## Works
+#### Works
 
 ```
 sum <= k
@@ -7664,7 +7658,7 @@ sum >= k
 
 ---
 
-## Doesn't Work
+#### Doesn't Work
 
 ```
 Negative Numbers
@@ -7672,9 +7666,9 @@ Negative Numbers
 
 ---
 
-# Binary Array Trick
+### Binary Array Trick
 
-## Maintain
+#### Maintain
 
 ```cpp
 cnt0
@@ -7684,7 +7678,7 @@ cnt1
 
 ---
 
-## Common Problems
+#### Common Problems
 
 ```
 Flip K Zeros
@@ -7698,9 +7692,9 @@ Maximum Consecutive Ones
 
 ---
 
-# Circular Array Trick
+### Circular Array Trick
 
-## Pattern
+#### Pattern
 
 ```cpp
 vector<int> b = a;
@@ -7725,7 +7719,7 @@ b
 
 ---
 
-## Uses
+#### Uses
 
 ```
 Circular Window
@@ -7737,9 +7731,9 @@ Ring Problems
 
 ---
 
-# Two Pointers On Sorted Array
+### Two Pointers On Sorted Array
 
-## Pattern
+#### Pattern
 
 ```cpp
 int l = 0;
@@ -7749,7 +7743,7 @@ int r = n-1;
 
 ---
 
-## Uses
+#### Uses
 
 ```
 Two Sum
@@ -7763,7 +7757,7 @@ Pair Counting
 
 ---
 
-# Pair Sum = X
+### Pair Sum = X
 
 ```cpp
 while(l < r){
@@ -7790,9 +7784,9 @@ while(l < r){
 
 ---
 
-# Pair Difference >= K
+### Pair Difference >= K
 
-## Observation
+#### Observation
 
 Sort.
 
@@ -7818,9 +7812,9 @@ O(n²)
 
 ---
 
-# Merge Two Sorted Arrays
+### Merge Two Sorted Arrays
 
-## Pattern
+#### Pattern
 
 ```cpp
 i = 0;
@@ -7832,7 +7826,7 @@ Move smaller pointer.
 
 ---
 
-## Complexity
+#### Complexity
 
 ```
 O(n+m)
@@ -7840,9 +7834,9 @@ O(n+m)
 
 ---
 
-# Common Mistakes
+### Common Mistakes
 
-## Negative Numbers
+#### Negative Numbers
 
 Usually break:
 
@@ -7854,7 +7848,7 @@ Two Pointers
 
 ---
 
-## Non-Monotonic Conditions
+#### Non-Monotonic Conditions
 
 Condition must become valid again by:
 
@@ -7870,7 +7864,7 @@ Two Pointers ❌
 
 ---
 
-# Top 5 Patterns
+### Top 5 Patterns
 
 ```
 Longest Valid Segment
@@ -7886,11 +7880,11 @@ Two Pointers On Sorted Array
 
 These alone solve a huge percentage of Two Pointer problems.
 
-# Sliding Window Advanced Patterns
+### Sliding Window Advanced Patterns
 
 ---
 
-# Recognition Checklist
+### Recognition Checklist
 
 Think about Sliding Window if you see:
 
@@ -7914,9 +7908,9 @@ Frequency Constraint
 
 ---
 
-# Fixed Length Window
+### Fixed Length Window
 
-## Pattern
+#### Pattern
 
 ```cpp
 int sum = 0;
@@ -7935,7 +7929,7 @@ for(int r=k;r<n;r++){
 
 ---
 
-## Complexity
+#### Complexity
 
 ```
 O(n)
@@ -7943,7 +7937,7 @@ O(n)
 
 ---
 
-## Uses
+#### Uses
 
 ```
 Maximum Sum Length K
@@ -7957,9 +7951,9 @@ Fixed Window Problems
 
 ---
 
-# Variable Length Window
+### Variable Length Window
 
-## Pattern
+#### Pattern
 
 ```cpp
 int l = 0;
@@ -7979,7 +7973,7 @@ for(int r=0;r<n;r++){
 
 ---
 
-## Uses
+#### Uses
 
 ```
 Longest Window
@@ -7991,9 +7985,9 @@ Distinct Constraints
 
 ---
 
-# Minimum Cover Window
+### Minimum Cover Window
 
-## Problem
+#### Problem
 
 Find smallest segment containing:
 
@@ -8007,7 +8001,7 @@ all values
 
 ---
 
-## Pattern
+#### Pattern
 
 Expand:
 
@@ -8027,7 +8021,7 @@ while still valid.
 
 ---
 
-## Uses
+#### Uses
 
 ```
 Minimum Window Substring
@@ -8039,9 +8033,9 @@ Smallest Valid Segment
 
 ---
 
-# Frequency Window
+### Frequency Window
 
-## State
+#### State
 
 ```cpp
 map<int,int> freq;
@@ -8055,7 +8049,7 @@ vector<int> freq;
 
 ---
 
-## Add
+#### Add
 
 ```cpp
 freq[x]++;
@@ -8063,7 +8057,7 @@ freq[x]++;
 
 ---
 
-## Remove
+#### Remove
 
 ```cpp
 freq[x]--;
@@ -8071,7 +8065,7 @@ freq[x]--;
 
 ---
 
-## Uses
+#### Uses
 
 ```
 Distinct
@@ -8083,9 +8077,9 @@ Frequency Constraints
 
 ---
 
-# Distinct Count Window
+### Distinct Count Window
 
-## State
+#### State
 
 ```cpp
 int distinct;
@@ -8093,7 +8087,7 @@ int distinct;
 
 ---
 
-## Add
+#### Add
 
 ```cpp
 if(++freq[x] == 1)
@@ -8102,7 +8096,7 @@ if(++freq[x] == 1)
 
 ---
 
-## Remove
+#### Remove
 
 ```cpp
 if(--freq[x] == 0)
@@ -8111,7 +8105,7 @@ if(--freq[x] == 0)
 
 ---
 
-## Uses
+#### Uses
 
 ```
 At Most K Distinct
@@ -8123,9 +8117,9 @@ Longest Distinct
 
 ---
 
-# At Most K Trick
+### At Most K Trick
 
-## Count
+#### Count
 
 ```
 Subarrays
@@ -8139,7 +8133,7 @@ At Most K
 
 ---
 
-## Formula
+#### Formula
 
 ```cpp
 ans += r-l+1;
@@ -8147,7 +8141,7 @@ ans += r-l+1;
 
 ---
 
-## Why
+#### Why
 
 All windows ending at:
 
@@ -8159,9 +8153,9 @@ are valid.
 
 ---
 
-# Exactly K Trick
+### Exactly K Trick
 
-## Formula
+#### Formula
 
 ```
 Exactly(K)
@@ -8177,7 +8171,7 @@ AtMost(K-1)
 
 ---
 
-## Uses
+#### Uses
 
 ```
 Distinct
@@ -8189,9 +8183,9 @@ Special Values
 
 ---
 
-# Window Maximum
+### Window Maximum
 
-## Naive
+#### Naive
 
 ```
 O(nk)
@@ -8199,7 +8193,7 @@ O(nk)
 
 ---
 
-## Better
+#### Better
 
 Use:
 
@@ -8217,7 +8211,7 @@ O(n)
 
 ---
 
-# Window Minimum
+### Window Minimum
 
 Same idea.
 
@@ -8229,7 +8223,7 @@ deque<int>
 
 ---
 
-## Uses
+#### Uses
 
 ```
 Min Window
@@ -8241,9 +8235,9 @@ DP Optimization
 
 ---
 
-# Sliding Median
+### Sliding Median
 
-## Idea
+#### Idea
 
 Maintain:
 
@@ -8261,7 +8255,7 @@ multiset
 
 ---
 
-## Complexity
+#### Complexity
 
 ```
 O(log n)
@@ -8271,7 +8265,7 @@ per operation.
 
 ---
 
-## Uses
+#### Uses
 
 ```
 Median Window
@@ -8281,9 +8275,9 @@ Online Median
 
 ---
 
-# Sliding Mex
+### Sliding Mex
 
-## Idea
+#### Idea
 
 Maintain:
 
@@ -8307,7 +8301,7 @@ Answer:
 
 ---
 
-## Complexity
+#### Complexity
 
 ```
 O(log n)
@@ -8315,9 +8309,9 @@ O(log n)
 
 ---
 
-# Binary Array Window
+### Binary Array Window
 
-## State
+#### State
 
 ```cpp
 cnt0
@@ -8327,7 +8321,7 @@ cnt1
 
 ---
 
-## Common Problems
+#### Common Problems
 
 ```
 Flip K Zeros
@@ -8341,9 +8335,9 @@ Maximum Consecutive Ones
 
 ---
 
-# Circular Window
+### Circular Window
 
-## Trick
+#### Trick
 
 Duplicate array.
 
@@ -8364,7 +8358,7 @@ b
 
 ---
 
-## Uses
+#### Uses
 
 ```
 Circular Array
@@ -8374,7 +8368,7 @@ Ring Problems
 
 ---
 
-# Monotonic Condition
+### Monotonic Condition
 
 Sliding Window works when:
 
@@ -8412,7 +8406,7 @@ Non-monotonic Constraints
 
 ---
 
-# Common Hidden Observation
+### Common Hidden Observation
 
 If:
 
@@ -8438,7 +8432,7 @@ inside loop.
 
 ---
 
-# Most Important Patterns
+### Most Important Patterns
 
 ```
 Fixed Length Window
@@ -8460,7 +8454,7 @@ Sliding Mex
 
 ---
 
-# Contest Checklist
+### Contest Checklist
 
 If problem contains:
 
@@ -8496,11 +8490,11 @@ Segment Tree
 DP
 ```
 
-# Monotonic Stack
+### Monotonic Stack
 
 ---
 
-# Recognition Checklist
+### Recognition Checklist
 
 Think about Monotonic Stack if you see:
 
@@ -8522,9 +8516,9 @@ Subarray Maximum
 
 ---
 
-# Next Greater Element
+### Next Greater Element
 
-## Problem
+#### Problem
 
 For every index:
 
@@ -8534,7 +8528,7 @@ First Greater To The Right
 
 ---
 
-## Pattern
+#### Pattern
 
 ```cpp
 vector<int> ans(n,-1); stack<int> st;
@@ -8547,7 +8541,7 @@ for(int i=n-1;i>=0;i--){
 
 ---
 
-## Complexity
+#### Complexity
 
 ```
 O(n)
@@ -8555,9 +8549,9 @@ O(n)
 
 ---
 
-# Previous Greater Element
+### Previous Greater Element
 
-## Pattern
+#### Pattern
 
 ```cpp
 for(int i=0;i<n;i++){
@@ -8569,9 +8563,9 @@ for(int i=0;i<n;i++){
 
 ---
 
-# Next Smaller Element
+### Next Smaller Element
 
-## Pattern
+#### Pattern
 
 Replace:
 
@@ -8587,7 +8581,7 @@ with
 
 ---
 
-## Uses
+#### Uses
 
 ```
 Histogram
@@ -8597,13 +8591,13 @@ Subarray Minimum
 
 ---
 
-# Previous Smaller Element
+### Previous Smaller Element
 
 Same idea.
 
 ---
 
-# Strict vs Non Strict
+### Strict vs Non Strict
 
 Very Important
 
@@ -8640,9 +8634,9 @@ Contribution Problems
 
 ---
 
-# Largest Rectangle In Histogram
+### Largest Rectangle In Histogram
 
-## Idea
+#### Idea
 
 Find:
 
@@ -8673,7 +8667,7 @@ a[i] *
 
 ---
 
-## Complexity
+#### Complexity
 
 ```
 O(n)
@@ -8681,9 +8675,9 @@ O(n)
 
 ---
 
-# Contribution Technique
+### Contribution Technique
 
-## Problem
+#### Problem
 
 Sum of:
 
@@ -8731,7 +8725,7 @@ choices on right
 
 ---
 
-## Uses
+#### Uses
 
 ```
 Subarray Minimums
@@ -8743,9 +8737,9 @@ Range Contributions
 
 ---
 
-# Sum Of Subarray Minimums
+### Sum Of Subarray Minimums
 
-## Formula
+#### Formula
 
 ```cpp
 ans +=
@@ -8758,7 +8752,7 @@ right[i];
 
 ---
 
-## Complexity
+#### Complexity
 
 ```
 O(n)
@@ -8766,7 +8760,7 @@ O(n)
 
 ---
 
-# Sum Of Subarray Maximums
+### Sum Of Subarray Maximums
 
 Same idea.
 
@@ -8784,9 +8778,9 @@ Smaller
 
 ---
 
-# Max-Min Of All Subarrays
+### Max-Min Of All Subarrays
 
-## Formula
+#### Formula
 
 ```
 Contribution As Maximum
@@ -8802,7 +8796,7 @@ Very common trick.
 
 ---
 
-# Monotonic Increasing Stack
+### Monotonic Increasing Stack
 
 Stack contains:
 
@@ -8830,7 +8824,7 @@ Smaller Elements
 
 ---
 
-# Monotonic Decreasing Stack
+### Monotonic Decreasing Stack
 
 Stack contains:
 
@@ -8858,7 +8852,7 @@ Greater Elements
 
 ---
 
-# Remove K Digits
+### Remove K Digits
 
 Classic problem.
 
@@ -8880,9 +8874,9 @@ Greedy + Stack
 
 ---
 
-# Valid Parentheses
+### Valid Parentheses
 
-## Pattern
+#### Pattern
 
 ```cpp
 stack<char> st;
@@ -8914,9 +8908,9 @@ Bracket Problems
 
 ---
 
-# Next Greater Circular
+### Next Greater Circular
 
-## Trick
+#### Trick
 
 Loop:
 
@@ -8932,7 +8926,7 @@ a[i%n]
 
 ---
 
-## Complexity
+#### Complexity
 
 ```
 O(n)
@@ -8940,7 +8934,7 @@ O(n)
 
 ---
 
-# Common Observation
+### Common Observation
 
 Every element:
 
@@ -8964,7 +8958,7 @@ O(n²)
 
 ---
 
-# Most Important Patterns
+### Most Important Patterns
 
 ```
 Next Greater
@@ -8984,7 +8978,7 @@ Max-Min Contribution
 
 ---
 
-# Contest Checklist
+### Contest Checklist
 
 If problem asks:
 
@@ -9018,11 +9012,11 @@ Segment Tree
 Sparse Table
 ```
 
-# Monotonic Queue (Deque Tricks)
+### Monotonic Queue (Deque Tricks)
 
 ---
 
-# Recognition Checklist
+### Recognition Checklist
 
 Think about Monotonic Queue if you see:
 
@@ -9042,7 +9036,7 @@ DP Optimization
 
 ---
 
-# Why Not Multiset?
+### Why Not Multiset?
 
 Window Max using:
 
@@ -9066,9 +9060,9 @@ O(n)
 
 ---
 
-# Sliding Window Maximum
+### Sliding Window Maximum
 
-## Problem
+#### Problem
 
 For every window:
 
@@ -9084,7 +9078,7 @@ maximum
 
 ---
 
-## Pattern
+#### Pattern
 
 ```cpp
 deque<int> dq;
@@ -9098,7 +9092,7 @@ for(int i=0;i<n;i++){
 
 ---
 
-## Complexity
+#### Complexity
 
 ```
 O(n)
@@ -9106,9 +9100,9 @@ O(n)
 
 ---
 
-# Sliding Window Minimum
+### Sliding Window Minimum
 
-## Pattern
+#### Pattern
 
 Replace:
 
@@ -9132,7 +9126,7 @@ a[dq.front()]
 
 ---
 
-## Complexity
+#### Complexity
 
 ```
 O(n)
@@ -9140,7 +9134,7 @@ O(n)
 
 ---
 
-# Understanding The Queue
+### Understanding The Queue
 
 Queue stores:
 
@@ -9160,7 +9154,7 @@ a[dq.front()]
 
 ---
 
-# Why O(n)?
+### Why O(n)?
 
 Every index:
 
@@ -9180,9 +9174,9 @@ O(n)
 
 ---
 
-# Fixed Window Max
+### Fixed Window Max
 
-## Example
+#### Example
 
 ```
 Maximum of every subarray
@@ -9195,13 +9189,13 @@ Classic application.
 
 ---
 
-# Fixed Window Min
+### Fixed Window Min
 
 Same idea.
 
 ---
 
-# Min-Max Window
+### Min-Max Window
 
 Maintain:
 
@@ -9221,7 +9215,7 @@ mx - mn
 
 ---
 
-## Uses
+#### Uses
 
 ```
 Max - Min <= K
@@ -9231,9 +9225,9 @@ Longest Valid Window
 
 ---
 
-# Longest Window With
+### Longest Window With
 
-## Condition
+#### Condition
 
 ```
 max(window)
@@ -9244,7 +9238,7 @@ min(window)
 
 ---
 
-## Pattern
+#### Pattern
 
 Two Pointers
 
@@ -9254,7 +9248,7 @@ Monotonic Queue
 
 ---
 
-## Complexity
+#### Complexity
 
 ```
 O(n)
@@ -9262,9 +9256,9 @@ O(n)
 
 ---
 
-# DP Optimization
+### DP Optimization
 
-## Form
+#### Form
 
 ```cpp
 dp[i]
@@ -9320,9 +9314,9 @@ O(nk)
 
 ---
 
-# Shortest Subarray >= K
+### Shortest Subarray >= K
 
-## Famous Problem
+#### Famous Problem
 
 Contains:
 
@@ -9354,9 +9348,9 @@ where normal sliding window fails.
 
 ---
 
-# Queue Types
+### Queue Types
 
-## Maximum Queue
+#### Maximum Queue
 
 Pop:
 
@@ -9374,7 +9368,7 @@ a[dq.front()]
 
 ---
 
-# Minimum Queue
+### Minimum Queue
 
 Pop:
 
@@ -9392,7 +9386,7 @@ a[dq.front()]
 
 ---
 
-# Circular Array Trick
+### Circular Array Trick
 
 Duplicate:
 
@@ -9419,9 +9413,9 @@ Circular Window Minimum
 
 ---
 
-# Common Mistakes
+### Common Mistakes
 
-## Store Values
+#### Store Values
 
 Wrong.
 
@@ -9441,7 +9435,7 @@ window expiration
 
 ---
 
-## Forget Removing Old Index
+#### Forget Removing Old Index
 
 Must remove:
 
@@ -9461,7 +9455,7 @@ Wrong Answer
 
 ---
 
-# Comparison
+### Comparison
 
 ```
 Multiset
@@ -9479,7 +9473,7 @@ O(n)
 
 ---
 
-# Most Important Patterns
+### Most Important Patterns
 
 ```
 Sliding Window Maximum
@@ -9495,7 +9489,7 @@ Shortest Subarray >= K
 
 ---
 
-# Contest Checklist
+### Contest Checklist
 
 If problem contains:
 
@@ -9529,7 +9523,7 @@ Multiset
 
 ---
 
-# Top 3 Uses In Contests
+### Top 3 Uses In Contests
 
 ```
 Sliding Window Maximum
@@ -9541,15 +9535,15 @@ DP Optimization
 
 These appear much more often than the rest.
 
-# Number Theory Handbook (ACPC)
+### Number Theory Handbook (ACPC)
 
 ---
 
-# Core Functions
+### Core Functions
 
-## GCD
+#### GCD
 
-### Function
+##### Function
 
 ```cpp
 int gcd(int a,int b){
@@ -9557,20 +9551,20 @@ int gcd(int a,int b){
 }
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(log(min(a,b)))
 ```
 
-### Uses
+##### Uses
 
 - Coprime checking
 - Fractions
 - Number theory
 - LCM
 
-### Facts
+##### Facts
 
 ```cpp
 gcd(a,b)=gcd(b,a%b)
@@ -9590,9 +9584,9 @@ gcd(n,n+1)=1
 
 ---
 
-## LCM
+#### LCM
 
-### Function
+##### Function
 
 ```cpp
 int lcm(int a,int b){
@@ -9600,19 +9594,19 @@ int lcm(int a,int b){
 }
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(log(min(a,b)))
 ```
 
-### Facts
+##### Facts
 
 ```cpp
 gcd(a,b)*lcm(a,b)=a*b
 ```
 
-### Warning
+##### Warning
 
 Bad
 
@@ -9628,9 +9622,9 @@ a/gcd(a,b)*b
 
 ---
 
-## Binary Power
+#### Binary Power
 
-### Function
+##### Function
 
 ```cpp
 int power(int a,int b){
@@ -9650,13 +9644,13 @@ int power(int a,int b){
 }
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(log b)
 ```
 
-### Uses
+##### Uses
 
 - Powers
 - Modular arithmetic
@@ -9664,9 +9658,9 @@ O(log b)
 
 ---
 
-## Modular Power
+#### Modular Power
 
-### Function
+##### Function
 
 ```cpp
 int power(int a,int b,int mod){
@@ -9687,7 +9681,7 @@ int power(int a,int b,int mod){
 }
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(log b)
@@ -9695,9 +9689,9 @@ O(log b)
 
 ---
 
-# Extended Euclid
+### Extended Euclid
 
-## Function
+#### Function
 
 ```cpp
 int exgcd(int a,int b,int &x,int &y){
@@ -9721,19 +9715,19 @@ int exgcd(int a,int b,int &x,int &y){
 }
 ```
 
-### Returns
+##### Returns
 
 ```
 ax+by=gcd(a,b)
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(log n)
 ```
 
-### Uses
+##### Uses
 
 - Modular inverse
 - Diophantine equations
@@ -9741,9 +9735,12 @@ O(log n)
 
 ---
 
-# Modular Arithmetic
 
-## Normalize Mod
+## 7) Math & Number Theory
+
+### Modular Arithmetic
+
+#### Normalize Mod
 
 ```cpp
 x%=mod;
@@ -9754,7 +9751,7 @@ if(x<0)
 
 ---
 
-## Addition
+#### Addition
 
 ```cpp
 (a+b)%mod
@@ -9762,7 +9759,7 @@ if(x<0)
 
 ---
 
-## Subtraction
+#### Subtraction
 
 ```cpp
 ((a-b)%mod+mod)%mod
@@ -9770,7 +9767,7 @@ if(x<0)
 
 ---
 
-## Multiplication
+#### Multiplication
 
 ```cpp
 1LL*a*b%mod
@@ -9778,7 +9775,7 @@ if(x<0)
 
 ---
 
-## Division
+#### Division
 
 ```cpp
 a*inv(b)%mod
@@ -9792,17 +9789,17 @@ a/b%mod
 
 ---
 
-# Modular Inverse
+### Modular Inverse
 
-## Fermat
+#### Fermat
 
-### Condition
+##### Condition
 
 ```
 mod must be prime
 ```
 
-### Function
+##### Function
 
 ```cpp
 int inv(int x){
@@ -9810,7 +9807,7 @@ int inv(int x){
 }
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(log mod)
@@ -9818,7 +9815,7 @@ O(log mod)
 
 ---
 
-## Recursive Inverse
+#### Recursive Inverse
 
 ```cpp
 int inv(int x){
@@ -9827,7 +9824,7 @@ int inv(int x){
 }
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(log mod)
@@ -9835,15 +9832,15 @@ O(log mod)
 
 ---
 
-## Extended Euclid Inverse
+#### Extended Euclid Inverse
 
-### Condition
+##### Condition
 
 ```cpp
 gcd(a,m)==1
 ```
 
-### Function
+##### Function
 
 ```cpp
 int inv(int a){
@@ -9856,7 +9853,7 @@ int inv(int a){
 }
 ```
 
-### Works For
+##### Works For
 
 ```
 Non-prime mod
@@ -9864,7 +9861,7 @@ Non-prime mod
 
 ---
 
-## Generate All Inverses
+#### Generate All Inverses
 
 ```cpp
 inv[1]=1;
@@ -9873,7 +9870,7 @@ for(int i=2;i<=n;i++)
     inv[i]=mod-(mod/i)*inv[mod%i]%mod;
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(n)
@@ -9881,15 +9878,15 @@ O(n)
 
 ---
 
-## Facts
+#### Facts
 
-### Inverse Exists iff
+##### Inverse Exists iff
 
 ```cpp
 gcd(a,m)==1
 ```
 
-### Product
+##### Product
 
 ```cpp
 (a*b)^-1
@@ -9899,9 +9896,9 @@ a^-1*b^-1
 
 ---
 
-# Factorials
+### Factorials
 
-## Build Factorial
+#### Build Factorial
 
 ```cpp
 fac[0]=1;
@@ -9910,7 +9907,7 @@ for(int i=1;i<=n;i++)
     fac[i]=1LL*fac[i-1]*i%mod;
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(n)
@@ -9918,7 +9915,7 @@ O(n)
 
 ---
 
-## Inverse Factorials
+#### Inverse Factorials
 
 ```cpp
 invfac[n]=power(fac[n],mod-2);
@@ -9927,7 +9924,7 @@ for(int i=n;i>=1;i--)
     invfac[i-1]=1LL*invfac[i]*i%mod;
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(n)
@@ -9935,7 +9932,7 @@ O(n)
 
 ---
 
-## nCr
+#### nCr
 
 ```cpp
 int C(int n,int r){
@@ -9949,7 +9946,7 @@ int C(int n,int r){
 }
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(1)
@@ -9957,9 +9954,9 @@ O(1)
 
 ---
 
-# Legendre Formula
+### Legendre Formula
 
-## Power Of Prime Inside n!
+#### Power Of Prime Inside n!
 
 ```cpp
 int cnt(int n,int p){
@@ -9976,13 +9973,13 @@ int cnt(int n,int p){
 }
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(logp(n))
 ```
 
-### Uses
+##### Uses
 
 - Trailing zeros
 - Factorial divisibility
@@ -9990,13 +9987,13 @@ O(logp(n))
 
 ---
 
-## Trailing Zeros In n!
+#### Trailing Zeros In n!
 
 ```cpp
 cnt(n,5)
 ```
 
-### Why?
+##### Why?
 
 ```
 2s are always more than 5s
@@ -10004,7 +10001,7 @@ cnt(n,5)
 
 ---
 
-## Prime Exponent In nCr
+#### Prime Exponent In nCr
 
 ```cpp
 cnt(n,p)
@@ -10014,7 +10011,7 @@ cnt(n,p)
 
 ---
 
-## Check m | n!
+#### Check m | n!
 
 Factorize:
 
@@ -10032,9 +10029,9 @@ for every prime.
 
 ---
 
-# Diophantine Equations
+### Diophantine Equations
 
-## Equation
+#### Equation
 
 ```
 ax+by=c
@@ -10042,7 +10039,7 @@ ax+by=c
 
 ---
 
-## Solution Exists iff
+#### Solution Exists iff
 
 ```cpp
 c%gcd(a,b)==0
@@ -10050,7 +10047,7 @@ c%gcd(a,b)==0
 
 ---
 
-## One Solution
+#### One Solution
 
 From
 
@@ -10066,7 +10063,7 @@ c/g
 
 ---
 
-## General Solution
+#### General Solution
 
 Let
 
@@ -10084,7 +10081,7 @@ y=y0-k*(a/g)
 
 ---
 
-## Positive Solutions
+#### Positive Solutions
 
 Move
 
@@ -10102,9 +10099,9 @@ y>0
 
 ---
 
-# Euler Phi
+### Euler Phi
 
-## Function
+#### Function
 
 ```cpp
 int phi(int n){
@@ -10129,7 +10126,7 @@ int phi(int n){
 }
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(sqrt(n))
@@ -10137,7 +10134,7 @@ O(sqrt(n))
 
 ---
 
-## Meaning
+#### Meaning
 
 Count numbers
 
@@ -10153,21 +10150,21 @@ gcd(x,n)==1
 
 ---
 
-## Facts
+#### Facts
 
-### Prime
+##### Prime
 
 ```cpp
 phi(p)=p-1
 ```
 
-### Prime Power
+##### Prime Power
 
 ```cpp
 phi(p^k)=p^k-p^(k-1)
 ```
 
-### Multiplicative
+##### Multiplicative
 
 If
 
@@ -10181,7 +10178,7 @@ Then
 phi(ab)=phi(a)*phi(b)
 ```
 
-### Divisor Identity
+##### Divisor Identity
 
 ```cpp
 Σ phi(d)=n
@@ -10191,7 +10188,7 @@ over all divisors d of n.
 
 ---
 
-## Euler Theorem
+#### Euler Theorem
 
 If
 
@@ -10207,9 +10204,9 @@ a^phi(m)=1 mod m
 
 ---
 
-# Prime Testing
+### Prime Testing
 
-## Trial Division
+#### Trial Division
 
 ```cpp
 bool prime(int n){
@@ -10225,7 +10222,7 @@ bool prime(int n){
 }
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(sqrt(n))
@@ -10233,15 +10230,15 @@ O(sqrt(n))
 
 ---
 
-## Miller Rabin
+#### Miller Rabin
 
-### Complexity
+##### Complexity
 
 ```
 O(log³ n)
 ```
 
-### Range
+##### Range
 
 ```
 up to 1e18
@@ -10249,9 +10246,9 @@ up to 1e18
 
 ---
 
-# Linear Sieve
+### Linear Sieve
 
-## Function
+#### Function
 
 ```cpp
 vector<int> lp(n+1);
@@ -10275,13 +10272,13 @@ for(int i=2;i<=n;i++){
 }
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(n)
 ```
 
-### Gives
+##### Gives
 
 ```cpp
 lp[x]
@@ -10291,9 +10288,9 @@ smallest prime factor.
 
 ---
 
-# Prime Factorization
+### Prime Factorization
 
-## Using SPF
+#### Using SPF
 
 ```cpp
 vector<pair<int,int>> factor(int x){
@@ -10319,7 +10316,7 @@ vector<pair<int,int>> factor(int x){
 }
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(log n)
@@ -10327,9 +10324,9 @@ O(log n)
 
 ---
 
-# Divisors
+### Divisors
 
-## Number Of Divisors
+#### Number Of Divisors
 
 If
 
@@ -10345,7 +10342,7 @@ Then
 
 ---
 
-## Sum Of Divisors
+#### Sum Of Divisors
 
 ```cpp
 Π((p^(a+1)-1)/(p-1))
@@ -10353,7 +10350,7 @@ Then
 
 ---
 
-## Product Of Divisors
+#### Product Of Divisors
 
 If
 
@@ -10369,9 +10366,9 @@ n^(d/2)
 
 ---
 
-# Harmonic Lemma
+### Harmonic Lemma
 
-## Fact
+#### Fact
 
 Distinct values of
 
@@ -10387,7 +10384,7 @@ O(sqrt(n))
 
 ---
 
-## Loop
+#### Loop
 
 ```cpp
 for(int l=1,r;l<=n;l=r+1){
@@ -10398,7 +10395,7 @@ for(int l=1,r;l<=n;l=r+1){
 }
 ```
 
-### Complexity
+##### Complexity
 
 ```
 O(sqrt(n))
@@ -10406,9 +10403,9 @@ O(sqrt(n))
 
 ---
 
-# Important Facts
+### Important Facts
 
-## Coprime
+#### Coprime
 
 ```cpp
 gcd(a,b)==1
@@ -10416,7 +10413,7 @@ gcd(a,b)==1
 
 ---
 
-## Consecutive Numbers
+#### Consecutive Numbers
 
 ```cpp
 gcd(n,n+1)=1
@@ -10424,7 +10421,7 @@ gcd(n,n+1)=1
 
 ---
 
-## Count Multiples In [1,n]
+#### Count Multiples In [1,n]
 
 ```cpp
 n/x
@@ -10432,7 +10429,7 @@ n/x
 
 ---
 
-## Count Multiples In [l,r]
+#### Count Multiples In [l,r]
 
 ```cpp
 r/x-(l-1)/x
@@ -10440,7 +10437,7 @@ r/x-(l-1)/x
 
 ---
 
-## Distinct Prime Factors
+#### Distinct Prime Factors
 
 Maximum for
 
@@ -10456,7 +10453,7 @@ is
 
 ---
 
-## Maximum Number Of Divisors
+#### Maximum Number Of Divisors
 
 For
 
@@ -10472,7 +10469,7 @@ maximum is approximately
 
 ---
 
-## Factorization Limits
+#### Factorization Limits
 
 ```cpp
 sqrt(1e12)=1e6
@@ -10495,7 +10492,7 @@ Pollard Rho
 
 ---
 
-# Must Know For ACPC
+### Must Know For ACPC
 
 1. gcd
 2. lcm
@@ -10514,11 +10511,14 @@ Pollard Rho
 15. harmonic lemma
 16. Miller Rabin
 
-# Dynamic Programming - ACPC Reference
+### Dynamic Programming - ACPC Reference
 
 ---
 
-# DP Mindset
+
+## 8) Dynamic Programming
+
+### DP Mindset
 
 Every DP problem has:
 
@@ -10558,7 +10558,7 @@ int solve(state){
 
 ---
 
-# Complexity Formula
+### Complexity Formula
 
 Always calculate:
 
@@ -10592,11 +10592,11 @@ O(N × SUM)
 
 ---
 
-# 1D DP
+### 1D DP
 
 ---
 
-# Fibonacci
+### Fibonacci
 
 State:
 
@@ -10636,9 +10636,9 @@ O(N)
 
 ---
 
-# Tricks
+### Tricks
 
-### Rolling Memory
+##### Rolling Memory
 
 Instead of:
 
@@ -10660,7 +10660,7 @@ O(1)
 
 ---
 
-# Stair DP
+### Stair DP
 
 State:
 
@@ -10684,7 +10684,7 @@ Paths
 
 ---
 
-# Prefix DP
+### Prefix DP
 
 State:
 
@@ -10722,11 +10722,11 @@ Word Break
 
 ---
 
-# 0/1 Knapsack
+### 0/1 Knapsack
 
 ---
 
-# State
+### State
 
 ```cpp
 (i,rem)
@@ -10741,7 +10741,7 @@ Remaining capacity
 
 ---
 
-# Recursive
+### Recursive
 
 ```cpp
 int solve(
@@ -10777,7 +10777,7 @@ int solve(
 
 ---
 
-# Iterative
+### Iterative
 
 ```cpp
 for(int i=0;i<n;i++){
@@ -10797,9 +10797,9 @@ for(int i=0;i<n;i++){
 
 ---
 
-# Important Tricks
+### Important Tricks
 
-### Trick 1
+##### Trick 1
 
 Backward loop:
 
@@ -10815,7 +10815,7 @@ Take Once
 
 ---
 
-### Trick 2
+##### Trick 2
 
 Forward loop:
 
@@ -10831,7 +10831,7 @@ Take Infinite Times
 
 ---
 
-### Trick 3
+##### Trick 3
 
 Recover Solution
 
@@ -10845,7 +10845,7 @@ Then backtrack.
 
 ---
 
-### Trick 4
+##### Trick 4
 
 When:
 
@@ -10881,7 +10881,7 @@ O(NW)
 
 ---
 
-# Subset Sum
+### Subset Sum
 
 State:
 
@@ -10891,7 +10891,7 @@ State:
 
 ---
 
-# Recursive
+### Recursive
 
 ```cpp
 bool solve(
@@ -10923,7 +10923,7 @@ bool solve(
 
 ---
 
-# Iterative
+### Iterative
 
 ```cpp
 dp[0]=1;
@@ -10942,9 +10942,9 @@ for(auto x:a){
 
 ---
 
-# Tricks
+### Tricks
 
-### Count Solutions
+##### Count Solutions
 
 Replace:
 
@@ -10960,7 +10960,7 @@ long long
 
 ---
 
-### Find One Solution
+##### Find One Solution
 
 Store:
 
@@ -10970,7 +10970,7 @@ take[i][sum]
 
 ---
 
-### Bitset Optimization
+##### Bitset Optimization
 
 ```cpp
 bitset<MAX> bs;
@@ -10991,11 +10991,11 @@ Huge optimization.
 
 ---
 
-# Coin Change
+### Coin Change
 
 ---
 
-# Count Ways
+### Count Ways
 
 ```cpp
 ll solve(
@@ -11030,9 +11030,9 @@ ll solve(
 
 ---
 
-# Tricks
+### Tricks
 
-### Combination
+##### Combination
 
 ```cpp
 solve(i,...)
@@ -11040,7 +11040,7 @@ solve(i,...)
 
 ---
 
-### Permutation
+##### Permutation
 
 ```cpp
 solve(0,...)
@@ -11052,7 +11052,7 @@ Very common trap.
 
 ---
 
-# LCS
+### LCS
 
 State:
 
@@ -11062,7 +11062,7 @@ State:
 
 ---
 
-# Recursive
+### Recursive
 
 ```cpp
 int solve(
@@ -11094,15 +11094,15 @@ int solve(
 
 ---
 
-# Tricks
+### Tricks
 
-### Recover String
+##### Recover String
 
 Store choices.
 
 ---
 
-### SCS
+##### SCS
 
 ```
 Shortest Common Supersequence
@@ -11116,7 +11116,7 @@ n+m-LCS
 
 ---
 
-### Edit Distance Relation
+##### Edit Distance Relation
 
 ```
 Insert/Delete only
@@ -11138,11 +11138,11 @@ O(NM)
 
 ---
 
-# LIS
+### LIS
 
 ---
 
-# O(N²)
+### O(N²)
 
 ```cpp
 for(int i=0;i<n;i++){
@@ -11162,7 +11162,7 @@ for(int i=0;i<n;i++){
 
 ---
 
-# O(N log N)
+### O(N log N)
 
 ```cpp
 vector<int> lis;
@@ -11186,9 +11186,9 @@ for(auto x:a){
 
 ---
 
-# Tricks
+### Tricks
 
-### Strict LIS
+##### Strict LIS
 
 ```cpp
 lower_bound
@@ -11196,7 +11196,7 @@ lower_bound
 
 ---
 
-### Non-Decreasing LIS
+##### Non-Decreasing LIS
 
 ```cpp
 upper_bound
@@ -11204,7 +11204,7 @@ upper_bound
 
 ---
 
-### Recover LIS
+##### Recover LIS
 
 Store:
 
@@ -11214,13 +11214,13 @@ parent[]
 
 ---
 
-### Count LIS
+##### Count LIS
 
 Need another DP.
 
 ---
 
-# Grid DP
+### Grid DP
 
 State:
 
@@ -11230,7 +11230,7 @@ State:
 
 ---
 
-# Recursive
+### Recursive
 
 ```cpp
 ll solve(
@@ -11261,9 +11261,9 @@ ll solve(
 
 ---
 
-# Tricks
+### Tricks
 
-### Obstacles
+##### Obstacles
 
 ```cpp
 if(blocked)
@@ -11272,7 +11272,7 @@ if(blocked)
 
 ---
 
-### Minimum Cost
+##### Minimum Cost
 
 Replace:
 
@@ -11288,7 +11288,7 @@ min(...)
 
 ---
 
-### Maximum Cost
+##### Maximum Cost
 
 Use:
 
@@ -11298,7 +11298,7 @@ max(...)
 
 ---
 
-### Path Recovery
+##### Path Recovery
 
 Store direction.
 
@@ -11312,7 +11312,7 @@ O(NM)
 
 ---
 
-# DAG DP
+### DAG DP
 
 State:
 
@@ -11322,7 +11322,7 @@ u
 
 ---
 
-# Longest Path
+### Longest Path
 
 ```cpp
 int solve(int u){
@@ -11349,9 +11349,9 @@ int solve(int u){
 
 ---
 
-# Tricks
+### Tricks
 
-### Count Paths
+##### Count Paths
 
 ```cpp
 ret += solve(v);
@@ -11359,7 +11359,7 @@ ret += solve(v);
 
 ---
 
-### Longest Path
+##### Longest Path
 
 ```cpp
 ret=max(...)
@@ -11367,7 +11367,7 @@ ret=max(...)
 
 ---
 
-### Shortest Path
+##### Shortest Path
 
 ```cpp
 ret=min(...)
@@ -11383,11 +11383,11 @@ O(V+E)
 
 ---
 
-# Tree DP
+### Tree DP
 
 ---
 
-# Independent Set
+### Independent Set
 
 State:
 
@@ -11435,9 +11435,9 @@ int solve(
 
 ---
 
-# Tree DP Tricks
+### Tree DP Tricks
 
-### Subtree DP
+##### Subtree DP
 
 ```cpp
 dp[u]
@@ -11445,7 +11445,7 @@ dp[u]
 
 ---
 
-### Rerooting
+##### Rerooting
 
 Need:
 
@@ -11456,7 +11456,7 @@ dp_up
 
 ---
 
-### Diameter DP
+##### Diameter DP
 
 Keep:
 
@@ -11469,7 +11469,7 @@ largest depths.
 
 ---
 
-### Tree Matching
+##### Tree Matching
 
 State:
 
@@ -11489,7 +11489,7 @@ O(N)
 
 ---
 
-# Range DP
+### Range DP
 
 State:
 
@@ -11499,7 +11499,7 @@ State:
 
 ---
 
-# Recursive
+### Recursive
 
 ```cpp
 int solve(
@@ -11534,7 +11534,7 @@ int solve(
 
 ---
 
-# Recognition
+### Recognition
 
 Keywords:
 
@@ -11548,9 +11548,9 @@ Split
 
 ---
 
-# Tricks
+### Tricks
 
-### Length Order
+##### Length Order
 
 Always build:
 
@@ -11560,7 +11560,7 @@ len=1..n
 
 ---
 
-### Partition Point
+##### Partition Point
 
 Usually:
 
@@ -11570,7 +11570,7 @@ for(k=l;k<r;k++)
 
 ---
 
-### Palindrome DP
+##### Palindrome DP
 
 State:
 
@@ -11588,7 +11588,7 @@ O(N³)
 
 ---
 
-# Bitmask DP
+### Bitmask DP
 
 Use when:
 
@@ -11598,7 +11598,7 @@ N ≤ 20
 
 ---
 
-# Assignment DP
+### Assignment DP
 
 ```cpp
 int solve(int mask){
@@ -11639,7 +11639,7 @@ int solve(int mask){
 
 ---
 
-# Bit Tricks
+### Bit Tricks
 
 Check:
 
@@ -11667,7 +11667,7 @@ __builtin_popcount(mask)
 
 ---
 
-# Submask Enumeration
+### Submask Enumeration
 
 ```cpp
 for(
@@ -11680,9 +11680,9 @@ for(
 
 ---
 
-# Tricks
+### Tricks
 
-### TSP
+##### TSP
 
 State:
 
@@ -11692,7 +11692,7 @@ State:
 
 ---
 
-### Assignment
+##### Assignment
 
 State:
 
@@ -11702,7 +11702,7 @@ State:
 
 ---
 
-### Partition DP
+##### Partition DP
 
 Enumerate submasks.
 
@@ -11716,7 +11716,7 @@ O(N*2^N)
 
 ---
 
-# Digit DP
+### Digit DP
 
 Use when:
 
@@ -11728,7 +11728,7 @@ satisfying property
 
 ---
 
-# State
+### State
 
 ```cpp
 (pos,tight,sum)
@@ -11736,7 +11736,7 @@ satisfying property
 
 ---
 
-# Template
+### Template
 
 ```cpp
 ll solve(
@@ -11786,9 +11786,9 @@ ll solve(
 
 ---
 
-# Most Important Digit DP Tricks
+### Most Important Digit DP Tricks
 
-### Count [L,R]
+##### Count [L,R]
 
 ```cpp
 f(R)-f(L-1)
@@ -11798,7 +11798,7 @@ Always.
 
 ---
 
-### Leading Zeros
+##### Leading Zeros
 
 Add state:
 
@@ -11812,7 +11812,7 @@ dp[pos][tight][started]
 
 ---
 
-### Divisibility
+##### Divisibility
 
 Add:
 
@@ -11826,7 +11826,7 @@ dp[pos][tight][mod]
 
 ---
 
-### Digit Sum
+##### Digit Sum
 
 Add:
 
@@ -11836,7 +11836,7 @@ sum
 
 ---
 
-### Used Digits
+##### Used Digits
 
 Add:
 
@@ -11846,7 +11846,7 @@ mask
 
 ---
 
-### Binary Digit DP
+##### Binary Digit DP
 
 Convert to bits.
 
@@ -11862,11 +11862,11 @@ Digits × States
 
 ---
 
-# DP Optimizations
+### DP Optimizations
 
 ---
 
-# Rolling Array
+### Rolling Array
 
 Before:
 
@@ -11888,7 +11888,7 @@ O(M)
 
 ---
 
-# State Compression
+### State Compression
 
 Before:
 
@@ -11904,7 +11904,7 @@ dp[j][k]
 
 ---
 
-# Prefix Optimization
+### Prefix Optimization
 
 Before:
 
@@ -11922,7 +11922,7 @@ using prefix sums.
 
 ---
 
-# Memory Estimate
+### Memory Estimate
 
 ```
 1e6 int       = 4 MB
@@ -11931,7 +11931,7 @@ using prefix sums.
 
 ---
 
-# DP Recognition Cheat Sheet
+### DP Recognition Cheat Sheet
 
 | Pattern | State |
 | --- | --- |
@@ -11950,7 +11950,7 @@ using prefix sums.
 
 ---
 
-# Most Important ACPC DP Topics
+### Most Important ACPC DP Topics
 
 1. Knapsack
 2. Subset Sum
@@ -11967,3 +11967,676 @@ using prefix sums.
 13. Reconstruction
 14. Rolling Array
 15. Bitset DP
+## 9) Missing Topics (Added)
+
+### Fenwick Tree (BIT)
+
+```cpp
+struct Fenwick {
+    int n; vector<long long> bit;
+    Fenwick(int n=0){ init(n); }
+    void init(int n_){ n=n_; bit.assign(n+1,0); }
+    void add(int idx,long long val){ for(;idx<=n;idx+=idx&-idx) bit[idx]+=val; }
+    long long sumPrefix(int idx) const { long long r=0; for(;idx>0;idx-=idx&-idx) r+=bit[idx]; return r; }
+    long long rangeSum(int l,int r) const { return sumPrefix(r)-sumPrefix(l-1); }
+};
+```
+
+#### Complexity
+
+- `add / prefix / range`: `O(log n)`
+
+---
+
+### SCC (Kosaraju)
+
+```cpp
+vector<vector<int>> g, rg;
+vector<int> vis, order, comp;
+
+void dfs1(int u){ vis[u]=1; for(int v:g[u]) if(!vis[v]) dfs1(v); order.push_back(u); }
+void dfs2(int u,int c){ comp[u]=c; for(int v:rg[u]) if(comp[v]==-1) dfs2(v,c); }
+
+int kosaraju(int n){
+    vis.assign(n+1,0); order.clear();
+    for(int i=1;i<=n;i++) if(!vis[i]) dfs1(i);
+    comp.assign(n+1,-1);
+    int scc=0;
+    for(int i=n-1;i>=0;i--){
+        int u=order[i];
+        if(comp[u]==-1) dfs2(u, scc++);
+    }
+    return scc;
+}
+```
+
+---
+
+### 2-SAT (Implication Graph)
+
+```cpp
+struct TwoSAT {
+    int n; vector<vector<int>> g, rg; vector<int> comp, order, vis, ans;
+    TwoSAT(int n=0){ init(n); }
+    void init(int n_){ n=n_; g.assign(2*n,{}); rg.assign(2*n,{}); }
+    int id(int x,bool t){ return 2*x + (t?1:0); }
+    void addImp(int u,int v){ g[u].push_back(v); rg[v].push_back(u); }
+    void imply(int a,bool av,int b,bool bv){ addImp(id(a,av), id(b,bv)); }
+    void either(int a,bool av,int b,bool bv){ imply(a,!av,b,bv); imply(b,!bv,a,av); }
+    void forceVar(int a,bool av){ imply(a,!av,a,av); }
+    void dfs1(int u){ vis[u]=1; for(int v:g[u]) if(!vis[v]) dfs1(v); order.push_back(u); }
+    void dfs2(int u,int c){ comp[u]=c; for(int v:rg[u]) if(comp[v]==-1) dfs2(v,c); }
+    bool satisfiable(){
+        vis.assign(2*n,0); order.clear();
+        for(int i=0;i<2*n;i++) if(!vis[i]) dfs1(i);
+        comp.assign(2*n,-1); int c=0;
+        for(int i=2*n-1;i>=0;i--) if(comp[order[i]]==-1) dfs2(order[i],c++);
+        ans.assign(n,0);
+        for(int i=0;i<n;i++){
+            if(comp[id(i,false)]==comp[id(i,true)]) return false;
+            ans[i] = comp[id(i,false)] < comp[id(i,true)];
+        }
+        return true;
+    }
+};
+```
+
+#### Note
+
+- Build SCC on implication graph; variable `x` is true if `comp[id(x,true)] > comp[id(x,false)]`.
+
+---
+
+### Dinic (Max Flow)
+
+```cpp
+struct Dinic {
+    struct E{ int to, rev; long long cap; };
+    int n; vector<vector<E>> g; vector<int> lvl, it;
+    Dinic(int n=0){ init(n); }
+    void init(int n_){ n=n_; g.assign(n,{}); }
+    void addEdge(int u,int v,long long c){
+        E a{v,(int)g[v].size(),c}, b{u,(int)g[u].size(),0};
+        g[u].push_back(a); g[v].push_back(b);
+    }
+    bool bfs(int s,int t){
+        lvl.assign(n,-1); queue<int> q; q.push(s); lvl[s]=0;
+        while(!q.empty()){
+            int u=q.front(); q.pop();
+            for(auto &e:g[u]) if(e.cap>0 && lvl[e.to]==-1) lvl[e.to]=lvl[u]+1, q.push(e.to);
+        }
+        return lvl[t]!=-1;
+    }
+    long long dfs(int u,int t,long long f){
+        if(!f || u==t) return f;
+        for(int &i=it[u]; i<(int)g[u].size(); i++){
+            E &e=g[u][i];
+            if(lvl[e.to]!=lvl[u]+1 || e.cap==0) continue;
+            long long got=dfs(e.to,t,min(f,e.cap));
+            if(!got) continue;
+            e.cap-=got; g[e.to][e.rev].cap+=got;
+            return got;
+        }
+        return 0;
+    }
+    long long maxflow(int s,int t){
+        long long flow=0;
+        while(bfs(s,t)){
+            it.assign(n,0);
+            while(long long pushed=dfs(s,t,(long long)4e18)) flow+=pushed;
+        }
+        return flow;
+    }
+};
+```
+
+#### Note
+
+- Use level graph BFS + blocking flow DFS.
+
+---
+
+### Trie (Lowercase)
+
+```cpp
+struct Trie {
+    struct Node { int nxt[26]; bool end=false; Node(){ memset(nxt,-1,sizeof(nxt)); } };
+    vector<Node> t{Node()};
+    void add(const string& s){ int u=0; for(char c:s){ int x=c-'a'; if(t[u].nxt[x]==-1){ t[u].nxt[x]=t.size(); t.push_back(Node()); } u=t[u].nxt[x]; } t[u].end=true; }
+    bool has(const string& s) const { int u=0; for(char c:s){ int x=c-'a'; if(t[u].nxt[x]==-1) return false; u=t[u].nxt[x]; } return t[u].end; }
+};
+```
+
+---
+
+### Aho-Corasick (Pattern Matching)
+
+```cpp
+struct Aho {
+    struct Node { int nxt[26], link=0, out=0; Node(){ memset(nxt,-1,sizeof(nxt)); } };
+    vector<Node> t{Node()};
+    void add(const string& s){ int u=0; for(char c:s){ int x=c-'a'; if(t[u].nxt[x]==-1){ t[u].nxt[x]=t.size(); t.push_back(Node()); } u=t[u].nxt[x]; } t[u].out++; }
+    void build(){
+        queue<int> q;
+        for(int c=0;c<26;c++){
+            int v=t[0].nxt[c];
+            if(v==-1) t[0].nxt[c]=0;
+            else q.push(v);
+        }
+        while(!q.empty()){
+            int u=q.front(); q.pop();
+            t[u].out += t[t[u].link].out;
+            for(int c=0;c<26;c++){
+                int v=t[u].nxt[c];
+                if(v==-1) t[u].nxt[c]=t[t[u].link].nxt[c];
+                else t[v].link=t[t[u].link].nxt[c], q.push(v);
+            }
+        }
+    }
+    int countMatches(const string& s){ int u=0, ans=0; for(char c:s){ u=t[u].nxt[c-'a']; ans+=t[u].out; } return ans; }
+};
+```
+
+---
+
+### Heavy-Light Decomposition (HLD)
+
+```cpp
+vector<vector<int>> g;
+vector<int> parent, depth, heavy, head, pos, sz;
+int timer=0;
+
+int dfs_sz(int u,int p){
+    parent[u]=p; sz[u]=1; int mx=0;
+    for(int v:g[u]) if(v!=p){
+        depth[v]=depth[u]+1;
+        int s=dfs_sz(v,u); sz[u]+=s;
+        if(s>mx) mx=s, heavy[u]=v;
+    }
+    return sz[u];
+}
+
+void dfs_hld(int u,int h){
+    head[u]=h; pos[u]=++timer;
+    if(heavy[u]!=-1) dfs_hld(heavy[u],h);
+    for(int v:g[u]) if(v!=parent[u] && v!=heavy[u]) dfs_hld(v,v);
+}
+
+vector<pair<int,int>> path_segments(int u,int v){
+    vector<pair<int,int>> segs;
+    while(head[u]!=head[v]){
+        if(depth[head[u]]<depth[head[v]]) swap(u,v);
+        segs.push_back({pos[head[u]], pos[u]});
+        u=parent[head[u]];
+    }
+    if(depth[u]>depth[v]) swap(u,v);
+    segs.push_back({pos[u], pos[v]});
+    return segs;
+}
+```
+
+---
+
+### Mo's Algorithm
+
+```cpp
+struct Query { int l, r, idx; };
+int B;
+bool operator<(const Query& a, const Query& b){
+    int A=a.l/B, C=b.l/B;
+    if(A!=C) return A<C;
+    return (A&1)? a.r>b.r : a.r<b.r;
+}
+// Maintain current [L,R] with add(pos)/remove(pos), store answers by original idx.
+```
+
+---
+
+### Meet in the Middle
+
+```cpp
+long long bestSubsetSumLE(const vector<long long>& a, long long S){
+    int n=a.size(), m=n/2;
+    vector<long long> L, R;
+    for(int mask=0; mask<(1<<m); mask++){
+        long long s=0; for(int i=0;i<m;i++) if(mask>>i&1) s+=a[i];
+        if(s<=S) L.push_back(s);
+    }
+    for(int mask=0; mask<(1<<(n-m)); mask++){
+        long long s=0; for(int i=0;i<n-m;i++) if(mask>>i&1) s+=a[m+i];
+        if(s<=S) R.push_back(s);
+    }
+    sort(R.begin(), R.end());
+    long long ans=0;
+    for(long long x:L){
+        auto it=upper_bound(R.begin(), R.end(), S-x);
+        if(it!=R.begin()) ans=max(ans, x+*prev(it));
+    }
+    return ans;
+}
+```
+
+## 10) Comprehensive Missing Tricks & Function Ideas
+
+### Foundations & Utilities: extra useful functions
+
+```cpp
+template<class T> bool chmin(T& a,const T& b){ if(b<a){ a=b; return true; } return false; }
+template<class T> bool chmax(T& a,const T& b){ if(b>a){ a=b; return true; } return false; }
+long long mod_pow(long long a,long long e,long long mod){ long long r=1%mod; a%=mod; while(e){ if(e&1) r=r*a%mod; a=a*a%mod; e>>=1; } return r; }
+long long ceil_div(long long a,long long b){ if(b<0) a=-a,b=-b; return a>=0 ? (a+b-1)/b : a/b; }
+long long floor_div(long long a,long long b){ if(b<0) a=-a,b=-b; return a>=0 ? a/b : -(( -a + b - 1)/b); }
+```
+
+#### Extra ideas
+
+- Coordinate-compress pairs/tuples when a value alone is not enough.
+- Prefer `long long` in weighted/DP transitions by default.
+- Keep one reusable `restore_path(par, target)` helper for graph and DP reconstructions.
+
+---
+
+### Graphs: missed patterns and tricks
+
+```cpp
+// Multi-test graph reset trick:
+// vector<vector<int>> adj(n+1); vector<int> vis(n+1,0);
+// Recreate per test instead of manual clear loops on huge static arrays.
+
+// Edge index trick for undirected graph with parent edge:
+// store edges as pairs (to, id), and skip only parent edge id in DFS.
+```
+
+```cpp
+// Bridge / articulation skeleton (Tarjan low-link)
+vector<vector<pair<int,int>>> g;
+vector<int> tin, low, isCut; vector<pair<int,int>> bridges; int timerDFS=0;
+void dfsBridge(int u,int pe=-1){
+    tin[u]=low[u]=++timerDFS; int children=0;
+    for(auto [v,id]:g[u]) if(id!=pe){
+        if(tin[v]) low[u]=min(low[u],tin[v]);
+        else {
+            dfsBridge(v,id); low[u]=min(low[u],low[v]); children++;
+            if(low[v]>tin[u]) bridges.push_back({u,v});
+            if(pe!=-1 && low[v]>=tin[u]) isCut[u]=1;
+        }
+    }
+    if(pe==-1 && children>1) isCut[u]=1;
+}
+```
+
+#### Common graph problem recognition
+
+- **Shortest path + 0/1 edges** → 0-1 BFS.
+- **Topological order + DAG transitions** → DAG DP.
+- **Connectivity under edge additions** → DSU.
+- **Offline connectivity with removals** → reverse process + DSU.
+- **Constraints of form `x - y <= c`** → Bellman-Ford / SPFA model.
+
+---
+
+### Trees: missed ideas
+
+```cpp
+// Rerooting DP pattern:
+// 1) dfs_down(u,p): compute contribution inside subtree.
+// 2) dfs_up(u,p,fromParent): reroot transition to children.
+// This solves sum of distances, max distance to any node, etc.
+```
+
+```cpp
+// Binary lifting helper: kth node on path(u,v)
+int kth_on_path(int u,int v,int k,
+                function<int(int,int)> lca,
+                function<int(int,int)> jump,
+                const vector<int>& depth){
+    int w=lca(u,v);
+    int left=depth[u]-depth[w]+1;
+    if(k<=left) return jump(u,k-1);
+    int right=depth[v]-depth[w];
+    int need=left+right-k;
+    return jump(v,need);
+}
+```
+
+---
+
+### Strings: missed functions and patterns
+
+```cpp
+vector<int> z_function(const string& s){
+    int n=s.size(); vector<int> z(n); int l=0,r=0;
+    for(int i=1;i<n;i++){
+        if(i<=r) z[i]=min(r-i+1,z[i-l]);
+        while(i+z[i]<n && s[z[i]]==s[i+z[i]]) z[i]++;
+        if(i+z[i]-1>r) l=i,r=i+z[i]-1;
+    }
+    return z;
+}
+```
+
+```cpp
+// Double-hash substring helper idea:
+// pref[i], pw[i] for each mod; getHash(l,r) in O(1).
+// Use for palindrome checks, repeated substring checks, lexicographic compare with LCP binary search.
+```
+
+#### String problem recognition
+
+- Many pattern queries in one text → Aho-Corasick.
+- Prefix/suffix border questions → prefix-function / Z-function.
+- Need lexicographic cyclic operations → suffix-array / Booth-style ideas.
+
+---
+
+### Data Structures (DS): missed important functions
+
+```cpp
+struct FenwickRange {
+    int n; vector<long long> b1,b2;
+    FenwickRange(int n=0){ init(n); }
+    void init(int n_){ n=n_; b1.assign(n+1,0); b2.assign(n+1,0); }
+    void add(vector<long long>& b,int i,long long v){ for(;i<=n;i+=i&-i) b[i]+=v; }
+    long long sum(const vector<long long>& b,int i) const { long long r=0; for(;i>0;i-=i&-i) r+=b[i]; return r; }
+    void range_add(int l,int r,long long v){ add(b1,l,v); add(b1,r+1,-v); add(b2,l,v*(l-1)); add(b2,r+1,-v*r); }
+    long long pref(int i) const { return sum(b1,i)*i - sum(b2,i); }
+    long long range_sum(int l,int r) const { return pref(r)-pref(l-1); }
+};
+```
+
+```cpp
+// DSU rollback idea (for offline dynamic connectivity):
+// keep stack of parent/size changes, no path compression, union by size only, rollback to checkpoint.
+```
+
+#### DS problem-type checklist
+
+- Point update + prefix/range sum → Fenwick.
+- Range update + range query → lazy segtree or two-BIT trick.
+- Static idempotent range query (min/gcd/max) → sparse table.
+- Order statistics with updates → PBDS / segtree over compressed values.
+
+---
+
+### Number Theory (NS): missed functions and ideas
+
+```cpp
+long long ext_gcd(long long a,long long b,long long& x,long long& y){
+    if(!b){ x=1; y=0; return a; }
+    long long x1,y1,g=ext_gcd(b,a%b,x1,y1);
+    x=y1; y=x1-(a/b)*y1; return g;
+}
+
+// Solve a*x + b*y = c
+bool diophantine(long long a,long long b,long long c,long long& x,long long& y){
+    long long g=ext_gcd(abs(a),abs(b),x,y);
+    if(c%g) return false;
+    x*=c/g; y*=c/g;
+    if(a<0) x=-x; if(b<0) y=-y;
+    return true;
+}
+```
+
+```cpp
+// CRT merge (x ≡ a1 mod m1, x ≡ a2 mod m2) can be built using ext_gcd.
+// Keep answer modulo lcm(m1,m2) and check consistency by gcd divisibility.
+```
+
+#### Number theory recognition
+
+- Congruence system with multiple mods → CRT.
+- Huge exponent with mod prime/composite → Euler/Fermat + fast power.
+- Frequent factorization queries up to N → SPF sieve.
+
+---
+
+### Dynamic Programming (DP): missed important patterns
+
+```cpp
+// Reconstruction helper (1D choice DP)
+vector<int> restore_choice(int target,const vector<int>& from){
+    vector<int> pick;
+    while(target!=-1 && from[target]!=-1){
+        pick.push_back(target-from[target]);
+        target=from[target];
+    }
+    reverse(pick.begin(),pick.end());
+    return pick;
+}
+```
+
+```cpp
+// Bitset knapsack idea:
+// bitset<MAXS+1> bs; bs[0]=1;
+// for(int w:weights) bs |= (bs<<w);
+// reachable sum queries in O(N*MAXS/word_size).
+```
+
+```cpp
+// Divide & Conquer DP optimization condition:
+// dp[i][j] = min_{k<j}(dp[i-1][k] + cost(k+1,j))
+// with monotone opt: opt[i][j] <= opt[i][j+1].
+```
+
+#### DP problem-type recognition (high-value)
+
+- Sequence with local transitions → 1D DP.
+- Partition into k groups with cost interval → D&C / Knuth candidates.
+- State depends on subset of used elements → bitmask DP.
+- Count strings/numbers with digit constraints → digit DP.
+- Tree answer requiring include/exclude node states → tree DP with 2-state transitions.
+
+---
+
+### Final quick ACPC checklist by topic
+
+- **Graphs:** shortest path family, SCC/2-SAT, flow, bridges/articulation, DSU offline.
+- **DS:** Fenwick variants, segtree lazy, sparse table, PBDS/compression workflow.
+- **Strings:** KMP + Z + Aho, hashing for O(1) substring compare.
+- **Number theory (NS):** gcd/ext-gcd, inverses, CRT, sieve/SPF, modular power.
+- **DP:** state design, transition proof, memory compression, reconstruction, optimization conditions.
+- **Bits:** masks, subset iteration, popcount/parity, bitset acceleration, XOR basis patterns.
+
+## 11) Bit Manipulation & Bitset
+
+### Bit Operations Cheat Sheet
+
+```cpp
+// read/set/clear/toggle bit i (0-indexed)
+bool getBit(long long x,int i){ return (x>>i)&1LL; }
+long long setBit(long long x,int i){ return x | (1LL<<i); }
+long long clearBit(long long x,int i){ return x & ~(1LL<<i); }
+long long toggleBit(long long x,int i){ return x ^ (1LL<<i); }
+
+// lowbit and common predicates
+long long lowbit(long long x){ return x & -x; }
+bool isPowerOfTwo(long long x){ return x>0 && (x&(x-1))==0; }
+```
+
+```cpp
+// builtins (GCC/Clang)
+int cnt1(unsigned int x){ return __builtin_popcount(x); }
+int cnt1ll(unsigned long long x){ return __builtin_popcountll(x); }
+int lsbIndex(unsigned int x){ return __builtin_ctz(x); }      // x != 0
+int msbIndex(unsigned int x){ return 31 - __builtin_clz(x); } // x != 0
+int parity(unsigned int x){ return __builtin_parity(x); }     // 1 if odd count of bits
+```
+
+#### Notes
+
+- Use unsigned shifts for bit-heavy logic to avoid sign issues.
+- For 64-bit masks, always shift with `1LL << i`.
+- `x & (x-1)` removes the lowest set bit.
+
+---
+
+### Submask / Supmask Iteration Tricks
+
+```cpp
+// iterate all submasks of mask
+for (int sub = mask; ; sub = (sub - 1) & mask) {
+    // use sub
+    if (sub == 0) break;
+}
+
+// iterate all masks of n bits
+for (int mask = 0; mask < (1 << n); mask++) {
+    // use mask
+}
+```
+
+```cpp
+// iterate set bits of mask in O(number_of_set_bits)
+for (int m = mask; m; m &= (m - 1)) {
+    int b = __builtin_ctz(m);
+    // bit b is set
+}
+```
+
+#### Use Cases
+
+- Subset DP transitions.
+- Meet-in-the-middle state filtering.
+- Inclusion-exclusion over selected features.
+
+---
+
+### Important Bit Tricks
+
+```cpp
+// next combination with same popcount (Gosper's hack), x > 0
+unsigned int nextComb(unsigned int x){
+    unsigned int c = x & -x;
+    unsigned int r = x + c;
+    return (((r ^ x) >> 2) / c) | r;
+}
+```
+
+```cpp
+// compress coordinates into bit positions and store chosen values in a mask
+// when n <= 20..24, brute force on masks can be feasible with pruning
+```
+
+```cpp
+// XOR swap trick exists but DO NOT use in CP production; prefer std::swap.
+```
+
+#### Problem Recognition
+
+- `n <= 20` and "choose subset" → bitmask brute force / DP.
+- Need to count enabled features fast → popcount.
+- Need nearest differing state by one element → toggle one bit.
+
+---
+
+### Bitmask DP Starter Patterns
+
+```cpp
+// TSP-style DP: dp[mask][last]
+const long long BIG = (long long)4e18;
+vector<vector<long long>> dp(1<<n, vector<long long>(n, BIG));
+for(int s=0;s<n;s++) dp[1<<s][s]=0;
+for(int mask=0; mask<(1<<n); mask++){
+    for(int u=0; u<n; u++) if((mask>>u)&1){
+        if(dp[mask][u]==BIG) continue;
+        for(int v=0; v<n; v++) if(((mask>>v)&1)==0){
+            int nmask = mask | (1<<v);
+            dp[nmask][v] = min(dp[nmask][v], dp[mask][u] + cost[u][v]);
+        }
+    }
+}
+```
+
+```cpp
+// SOS DP (sum over subsets) idea:
+// for(int i=0;i<n;i++) for(int mask=0;mask<(1<<n);mask++)
+//   if(mask&(1<<i)) f[mask]+=f[mask^(1<<i)];
+```
+
+#### Complexity
+
+- Bitmask DP over subsets: usually `O(n * 2^n)` or `O(n^2 * 2^n)`.
+- SOS DP: `O(n * 2^n)`.
+
+---
+
+### std::bitset: How To Use
+
+```cpp
+const int MAXN = 200005;
+bitset<MAXN> bs;
+
+bs.set(5);         // set bit 5
+bs.reset(5);       // clear bit 5
+bs.flip(5);        // toggle bit 5
+bs[10] = 1;        // direct access
+
+int ones = (int)bs.count();
+bool any = bs.any();
+bool none = bs.none();
+
+bitset<MAXN> a, b;
+a |= b; a &= b; a ^= b;
+a <<= 3; a >>= 2;
+```
+
+```cpp
+// subset sum acceleration with bitset
+// reachable sums after processing each weight
+bitset<200001> can;
+can[0] = 1;
+for (int w : weights) can |= (can << w);
+// can[s] tells whether sum s is achievable
+```
+
+#### When bitset is strong
+
+- Dense boolean DP states.
+- Many OR/AND/XOR operations on big binary vectors.
+- Fast subset-sum feasibility queries.
+
+---
+
+### XOR Basis (Linear Basis) – important bit module
+
+```cpp
+struct XorBasis {
+    static const int LOG = 60;
+    long long b[LOG]{};
+
+    void add(long long x){
+        for(int i=LOG-1;i>=0;i--){
+            if(((x>>i)&1)==0) continue;
+            if(!b[i]){ b[i]=x; return; }
+            x ^= b[i];
+        }
+    }
+
+    bool canMake(long long x) const {
+        for(int i=LOG-1;i>=0;i--) if((x^b[i])<x) x^=b[i];
+        return x==0;
+    }
+
+    long long maxXor(long long x=0) const {
+        for(int i=LOG-1;i>=0;i--) x=max(x, x^b[i]);
+        return x;
+    }
+};
+```
+
+#### XOR Basis Use Cases
+
+- Maximum subset xor.
+- Check if xor target is representable.
+- Offline queries on xor-space (with prefix basis variants).
+
+---
+
+### Common Bit Problems Checklist
+
+- Subset count / subset optimization.
+- Min operations using toggles.
+- Pair xor max/min.
+- Gaussian elimination over GF(2) / xor basis.
+- Profile DP on grids (state per row/column mask).
+
