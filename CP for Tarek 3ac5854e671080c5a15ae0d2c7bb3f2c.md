@@ -21,6 +21,7 @@
 - [8) Dynamic Programming](#8-dynamic-programming)
 - [9) Missing Topics (Added)](#9-missing-topics-added)
 - [10) Comprehensive Missing Tricks & Function Ideas](#10-comprehensive-missing-tricks--function-ideas)
+- [11) Bit Manipulation & Bitset](#11-bit-manipulation--bitset)
 
 ### Foundation quick links
 
@@ -12434,4 +12435,208 @@ vector<int> restore_choice(int target,const vector<int>& from){
 - **Strings:** KMP + Z + Aho, hashing for O(1) substring compare.
 - **Number theory (NS):** gcd/ext-gcd, inverses, CRT, sieve/SPF, modular power.
 - **DP:** state design, transition proof, memory compression, reconstruction, optimization conditions.
+- **Bits:** masks, subset iteration, popcount/parity, bitset acceleration, XOR basis patterns.
+
+## 11) Bit Manipulation & Bitset
+
+### Bit Operations Cheat Sheet
+
+```cpp
+// read/set/clear/toggle bit i (0-indexed)
+bool getBit(long long x,int i){ return (x>>i)&1LL; }
+long long setBit(long long x,int i){ return x | (1LL<<i); }
+long long clearBit(long long x,int i){ return x & ~(1LL<<i); }
+long long toggleBit(long long x,int i){ return x ^ (1LL<<i); }
+
+// lowbit and common predicates
+long long lowbit(long long x){ return x & -x; }
+bool isPowerOfTwo(long long x){ return x>0 && (x&(x-1))==0; }
+```
+
+```cpp
+// builtins (GCC/Clang)
+int cnt1(unsigned int x){ return __builtin_popcount(x); }
+int cnt1ll(unsigned long long x){ return __builtin_popcountll(x); }
+int lsbIndex(unsigned int x){ return __builtin_ctz(x); }      // x != 0
+int msbIndex(unsigned int x){ return 31 - __builtin_clz(x); } // x != 0
+int parity(unsigned int x){ return __builtin_parity(x); }     // 1 if odd count of bits
+```
+
+#### Notes
+
+- Use unsigned shifts for bit-heavy logic to avoid sign issues.
+- For 64-bit masks, always shift with `1LL << i`.
+- `x & (x-1)` removes the lowest set bit.
+
+---
+
+### Submask / Supmask Iteration Tricks
+
+```cpp
+// iterate all submasks of mask
+for (int sub = mask; ; sub = (sub - 1) & mask) {
+    // use sub
+    if (sub == 0) break;
+}
+
+// iterate all masks of n bits
+for (int mask = 0; mask < (1 << n); mask++) {
+    // use mask
+}
+```
+
+```cpp
+// iterate set bits of mask in O(number_of_set_bits)
+for (int m = mask; m; m &= (m - 1)) {
+    int b = __builtin_ctz(m);
+    // bit b is set
+}
+```
+
+#### Use Cases
+
+- Subset DP transitions.
+- Meet-in-the-middle state filtering.
+- Inclusion-exclusion over selected features.
+
+---
+
+### Important Bit Tricks
+
+```cpp
+// next combination with same popcount (Gosper's hack), x > 0
+unsigned int nextComb(unsigned int x){
+    unsigned int c = x & -x;
+    unsigned int r = x + c;
+    return (((r ^ x) >> 2) / c) | r;
+}
+```
+
+```cpp
+// compress coordinates into bit positions and store chosen values in a mask
+// when n <= 20..24, brute force on masks can be feasible with pruning
+```
+
+```cpp
+// XOR swap trick exists but DO NOT use in CP production; prefer std::swap.
+```
+
+#### Problem Recognition
+
+- `n <= 20` and "choose subset" → bitmask brute force / DP.
+- Need to count enabled features fast → popcount.
+- Need nearest differing state by one element → toggle one bit.
+
+---
+
+### Bitmask DP Starter Patterns
+
+```cpp
+// TSP-style DP: dp[mask][last]
+const long long BIG = (long long)4e18;
+vector<vector<long long>> dp(1<<n, vector<long long>(n, BIG));
+for(int s=0;s<n;s++) dp[1<<s][s]=0;
+for(int mask=0; mask<(1<<n); mask++){
+    for(int u=0; u<n; u++) if((mask>>u)&1){
+        if(dp[mask][u]==BIG) continue;
+        for(int v=0; v<n; v++) if(((mask>>v)&1)==0){
+            int nmask = mask | (1<<v);
+            dp[nmask][v] = min(dp[nmask][v], dp[mask][u] + cost[u][v]);
+        }
+    }
+}
+```
+
+```cpp
+// SOS DP (sum over subsets) idea:
+// for(int i=0;i<n;i++) for(int mask=0;mask<(1<<n);mask++)
+//   if(mask&(1<<i)) f[mask]+=f[mask^(1<<i)];
+```
+
+#### Complexity
+
+- Bitmask DP over subsets: usually `O(n * 2^n)` or `O(n^2 * 2^n)`.
+- SOS DP: `O(n * 2^n)`.
+
+---
+
+### std::bitset: How To Use
+
+```cpp
+const int MAXN = 200005;
+bitset<MAXN> bs;
+
+bs.set(5);         // set bit 5
+bs.reset(5);       // clear bit 5
+bs.flip(5);        // toggle bit 5
+bs[10] = 1;        // direct access
+
+int ones = (int)bs.count();
+bool any = bs.any();
+bool none = bs.none();
+
+bitset<MAXN> a, b;
+a |= b; a &= b; a ^= b;
+a <<= 3; a >>= 2;
+```
+
+```cpp
+// subset sum acceleration with bitset
+// reachable sums after processing each weight
+bitset<200001> can;
+can[0] = 1;
+for (int w : weights) can |= (can << w);
+// can[s] tells whether sum s is achievable
+```
+
+#### When bitset is strong
+
+- Dense boolean DP states.
+- Many OR/AND/XOR operations on big binary vectors.
+- Fast subset-sum feasibility queries.
+
+---
+
+### XOR Basis (Linear Basis) – important bit module
+
+```cpp
+struct XorBasis {
+    static const int LOG = 60;
+    long long b[LOG]{};
+
+    void add(long long x){
+        for(int i=LOG-1;i>=0;i--){
+            if(((x>>i)&1)==0) continue;
+            if(!b[i]){ b[i]=x; return; }
+            x ^= b[i];
+        }
+    }
+
+    bool canMake(long long x) const {
+        for(int i=LOG-1;i>=0;i--) if((x^b[i])<x) x^=b[i];
+        return x==0;
+    }
+
+    long long maxXor(long long x=0) const {
+        for(int i=LOG-1;i>=0;i--) x=max(x, x^b[i]);
+        return x;
+    }
+};
+```
+
+#### XOR Basis Use Cases
+
+- Maximum subset xor.
+- Check if xor target is representable.
+- Offline queries on xor-space (with prefix basis variants).
+
+---
+
+### Common Bit Problems Checklist
+
+- Subset count / subset optimization.
+- Min operations using toggles.
+- Pair xor max/min.
+- Gaussian elimination over GF(2) / xor basis.
+- Profile DP on grids (state per row/column mask).
 
