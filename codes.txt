@@ -1,0 +1,2825 @@
+
+struct LCA {
+    int n, lg;
+    vector<vector<int>> up;
+    vector<int> dep, dis;
+    vector<vector<pair<int,int>>> adj;
+
+    LCA(int n) {
+        this->n = n;
+        lg = LOG;
+        up.assign(n + 1, vector<int>(lg));
+        dep.assign(n + 1, 0);
+        dis.assign(n + 1, 0);
+        adj.assign(n + 1, {});
+    }
+
+    void addEdge(int u, int v, int w = 1) {
+        adj[u].push_back({v, w});
+        adj[v].push_back({u, w});
+    }
+
+    void build() {
+        for (int i = 1; i < lg; i++) {
+            for (int j = 1; j <= n; j++) {
+                up[j][i] = up[up[j][i - 1]][i - 1];
+            }
+        }
+    }
+    int kth(int u , int k ) {
+        for (int i = 0 ; i < lg ; i++) {
+            if (k >> i & 1LL) u = up[u][i];
+        }
+        return u;
+    }
+};
+______________________________
+void input() {
+#ifndef ONLINE_JUDGE
+    freopen("in.txt", "r", stdin);
+    freopen("ou.txt", "w", stdout);
+#endif
+}
+
+struct Node {
+
+    vector<int> tree;
+
+    Node() {}
+
+    Node(int x) {
+        tree.push_back(x);
+    }
+};
+
+struct SegTree
+{
+    int tree_size;
+    vector<Node> seg_data;
+
+    SegTree(int n)
+    {
+        tree_size = 1;
+
+        while(tree_size < n)
+            tree_size *= 2;
+
+        seg_data.resize(2 * tree_size);
+    }
+
+    Node merge(Node &a, Node &b)
+    {
+        Node res;
+
+        res.tree.resize(a.tree.size() + b.tree.size());
+
+        std::merge(all(a.tree),
+              all(b.tree),
+              res.tree.begin());
+
+        return res;
+    }
+
+    void init(vector<int> &nums, int ni, int lx, int rx)
+    {
+        if(rx - lx == 1)
+        {
+            if(lx < (int)nums.size())
+                seg_data[ni] = Node(nums[lx]);
+
+            return;
+        }
+
+        int mid = (lx + rx) / 2;
+
+        init(nums, 2 * ni + 1, lx, mid);
+        init(nums, 2 * ni + 2, mid, rx);
+
+        seg_data[ni] = merge(seg_data[2 * ni + 1],
+                             seg_data[2 * ni + 2]);
+    }
+
+    void init(vector<int> &nums)
+    {
+        init(nums, 0, 0, tree_size);
+    }
+
+    int get_range(int l, int r, int k, int node, int lx, int rx)
+    {
+        if(lx >= r || rx <= l)
+            return 0;
+
+        if(lx >= l && rx <= r)
+        {
+            return seg_data[node].tree.end()
+                   - upper_bound(all(seg_data[node].tree), k);
+        }
+
+        int mid = (lx + rx) / 2;
+
+        return get_range(l, r, k, 2 * node + 1, lx, mid)
+             + get_range(l, r, k, 2 * node + 2, mid, rx);
+    }
+
+    int get_range(int l, int r, int k)
+    {
+        return get_range(l, r, k, 0, 0, tree_size);
+    }
+};
+_____________________________
+
+
+
+void input() {
+#ifndef ONLINE_JUDGE
+    freopen("in.txt", "r", stdin);
+    freopen("ou.txt", "w", stdout);
+#endif
+}
+
+struct Node {
+    int val;
+    int start , end ;
+
+    Node() {
+        val = 0 ;
+        start = 0 , end = INF ;
+    }
+
+    Node(int x) {
+        val = x;
+        start = 0 , end = INF ;
+    }
+
+    void update(int delta) {
+        val = delta ;
+    }
+};
+
+struct SegTree
+{
+    int tree_size;
+    vector<Node> seg_data;
+
+    SegTree(int n)
+    {
+        tree_size = 1;
+        while (tree_size < n) tree_size *= 2;
+        seg_data.resize(2 * tree_size, Node());
+    }
+
+    Node merge(Node & lf, Node & ri)
+    {
+        Node ans = Node();
+        ans.val = lf.val + ri.val ;
+        return ans;
+    }
+
+    void init(vector<int > & nums, int ni, int lx, int rx) {
+
+        if(rx - lx == 1)
+        {
+            if(lx < (int)nums.size())
+            {
+                seg_data[ni] = Node(nums[lx]);
+            }
+            return;
+        }
+
+        int mid = lx + (rx - lx) / 2;
+        init(nums, 2 * ni + 1, lx, mid);
+        init(nums, 2 * ni + 2, mid, rx);
+
+        seg_data[ni] = merge(seg_data[2 * ni + 1], seg_data[2 * ni + 2]);
+    }
+
+    void init(vector<int > & nums)
+    {
+        init(nums, 0, 0, tree_size);
+    }
+
+    void set(int idx, long long value, int node, int lx, int rx)
+    {
+        if(rx - lx == 1)
+        {
+            seg_data[node].update(value) ;
+            return;
+        }
+
+        int mid = (lx + rx) / 2;
+        if(idx < mid)
+            set(idx, value, 2 * node + 1, lx, mid);
+        else
+            set(idx, value, 2 * node + 2, mid, rx);
+
+        seg_data[node] = merge(seg_data[2 * node + 1], seg_data[2 * node + 2]);
+    }
+    void set(int idx, long long value)
+    {
+        set(idx, value, 0, 0, tree_size);
+    }
+    int get_range(int kth , int node, int lx, int rx)
+    {
+        if(rx - lx == 1)
+            return lx;
+        int left_cnt = seg_data[2 * node + 1].val;
+        int mid = (lx + rx) / 2;
+        if(left_cnt >= kth)
+            return get_range(kth, 2 * node + 1, lx, mid);
+        else
+            return get_range(kth - left_cnt, 2 * node + 2, mid, rx);
+    }
+
+    int get_range(int kth )
+    {
+        return get_range(kth , 0, 0, tree_size);
+    }
+};
+__________________________
+
+
+
+    void input() {
+    #ifndef ONLINE_JUDGE
+        freopen("in.txt", "r", stdin);
+        freopen("ou.txt", "w", stdout);
+    #endif
+    }
+
+    #define LNode(n) (2 * (n) + 1)
+    #define RNode(n) (2 * (n) + 2)
+    #define md(lx, rx) ((lx) + ((rx) - (lx)) / 2)
+
+struct Node {
+        int val , prefix ;
+        int lazy;
+        bool is_lazy;
+
+        Node() {
+            val = 0;
+            prefix = 0;
+            lazy = 0;
+            is_lazy = 0;
+        }
+
+        Node(int x) {
+            val = x;
+            prefix = max(0LL, x);
+            is_lazy = 0;
+            lazy = 0;
+        }
+
+        void add(int x) {
+            val = x;
+            prefix = max(0LL, x);
+            lazy = x;
+            is_lazy = 1;
+        }
+    };
+
+    struct SegTree {
+        int tree_size;
+        vector<Node> seg_data;
+
+        SegTree(int n) {
+            tree_size = 1;
+            while (tree_size < n) tree_size *= 2;
+            seg_data.resize(2 * tree_size, Node());
+        }
+
+        Node merge(Node &lf, Node &ri) {
+            Node ans = Node();
+            ans.val = lf.val + ri.val;
+            ans.prefix = max(lf.prefix,
+                  lf.val + ri.prefix);
+            return ans;
+        }
+
+        void init(vector<int> &nums, int ni, int lx, int rx) {
+            if (rx - lx == 1) {
+                if (lx < (int) nums.size()) {
+                    seg_data[ni] = Node(nums[lx]);
+                }
+                return;
+            }
+            init(nums, LNode(ni), lx, md(lx, rx));
+            init(nums, RNode(ni), md(lx, rx), rx);
+            seg_data[ni] = merge(seg_data[LNode(ni)], seg_data[RNode(ni)]);
+        }
+
+        void init(vector<int> &nums) {
+            init(nums, 0, 0, tree_size);
+        }
+
+        void propagete(int ni, int lx, int rx) {
+            if (rx - lx == 1 || seg_data[ni].is_lazy == 0)
+                return;
+            seg_data[LNode(ni)].add(seg_data[ni].lazy);
+            seg_data[RNode(ni)].add(seg_data[ni].lazy);
+            seg_data[ni].is_lazy = 0;
+            seg_data[ni].lazy = 0;
+        }
+
+        void set(int l, int r, int value, int node, int lx, int rx) {
+            propagete(node, lx, rx);
+            if (lx >= l && rx <= r) {
+                seg_data[node].add(value);
+                return;
+            }
+            if (rx <= l || lx >= r)
+                return;
+            set(l, r, value, LNode(node), lx, md(lx, rx));
+            set(l, r, value, RNode(node), md(lx, rx), rx);
+            seg_data[node] = merge(seg_data[LNode(node)], seg_data[RNode(node)]);
+        }
+
+        void set(int l, int r, int value) {
+            set(l, r, value, 0, 0, tree_size);
+        }
+
+        Node get_range(int l, int r, int node, int lx, int rx) {
+            propagete(node, lx, rx);
+            if (lx >= l && rx <= r)
+                return seg_data[node];
+            if (rx <= l || lx >= r)
+                return Node();
+            Node lf = get_range(l, r, LNode(node), lx, md(lx, rx));
+            Node ri = get_range(l, r, RNode(node), md(lx, rx), rx);
+            return merge(lf, ri);
+        }
+
+        int get_range(int l, int r) {
+            return get_range(l, r, 0, 0, tree_size).prefix;
+        }
+    };
+
+    int32_t main() {
+        fastio();
+        input();
+        int t = 1;
+        // cin >> t;
+        while (t--) {
+            int n ; cin >> n;
+            int q ; cin >> q;
+            vector<int> v(n);
+            for (int i = 0; i < n; i++) cin >> v[i];
+            SegTree st(n);
+            st.init(v);
+            while (q--) {
+                int ty; cin >> ty;
+                if (ty == 1) {
+                    int l, x; cin >> l >> x;
+                    st.set(l - 1 , l , x);
+                }else {
+                    int l, r; cin >> l >> r;
+                    cout << st.get_range(l - 1 , r ) << endl;
+                }
+            }
+        }
+        return 0;
+    }
+_______________
+#include <bits/stdc++.h>
+using namespace std;
+#define all(x) begin(x), end(x)
+#define fastio() ios::sync_with_stdio(false); cin.tie(nullptr)
+#define endl '\n'
+using ll = long long;
+#define int long long
+const int INF = 1e18;
+const int MOD =  998244353 ;
+
+void input() {
+#ifndef ONLINE_JUDGE
+    freopen("in.txt", "r", stdin);
+    freopen("ou.txt", "w", stdout);
+#endif
+}
+int rangeSum(int l, int r) { return (r - l + 1) * (l + r) / 2; }
+#define LNode(n) (2 * (n) + 1)
+#define RNode(n) (2 * (n) + 2)
+#define md(lx, rx) ((lx) + ((rx) - (lx)) / 2)
+
+struct Node {
+    int sum , len , lazya , lazyb;
+    bool is_lazy;
+    Node() {
+        sum = 0;
+        len = 0;
+        lazya = lazyb = 0;
+        is_lazy = false;
+    }
+
+    Node(int x) {
+        sum = x;
+        len = 1;
+        lazya = lazyb = 0;
+        is_lazy = false;
+    }
+
+    void update(int adda , int addb , int lx , int rx) {
+        int n = rx - lx;
+        sum += adda * rangeSum(lx, rx - 1) + addb * n;
+        lazya += adda;
+        lazyb += addb;
+        is_lazy = true;
+    }
+};
+
+struct SegTree {
+    int tree_size;
+    vector<Node> seg_data;
+
+    SegTree(int n) {
+        tree_size = 1;
+        while (tree_size < n) tree_size *= 2;
+        seg_data.assign(2 * tree_size, Node());
+    }
+    Node merge(Node &lf, Node &ri) {
+        Node ans;
+        ans.sum = lf.sum + ri.sum;
+        ans.len = lf.len + ri.len;
+        return ans;
+    }
+    void init(vector<int> &A, int ni, int lx, int rx) {
+        if (rx - lx == 1) {
+            if (lx < (int)A.size()) {
+                seg_data[ni] = Node(A[lx]);
+                seg_data[ni].len = 1;
+            }
+            return;
+        }
+
+        int mid = md(lx, rx);
+        init(A, LNode(ni), lx, mid);
+        init(A, RNode(ni), mid, rx);
+        seg_data[ni] = merge(seg_data[LNode(ni)], seg_data[RNode(ni)] );
+    }
+
+    void init(vector<int> &A) {
+        init(A, 0, 0, tree_size);
+    }
+
+    void propagete(int ni, int lx, int rx) {
+        if (rx - lx == 1 || !seg_data[ni].is_lazy) return;
+        int mid = md(lx, rx);
+        seg_data[LNode(ni)].update(seg_data[ni].lazya,seg_data[ni].lazyb,lx,mid);
+        seg_data[RNode(ni)].update(seg_data[ni].lazya,seg_data[ni].lazyb,mid,rx);
+        seg_data[ni].lazya = 0;
+        seg_data[ni].lazyb = 0;
+        seg_data[ni].is_lazy = false;
+    }
+
+    void set(int l, int r, int ni, int lx, int rx) {
+        if (rx <= l || lx >= r)return;
+        propagete(ni, lx, rx);
+        if (l <= lx && rx <= r) {
+            int adda = 1;
+            int addb = 1 - l;
+            seg_data[ni].update(adda,addb,lx,rx);
+            return;
+        }
+        int mid = md(lx, rx);
+        set(l, r, LNode(ni), lx, mid);
+        set(l, r, RNode(ni), mid, rx);
+        seg_data[ni] = merge(seg_data[LNode(ni)],seg_data[RNode(ni)]);
+    }
+    void set(int l, int r) {
+        set(l, r, 0, 0, tree_size);
+    }
+
+    int get_range(int l, int r, int ni, int lx, int rx) {
+        if (rx <= l || lx >= r) return 0;
+        if (l <= lx && rx <= r) return seg_data[ni].sum;
+        propagete(ni, lx, rx);
+        int mid = md(lx, rx);
+        return get_range(l, r, LNode(ni), lx, mid) + get_range(l, r, RNode(ni), mid, rx);
+    }
+    int get_range(int l, int r) {
+        return get_range(l, r, 0, 0, tree_size);
+    }
+};
+int32_t main() {
+    fastio();
+    input();
+    int t = 1;
+    // cin >> t;
+    while (t--) {
+        int n, q;
+        cin >> n >> q;
+        vector<int> a(n) ;
+        for (auto &x : a) cin >> x;
+        SegTree st(n);
+        st.init(a );
+        while (q--) {
+            int type; cin >> type;
+            if (type == 1) {
+                int l, r, x;
+                cin >> l >> r ;
+                l--;
+                st.set(l, r);
+            }
+            else {
+                int l, r;
+                cin >> l >> r;
+                l--;
+                cout << st.get_range(l, r) <<endl ;
+            }
+        }
+    }
+    return 0;
+}
+________________________
+#include <bits/stdc++.h>
+using namespace std;
+#define all(x) begin(x), end(x)
+#define fastio() ios::sync_with_stdio(false); cin.tie(nullptr)
+#define endl '\n'
+using ll = long long;
+#define int long long
+const int INF = 1e18;
+const int MOD = 1e9 + 7;
+
+void input() {
+#ifndef ONLINE_JUDGE
+    freopen("in.txt", "r", stdin);
+    freopen("ou.txt", "w", stdout);
+#endif
+}
+
+#define LNode(n) (2 * (n) + 1)
+#define RNode(n) (2 * (n) + 2)
+#define md(lx, rx) ((lx) + ((rx) - (lx)) / 2)
+
+struct Node {
+    int cnt[30];
+    int lazy;
+
+    Node() {
+        memset(cnt, 0, sizeof cnt);
+        lazy = 0;
+    }
+
+    Node(int x) {
+        memset(cnt, 0, sizeof cnt);
+        lazy = 0;
+        for (int i = 0; i < 30; i++) {
+            if (x & (1LL << i))
+                cnt[i] = 1;
+        }
+    }
+
+    void apply(int x, int lx, int rx) {
+        int len = rx - lx;
+        for (int i = 0; i < 30; i++) {
+            if (x & (1LL << i)) {
+                cnt[i] = len - cnt[i];
+            }
+        }
+
+        lazy ^= x;
+    }
+    int sum() {
+        int ans = 0;
+        for (int i = 0; i < 30; i++) {
+            ans += cnt[i] * (1LL << i);
+        }
+        return ans;
+    }
+};
+
+struct SegTree {
+    int tree_size;
+    vector<Node> seg_data;
+
+    SegTree(int n) {
+        tree_size = 1;
+
+        while (tree_size < n)
+            tree_size *= 2;
+
+        seg_data.resize(2 * tree_size);
+    }
+
+    Node merge(Node &lf, Node &ri) {
+        Node ans;
+        for (int i = 0; i < 30; i++) {
+            ans.cnt[i] = lf.cnt[i] + ri.cnt[i];
+        }
+        return ans;
+    }
+
+    void init(vector<int> &nums, int ni, int lx, int rx) {
+        if (rx - lx == 1) {
+            if (lx < nums.size())
+                seg_data[ni] = Node(nums[lx]);
+
+            return;
+        }
+        int mid = md(lx, rx);
+        init(nums, LNode(ni), lx, mid);
+        init(nums, RNode(ni), mid, rx);
+        seg_data[ni] = merge(seg_data[LNode(ni)],seg_data[RNode(ni)]);
+    }
+
+    void init(vector<int> &nums) {
+        init(nums, 0, 0, tree_size);
+    }
+
+    void propagete(int ni, int lx, int rx) {
+        if (rx - lx == 1 || seg_data[ni].lazy == 0) return;
+        int mid = md(lx, rx);
+        seg_data[LNode(ni)].apply(seg_data[ni].lazy, lx, mid);
+        seg_data[RNode(ni)].apply(seg_data[ni].lazy, mid, rx);
+        seg_data[ni].lazy = 0;
+    }
+    void set(int l, int r, int x,int node, int lx, int rx) {
+
+        propagete(node, lx, rx);
+        if (rx <= l || lx >= r)
+            return;
+
+        if (lx >= l && rx <= r) {
+            seg_data[node].apply(x, lx, rx);
+            return;
+        }
+        int mid = md(lx, rx);
+        set(l, r, x,LNode(node), lx, mid);
+        set(l, r, x,RNode(node), mid, rx);
+        seg_data[node] = merge(seg_data[LNode(node)],seg_data[RNode(node)]);
+    }
+
+    void set(int l, int r, int x) {
+        set(l, r, x, 0, 0, tree_size);
+    }
+    Node get_range(int l, int r,int node, int lx, int rx) {
+        propagete(node, lx, rx);
+        if (lx >= l && rx <= r)return seg_data[node];
+        if (rx <= l || lx >= r)return Node();
+        int mid = md(lx, rx);
+        Node lf = get_range(l, r,LNode(node), lx, mid);
+        Node ri = get_range(l, r,RNode(node), mid, rx);
+        return merge(lf, ri);
+    }
+
+    int get_range(int l, int r) {
+        return get_range(l, r, 0, 0, tree_size).sum();
+    }
+};
+
+int32_t main() {
+    fastio();
+    input();
+    int t = 1 ;
+    // cin >> t;
+    while (t--) {
+        int n; cin >> n;
+        vector<int> v(n);
+        for (auto &x: v) cin >> x;
+        SegTree st(n);
+        st.init(v);
+        int q; cin >> q;
+        while (q--) {
+            int ty; cin >> ty;
+            if (ty == 1) {
+                int l, r; cin >> l >> r;
+                cout << st.get_range(l - 1, r) << endl;
+            } else {
+                int l, r, x;
+                cin >> l >> r >> x;
+                st.set(l - 1, r, x);
+            }
+        }
+    }
+    return 0;
+}
+____________________
+    #include <bits/stdc++.h>
+    using namespace std;
+    #define all(x) begin(x), end(x)
+    #define fastio() ios::sync_with_stdio(false); cin.tie(nullptr)
+    #define endl '\n'
+    using ll = long long;
+    #define int long long
+    const int INF = 1e18;
+    const int MOD = 1e9 + 7;
+
+    void input() {
+    #ifndef ONLINE_JUDGE
+        freopen("in.txt", "r", stdin);
+        freopen("ou.txt", "w", stdout);
+    #endif
+    }
+
+    #define LNode(n) (2 * (n) + 1)
+    #define RNode(n) (2 * (n) + 2)
+    #define md(lx, rx) ((lx) + ((rx) - (lx)) / 2)
+
+struct Node {
+        int val , prefix ;
+        int lazy;
+        bool is_lazy;
+
+        Node() {
+            val = 0;
+            prefix = 0;
+            lazy = 0;
+            is_lazy = 0;
+        }
+
+        Node(int x) {
+            val = x;
+            prefix = max(0LL, x);
+            is_lazy = 0;
+            lazy = 0;
+        }
+
+        void add(int x) {
+            val = x;
+            prefix = max(0LL, x);
+            lazy = x;
+            is_lazy = 1;
+        }
+    };
+
+    struct SegTree {
+        int tree_size;
+        vector<Node> seg_data;
+
+        SegTree(int n) {
+            tree_size = 1;
+            while (tree_size < n) tree_size *= 2;
+            seg_data.resize(2 * tree_size, Node());
+        }
+
+        Node merge(Node &lf, Node &ri) {
+            Node ans = Node();
+            ans.val = lf.val + ri.val;
+            ans.prefix = max(lf.prefix,
+                  lf.val + ri.prefix);
+            return ans;
+        }
+
+        void init(vector<int> &nums, int ni, int lx, int rx) {
+            if (rx - lx == 1) {
+                if (lx < (int) nums.size()) {
+                    seg_data[ni] = Node(nums[lx]);
+                }
+                return;
+            }
+            init(nums, LNode(ni), lx, md(lx, rx));
+            init(nums, RNode(ni), md(lx, rx), rx);
+            seg_data[ni] = merge(seg_data[LNode(ni)], seg_data[RNode(ni)]);
+        }
+
+        void init(vector<int> &nums) {
+            init(nums, 0, 0, tree_size);
+        }
+
+        void propagete(int ni, int lx, int rx) {
+            if (rx - lx == 1 || seg_data[ni].is_lazy == 0)
+                return;
+            seg_data[LNode(ni)].add(seg_data[ni].lazy);
+            seg_data[RNode(ni)].add(seg_data[ni].lazy);
+            seg_data[ni].is_lazy = 0;
+            seg_data[ni].lazy = 0;
+        }
+
+        void set(int l, int r, int value, int node, int lx, int rx) {
+            propagete(node, lx, rx);
+            if (lx >= l && rx <= r) {
+                seg_data[node].add(value);
+                return;
+            }
+            if (rx <= l || lx >= r)
+                return;
+            set(l, r, value, LNode(node), lx, md(lx, rx));
+            set(l, r, value, RNode(node), md(lx, rx), rx);
+            seg_data[node] = merge(seg_data[LNode(node)], seg_data[RNode(node)]);
+        }
+
+        void set(int l, int r, int value) {
+            set(l, r, value, 0, 0, tree_size);
+        }
+
+        Node get_range(int l, int r, int node, int lx, int rx) {
+            propagete(node, lx, rx);
+            if (lx >= l && rx <= r)
+                return seg_data[node];
+            if (rx <= l || lx >= r)
+                return Node();
+            Node lf = get_range(l, r, LNode(node), lx, md(lx, rx));
+            Node ri = get_range(l, r, RNode(node), md(lx, rx), rx);
+            return merge(lf, ri);
+        }
+
+        int get_range(int l, int r) {
+            return get_range(l, r, 0, 0, tree_size).prefix;
+        }
+    };
+
+    int32_t main() {
+        fastio();
+        input();
+        int t = 1;
+        // cin >> t;
+        while (t--) {
+            int n ; cin >> n;
+            int q ; cin >> q;
+            vector<int> v(n);
+            for (int i = 0; i < n; i++) cin >> v[i];
+            SegTree st(n);
+            st.init(v);
+            while (q--) {
+                int ty; cin >> ty;
+                if (ty == 1) {
+                    int l, x; cin >> l >> x;
+                    st.set(l - 1 , l , x);
+                }else {
+                    int l, r; cin >> l >> r;
+                    cout << st.get_range(l - 1 , r ) << endl;
+                }
+            }
+        }
+        return 0;
+    }
+
+______________________
+#include <bits/stdc++.h>
+using namespace std;
+#define all(x) begin(x), end(x)
+#define fastio() ios::sync_with_stdio(false); cin.tie(nullptr)
+#define endl '\n'
+using ll = long long;
+#define int long long
+const int INF = 1e18, N = 1e5 + 5  , LOG = 23 , MOD = 1e9 + 7 ;
+
+void input() {
+#ifndef ONLINE_JUDGE
+    freopen("in.txt", "r", stdin);
+    freopen("ou.txt", "w", stdout);
+#endif
+}
+
+struct Person {
+    int a;
+    int s[8];
+};
+
+int dp[N][1 << 7  +  1 ] , mat[N][8] , n , p , k ;
+vector<Person> v ;
+int calc(int i , int msk) {
+    if (i > n) return (msk == ((1 << p) - 1) ? 0 : -INF);
+    auto &ret = dp[i][msk];
+    if (~ret) return ret;
+    ret = -INF;
+    int aud = (i - 1) - __builtin_popcount(msk);
+    if (aud < k)ret = max(ret, v[i].a + calc(i + 1, msk));
+    else ret = max(ret, calc(i + 1, msk));
+    for (int j = 0; j < p; ++j) {
+        if (!(msk & (1 << j))) {
+            ret = max(ret,v[i].s[j] + calc(i + 1, msk | (1 << j)));
+        }
+    }
+    return ret;
+}
+
+int32_t main() {
+    fastio();
+    input();
+    int t = 1 ;
+    // cin >> t;
+    memset(dp , -1 , sizeof(dp)) ;
+    cin >> n >> p >> k ;
+    v.resize(n + 1);
+    for (int i = 1 ; i <= n ; ++ i) cin >> v[i].a ;
+    for (int i = 1 ; i <= n ; ++ i) {
+        for (int j = 0 ; j < p ; ++ j) {
+            cin >> v[i].s[j] ;
+        }
+    }
+    sort(v.begin() + 1, v.end(), [&](const Person &x, const Person &y) {
+        return x.a > y.a;
+    });
+
+    cout << calc(1, 0) << endl ;
+
+    return 0;
+}
+_________________________________
+#include <bits/stdc++.h>
+using namespace std;
+#define all(x) begin(x), end(x)
+#define fastio() ios::sync_with_stdio(false); cin.tie(nullptr)
+#define endl '\n'
+using ll = long long;
+#define int long long
+const int INF = 1e9;
+const int MOD = 1e9 + 7;
+
+void input() {
+#ifndef ONLINE_JUDGE
+    freopen("in.txt", "r", stdin);
+    freopen("ou.txt", "w", stdout);
+#endif
+}
+
+int n;
+pair<int,int> dp[1 << 15][15];
+bool vis[1 << 15][15];        
+vector<int> v;
+
+pair<int,int> calc(int msk, int last) {
+    if (__builtin_popcount(msk) == n) return {0, 1};
+    if (last != -1 && vis[msk][last]) return dp[msk][last];
+    pair<int,int> ans = {-1, 0};
+    for (int i = 0; i < n; i++) {
+        if (msk >> i & 1) continue;
+        int edge;
+        if (msk == 0)
+            edge = v[i];
+        else if (__builtin_popcount(msk) == n - 1)
+            edge = v[i] + abs(v[last] - v[i]);
+        else
+            edge = abs(v[last] - v[i]) ;  
+        auto [sv, sc] = calc(msk | (1 << i), i);
+        int val = edge + sv;
+        if (val > ans.first) ans = {val, sc};
+        else if (val == ans.first) ans.second += sc;
+    }
+    if (last != -1) { vis[msk][last] = true; dp[msk][last] = ans; }
+    return ans;
+}
+
+int32_t main() {
+    fastio();
+    input();
+    int t = 1 ;
+    // cin >> t ;
+     while (cin >> n && n) {
+        v.assign(n, 0);
+        for (int i = 0; i < n; i++) cin >> v[i];
+        memset(vis, 0, sizeof vis);
+         auto [peri, cnt] = calc(0, -1);
+         cout << 2*n + peri << " " << cnt << endl;
+    }
+    return 0;
+}
+______________
+#include <bits/stdc++.h>
+using namespace std;
+#define all(x) begin(x), end(x)
+#define fastio() ios::sync_with_stdio(false); cin.tie(nullptr)
+#define endl '\n'
+using ll = long long;
+#define int long long
+const int INF = 1e18, N = 20  , LOG = 23 , MOD = 1e9 + 7 ;
+
+void input() {
+#ifndef ONLINE_JUDGE
+    freopen("in.txt", "r", stdin);
+    freopen("ou.txt", "w", stdout);
+#endif
+}
+int dp[N][11][2][2];
+string l, r;
+int calc(int i, int last, int lock, int started, const string &v) {
+    if (i == (int)v.size()) return 1;
+    auto &x = dp[i][last][lock][started];
+    if (x != -1) return x;
+    x = 0;
+    int lim = lock ? v[i] - '0' : 9;
+    for (int j = 0; j <= lim; j++) {
+        int nlock = lock && (j == lim);
+        if (!started && j == 0) {
+            x += calc(i + 1, 10, nlock, 0, v);
+        }
+        else {
+            if (last != 10 && last == j)continue;
+            x += calc(i + 1, j, nlock, 1, v);
+        }
+    }
+    return x;
+}
+int32_t main() {
+    fastio();
+    input();
+    int t = 1 ;
+    // cin >> t;
+    while (t--) {
+        cin >> l >> r ;
+       int L = stoll(l) , R = stoll(r);
+        memset(dp , -1 , sizeof (dp) ) ;
+        int ans1 = calc(0 , 10 , 1 , 0  , r ) ;
+        memset(dp , -1 , sizeof (dp) ) ;
+        int ans2 = calc(0 , 10 , 1 , 0 , to_string(L - 1) ) ;
+        cout << ans1 - ans2 << endl ;
+    }
+
+    return 0;
+}
+
+___________________
+#include <bits/stdc++.h>
+using namespace std;
+#define all(x) begin(x), end(x)
+#define fastio() ios::sync_with_stdio(false); cin.tie(nullptr)
+#define endl '\n'
+using ll = long long;
+#define int long long
+const int INF = 1e18, N = 85  , LOG = 23 , MOD = 1e9 + 7 ;
+
+void input() {
+#ifndef ONLINE_JUDGE
+    freopen("in.txt", "r", stdin);
+    freopen("ou.txt", "w", stdout);
+#endif
+}
+int dp[N][12][2][2];
+int n ; string s ;
+int calc(int i,int  last , int lock, int started ,  const string &v) {
+    if (i == (int)v.size()) return 1 ;
+    auto &x = dp[i][last][lock][started];
+    if (x != -1) return x;
+    x = 0;
+    int lim = lock ? v[i] - '0' : 9;
+    for (int d = 0; d <= lim; d++) {
+       int newlock = (lock && v[i] - '0' == d) ? 1 : 0;
+        int newstarted = (started || d != 0);
+       if (!newstarted )
+           x+= calc(i + 1, 0, newstarted, 0, v);
+        else {
+            int isinc = (d >=last) ? 1 : 0;
+            if (isinc) x+= calc(i + 1, d, newlock, 1, v);
+        }
+    }
+    return x;
+}
+bool check(string s) {
+    for (int i=1 ;i < (int)s.size(); i++) {
+        if (s[i] - s[i - 1] < 0 ) return false;
+    }
+    return true;
+}
+int32_t main() {
+    fastio();
+    input();
+    int t = 1 ;
+    cin >> t;
+    while (t--) {
+        memset(dp, -1, sizeof dp);
+        cin >> s;
+        if (check(s)) {
+            cout << calc(0 , 0, 1 , 0 , s) - 1    << endl;
+        }else cout <<-1 << endl;
+    }
+
+    return 0;
+}
+____________________________
+#include <bits/stdc++.h>
+using namespace std;
+#define all(x) begin(x), end(x)
+#define fastio() ios::sync_with_stdio(false); cin.tie(nullptr)
+#define endl '\n'
+using ll = long long;
+#define int long long
+const int INF = 1e18;
+const int MOD = 998244353 , N = 21 ;
+void input() {
+#ifndef ONLINE_JUDGE
+    freopen("in.txt", "r", stdin);
+    freopen("ou.txt", "w", stdout);
+#else
+#endif
+}
+struct Node{
+    int cnt,sum;
+};
+string a, b;
+
+int dp[N][2][2][2];
+int ch[N][2][2][2];
+
+int calc(int i, int locan, int hican, int st) {
+    if (i == b.size()) return 1;
+    auto &ret = dp[i][locan][hican][st];
+    if (ret != -1) return ret;
+    ret = -1;
+    int lolim = locan ? a[i] - '0' : 0;
+    int hilim = hican ? b[i] - '0' : 9;
+    for (int j = lolim; j <= hilim; j++) {
+        int nst = st || (j != 0);
+        int nlocan = locan && (j == a[i] - '0');
+        int nhican = hican && (j == b[i] - '0');
+        int cur = calc(i + 1, nlocan, nhican, nst);
+        if (nst) cur *= j;
+        if (cur > ret) {
+            ret = cur;
+            ch[i][locan][hican][st] = j;
+        }
+    }
+
+    return ret;
+}
+string build() {
+    string ans;
+    int i = 0 , locan = 1 , hican = 1 , st = 0;
+    while (i < b.size()) {
+        int d = ch[i][locan][hican][st];
+        ans.push_back(char('0' + d));
+        int nst = st || (d != 0);
+        int nlocan = locan && (d == a[i] - '0');
+        int nhican = hican && (d == b[i] - '0');
+        st = nst;
+        locan = nlocan;
+        hican = nhican;
+        i++;
+    }
+    int pos = 0;
+    while (pos + 1 < ans.size() && ans[pos] == '0')pos++;
+    return ans.substr(pos);
+}
+
+int32_t main() {
+    fastio();
+    input();
+    int t = 1;
+    // cin >> t;
+    while (t--) {
+        cin >> a >> b;
+        while (a.size() < b.size()) a = '0' + a;
+        memset(dp, -1, sizeof dp);
+        calc(0, 1, 1, 0);
+        cout << build() << endl;
+    }
+
+    return 0;
+}
+_____________________
+#include <bits/stdc++.h>
+using namespace std;
+#define all(x) begin(x), end(x)
+#define fastio() ios::sync_with_stdio(false); cin.tie(nullptr)
+#define endl '\n'
+using ll = long long;
+#define int long long
+const int INF = 1e18;
+const int MOD = 1e9 + 7  , N = 61;
+
+void input() {
+#ifndef ONLINE_JUDGE
+    freopen("in.txt", "r", stdin);
+    freopen("ou.txt", "w", stdout);
+#else
+#endif
+}
+
+struct Node{
+    int cnt,sum;
+};
+int dp[N][2][2][2][2][2];
+bool vis[N][2][2][2][2][2];
+bitset<61> l , r ;
+int calc(int i , int canllo , int canlhi , int canrlo , int canrhi , int st ) {
+    if (i == -1) return 1 ;
+    int &ret = dp[i][canllo][canlhi][canrlo][canrhi][st];
+    if (vis[i][canllo][canlhi][canrlo][canrhi][st])return ret;
+    vis[i][canllo][canlhi][canrlo][canrhi][st] = 1;
+    ret = 0;
+    vector<pair<int,int>> op;
+    if (!st) op = {{0,0},{1,1}};
+    else op = {{0,0},{0,1},{1,1}};
+    for (auto [a1 , a2] : op) {
+        if (canllo && a1 < l[i]) continue;
+        if (canlhi && a1 > r[i]) continue;
+        if (canrlo && a2 < l[i]) continue;
+        if (canrhi && a2 > r[i]) continue;
+        int nst = st || a1;
+        int ncanllo = canllo && (a1 == l[i]);
+        int ncanlhi = canlhi && (a1 == r[i]);
+        int ncanrlo = canrlo && (a2 == l[i]);
+        int ncanrhi = canrhi && (a2 == r[i]);
+        ret += calc(i - 1 ,ncanllo ,ncanlhi ,ncanrlo ,ncanrhi , nst);
+        ret %= MOD;
+    }
+    return ret;
+}
+
+
+int32_t main() {
+    fastio();
+    input();
+    int t = 1;
+    // cin >> t;
+    while (t--) {
+        int a , b;
+        cin >> a >> b;
+        l = bitset<61>(a);
+        r = bitset<61>(b);
+        cout << calc(60 , 1 , 1 , 1 , 1 , 0) % MOD << endl;
+    }
+    return 0;
+}
+______________________________
+
+
+#include <bits/stdc++.h>
+using namespace std;
+#define all(x) begin(x), end(x)
+#define fastio() ios::sync_with_stdio(false); cin.tie(nullptr)
+#define endl '\n'
+using ll = long long;
+#define int long long
+const int INF = 1e18;
+const int MOD = 998244353 , N = 21 ;
+void input() {
+#ifndef ONLINE_JUDGE
+    freopen("in.txt", "r", stdin);
+    freopen("ou.txt", "w", stdout);
+#else
+#endif
+}
+struct Node{
+    int cnt,sum;
+};
+
+string s;
+int k;
+Node dp[20][1024][2][2];
+bool vis[20][1024][2][2];
+int pw[20];
+
+Node solve(int pos,int mask,int tight,int started){
+    if(pos==(int)s.size()) return {1,0};
+    if(vis[pos][mask][tight][started]) return dp[pos][mask][tight][started];
+    vis[pos][mask][tight][started] = 1;
+    Node ret={0,0};
+    int lim = tight ? (s[pos]-'0') : 9 ;
+    for(int d = 0 ; d<=lim ; d++){
+        int ntight = tight&&(d==lim);
+        int nstarted = started||(d!=0);
+        int nmask = mask ;
+        if(nstarted) nmask |= ( 1 << d );
+        if(__builtin_popcount(nmask) > k ) continue;
+        Node cur = solve(pos+1,nmask,ntight,nstarted);
+        ret.cnt=( ret.cnt + cur.cnt ) ;
+        ret.cnt%=MOD;
+        int add = d * pw[(int)s.size() - pos - 1 ];
+        add%=MOD;
+        ret.sum += cur.sum + add * cur.cnt ;
+        ret.sum%=MOD;
+    }
+    return dp[pos][mask][tight][started] = ret;
+}
+
+int calc(int  x){
+    if( x < 0 ) return 0;
+    s=to_string(x);
+    memset(vis,0,sizeof(vis));
+    return solve(0,0,1,0).sum;
+}
+
+int32_t main() {
+    fastio();
+    input();
+    int t = 1;
+    // cin >> t;
+    while (t--) {
+        int  l , r ;
+        cin >> l >> r >> k;
+        pw[0]=1;
+        for(int i = 1 ;i < 20 ; i++) pw[i] = pw[i-1] * 10 % MOD;
+        cout << ( calc(r) -calc(l-1) + MOD )% MOD << endl;
+    }
+
+    return 0;
+//
+}
+________________
+#include <bits/stdc++.h>
+using namespace std;
+#define all(x) begin(x), end(x)
+#define fastio() ios::sync_with_stdio(false); cin.tie(nullptr)
+#define endl '\n'
+using ll = long long;
+#define int long long
+const int INF = 1e18;
+const int MOD = 1e9 + 7  , N = 65;
+
+void input() {
+#ifndef ONLINE_JUDGE
+    freopen("in.txt", "r", stdin);
+    freopen("ou.txt", "w", stdout);
+#else
+#endif
+}
+
+struct Node{
+    int cnt,sum;
+};
+int dp[N][2][2][2][2][2];
+bool vis[N][2][2][2][2][2];
+bitset<61> l , r ;
+int calc(int i , int canllo , int canlhi , int canrlo , int canrhi , int st ) {
+    if (i == -1) return 1 ;
+    int &ret = dp[i][canllo][canlhi][canrlo][canrhi][st];
+    if (vis[i][canllo][canlhi][canrlo][canrhi][st])return ret;
+    vis[i][canllo][canlhi][canrlo][canrhi][st] = 1;
+    ret = 0;
+    vector<pair<int,int>> op;
+    if (!st) op = {{0,0} , {0 , 1 } , {1 , 0 }};
+    else op = {{0,0},{0,1},{1 , 0 }};
+    for (auto [a1 , a2] : op) {
+        if (canllo && a1 < l[i]) continue;
+        if (canlhi && a1 > r[i]) continue;
+        if (canrlo && a2 < l[i]) continue;
+        if (canrhi && a2 > r[i]) continue;
+        int nst = st || a1;
+        int ncanllo = canllo && (a1 == l[i]);
+        int ncanlhi = canlhi && (a1 == r[i]);
+        int ncanrlo = canrlo && (a2 == l[i]);
+        int ncanrhi = canrhi && (a2 == r[i]);
+        ret += calc(i - 1 ,ncanllo ,ncanlhi ,ncanrlo ,ncanrhi , nst);;
+    }
+    return ret;
+}
+
+
+int32_t main() {
+    fastio();
+    input();
+    int t = 1;
+    cin >> t;
+    while (t--) {
+        memset(vis , 0 , sizeof vis);
+        int a , b;
+        cin >> a >> b;
+        l = bitset<61>(a);
+        r = bitset<61>(b);
+        cout << calc(60 , 1 , 1 , 1 , 1 , 0) << endl;
+    }
+    return 0;
+}
+
+______________
+#include <bits/stdc++.h>
+using namespace std;
+#define all(x) begin(x), end(x)
+#define fastio() ios::sync_with_stdio(false); cin.tie(nullptr)
+#define endl '\n'
+using ll = long long;
+#define int long long
+const int INF = 1e18;
+const int MOD = 1e9 + 7  , N = 65;
+
+void input() {
+#ifndef ONLINE_JUDGE
+    freopen("in.txt", "r", stdin);
+    freopen("ou.txt", "w", stdout);
+#else
+#endif
+}
+
+struct Node{
+    int cnt,sum;
+};
+// 2 pow 5
+
+int dp[N][2][2][2][2][2];
+bool vis[N][2][2][2][2][2];
+bitset<62> l , r ;
+int calc(int i , int canllo , int canlhi , int canrlo , int canrhi , int st ) {
+    if (i == -1) return 0 ;
+    int &ret = dp[i][canllo][canlhi][canrlo][canrhi][st];
+    if (vis[i][canllo][canlhi][canrlo][canrhi][st])return ret;
+    vis[i][canllo][canlhi][canrlo][canrhi][st] = 1;
+    ret = 0;
+    vector<pair<int,int>> op;
+    if (!st) op = {{0,0}, {1 , 1 } , {0 , 1} , {1 , 0 } };
+    else op = {{0,0},{0,1},{1 , 0 }, {1 , 1 }};
+    for (auto [a1 , a2] : op) {
+        if (canllo && a1 < l[i]) continue;
+        if (canlhi && a1 > r[i]) continue;
+        if (canrlo && a2 < l[i]) continue;
+        if (canrhi && a2 > r[i]) continue;
+        int nst = st || a1;
+        int ncanllo = canllo && (a1 == l[i]);
+        int ncanlhi = canlhi && (a1 == r[i]);
+        int ncanrlo = canrlo && (a2 == l[i]);
+        int ncanrhi = canrhi && (a2 == r[i]);
+        ret = max(ret , ( ( a1 != a2 ) ? (1LL << i ) : 0 )  + calc(i - 1 ,ncanllo ,ncanlhi ,ncanrlo ,ncanrhi , nst));
+    }
+    return ret;
+}
+
+
+int32_t main() {
+    fastio();
+    input();
+    int t = 1;
+    // cin >> t;
+    while (t--) {
+        memset(vis , 0 , sizeof vis);
+        int a , b;
+        cin >> a >> b;
+        l = bitset<62>(a);
+        r = bitset<62>(b);
+        cout << calc(62, 1 , 1 , 1 , 1 , 0) << endl;
+    }
+    return 0;
+}
+
+
+
+_______________
+#include <bits/stdc++.h>
+using namespace std;
+#define all(x) begin(x), end(x)
+#define fastio() ios::sync_with_stdio(false); cin.tie(nullptr)
+#define endl '\n'
+using ll = long long;
+#define int long long
+const int INF = 1e9 , N = 17 ;
+const int MOD = 1e9 + 7;
+
+void input() {
+#ifndef ONLINE_JUDGE
+    freopen("in.txt", "r", stdin);
+    freopen("ou.txt", "w", stdout);
+#endif
+}
+
+int n, m;
+vector<int> dp , adj , ch;
+vector<bool> good;
+
+int solve(int mask) {
+    if (mask == 0) return 0;
+    int &ret = dp[mask];
+    if (ret != -1) return ret;
+    ret = INF;
+    for (int sub = mask; sub; sub = (sub - 1) & mask) {
+        if (good[sub]) {
+            int cur = 1 + solve(mask ^ sub);
+            if (cur < ret) {
+                ret = cur;
+                ch[mask] = sub;
+            }
+        }
+    }
+    return ret;
+}
+
+int32_t main() {
+    fastio();
+    input();
+    int t = 1 ;
+    // cin >> t ;
+     while (t--) {
+         cin >> n >> m;
+         adj.assign(n, 0);
+         for (int i = 0; i < m; i++) {
+             int u, v;
+             cin >> u >> v;
+             --u, --v;
+             adj[u] |= (1 << v);
+             adj[v] |= (1 << u);
+         }
+
+         int nn = (1 << n);
+         good.assign(nn, true);
+         for (int mask = 0; mask < nn; mask++) {
+             for (int i = 0; i < n; i++) {
+                 if (!(mask & (1 << i))) continue;
+                 if (adj[i] & mask) {
+                     good[mask] = false;
+                     break;
+                 }
+             }
+         }
+         dp.assign(nn, -1);
+         ch.assign(nn, 0);
+         int ans = solve(nn - 1);
+         vector<int> col(n);
+         int mask = nn - 1;
+         int c = 1;
+         while (mask) {
+             int sub = ch[mask];
+             for (int i = 0; i < n; i++) {
+                 if (sub & (1 << i))
+                     col[i] = c;
+             }
+             mask ^= sub;
+             c++;
+         }
+         cout << ans << endl;
+         for (auto i : col) cout << i << " ";
+         cout << endl;
+    }
+    return 0;
+}
+
+_____________________
+
+#include <bits/stdc++.h>
+using namespace std;
+#define all(x) begin(x), end(x)
+#define fastio() ios::sync_with_stdio(false); cin.tie(nullptr)
+#define endl '\n'
+using ll = long long;
+#define int long long
+const int INF = 1e18;
+const int MOD = 1e9 + 7;
+
+void input() {
+#ifndef ONLINE_JUDGE
+    freopen("in.txt", "r", stdin);
+    freopen("ou.txt", "w", stdout);
+#else
+#endif
+}
+int n;
+vector<vector<int>> a;
+vector<int> score, dp;
+int solve(int mask) {
+    if (dp[mask] != -INF) return dp[mask];
+
+    int &ans = dp[mask];
+    ans = score[mask];
+    for (int sub = (mask - 1) & mask; sub; sub = (sub - 1) & mask) {
+        ans = max(ans, score[sub] + solve(mask ^ sub));
+    }
+    return ans;
+}
+
+int32_t main() {
+    fastio();
+    input();
+    int t = 1;
+    // cin >> t;
+    while (t--) {
+        cin >> n;
+        a.assign(n, vector<int>(n));
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++)
+                cin >> a[i][j];
+
+        int nn = 1 << n;
+        score.assign(nn, 0);
+        for (int mask = 0; mask < nn; mask++) {
+            for (int i = 0; i < n; i++) {
+                if (!(mask & (1 << i))) continue;
+                for (int j = i + 1; j < n; j++) {
+                    if (mask & (1 << j))
+                        score[mask] += a[i][j];
+                }
+            }
+        }
+        dp.assign(nn, -INF);
+        dp[0] = 0;
+        cout << solve(nn - 1) << endl;
+    }
+    return 0;
+}
+
+________________________
+#include <bits/stdc++.h>
+using namespace std;
+#define all(x) begin(x), end(x)
+#define fastio() ios::sync_with_stdio(false); cin.tie(nullptr)
+#define endl '\n'
+using ll = long long;
+#define int long long
+const int INF = 1e9;
+const int MOD = 1e9 + 7, N = 105, M = (1 << 16) ;
+
+void input() {
+#ifndef ONLINE_JUDGE
+    freopen("in.txt", "r", stdin);
+    freopen("ou.txt", "w", stdout);
+#endif
+}
+
+int n;
+vector<int> v;
+
+vector<int> primes = {
+    2,3,5,7,11,13,17,19,
+    23,29,31,37,41,43,47,53
+};
+int32_t dp[N][M];
+unsigned char ans[N][M];
+int32_t numMask[59];
+int calc(int idx, int msk) {
+    if (idx == n) return 0;
+    auto &cur = dp[idx][msk];
+    if (cur != -1) return cur;
+    cur = INF;
+    for (int num = 1; num <= 59; num++) {
+        if (msk & numMask[num]) continue;
+        int nmsk = msk | numMask[num];
+        int op = abs(v[idx] - num) + calc(idx + 1, nmsk);
+        if (op < cur) {
+            cur = op;
+            ans[idx][msk] = (unsigned char)num;
+        }
+    }
+    return cur;
+}
+
+int32_t main() {
+    fastio();
+    input();
+    int t = 1;
+    // cin >> t;
+    while (t--) {
+        cin >> n;
+        v.resize(n);
+        for (auto &x : v) cin >> x;
+        memset(dp, -1, sizeof dp);
+        memset(ans, 0, sizeof ans);
+        memset(numMask, 0, sizeof numMask);
+        for (int num = 1; num <= 58; num++) {
+            int x = num;
+            for (int i = 0; i < (int)primes.size(); i++) {
+                if (x % primes[i] == 0) {
+                    numMask[num] |= (1 << i);
+                    while (x % primes[i] == 0) x /= primes[i];
+                }
+            }
+        }
+        calc(0, 0);
+        int msk = 0;
+        for (int i = 0; i < n; i++) {
+            int x = ans[i][msk];
+            cout << x << ' ';
+            msk |= numMask[x];
+        }
+        cout << endl;
+    }
+    return 0;
+}
+___________
+#include <bits/stdc++.h>
+using namespace std;
+#define all(x) begin(x), end(x)
+#define fastio() ios::sync_with_stdio(false); cin.tie(nullptr)
+#define endl '\n'
+using ll = long long;
+// #define int long long
+const int INF = 1e18;
+const int MOD = 1e9 + 7;
+
+void input() {
+#ifndef ONLINE_JUDGE
+    freopen("in.txt", "r", stdin);
+    freopen("ou.txt", "w", stdout);
+#else
+#endif
+}
+
+string s;
+int w[20][20];
+int dp[1 << 20];
+int n, m;
+
+int32_t main() {
+    fastio();
+    input();
+    int t = 1;
+    // cin >> t;
+    while(t--) {
+        cin >> n >> m >> s;
+        memset(w, 0, sizeof(w));
+        for(int i = 1; i < n; i++) {
+            int a = s[i - 1] - 'a';
+            int b = s[i] - 'a';
+            if(a == b) continue;
+            w[a][b]++;
+            w[b][a]++;
+        }
+        int M = (1 << m);
+        for(int i = 0; i < M; i++) dp[i] = INF;
+        dp[(1 << m) - 1] = 0;
+        for(int mask = (1 << m) - 1; mask >= 0; mask--) {
+            int cnt = __builtin_popcount(mask);
+            for(int i = 0; i < m; i++) {
+                if(mask & (1 << i)) continue;
+                int nmask = mask | (1 << i);
+                int add = 0;
+                for(int j = 0; j < m; j++) {
+                    if(mask & (1 << j)) add += w[i][j];
+                    else add -= w[i][j];
+                }
+                dp[mask] = min(dp[mask], dp[nmask] + add * cnt);
+            }
+        }
+        cout << dp[0] << endl;
+    }
+
+    return 0;
+}
+______________
+#include <bits/stdc++.h>
+using namespace std;
+#define all(x) begin(x), end(x)
+#define fastio() ios::sync_with_stdio(false); cin.tie(nullptr)
+#define endl '\n'
+using ll = long long;
+#define int long long
+const int INF = 1e9;
+const int MOD = 1e9 + 7, N = 21, M = (1 << 16) ;
+
+void input() {
+#ifndef ONLINE_JUDGE
+    freopen("in.txt", "r", stdin);
+    freopen("ou.txt", "w", stdout);
+#endif
+}
+
+int n , x ;
+pair<int , int > dp [1 << N ] ;
+bool vis[1 << 20];
+vector<int>v ;
+pair<int , int > calc( int msk) {
+    if (msk == 0 ) return {1 , 0} ;
+    if (vis[msk]) return dp[msk] ;
+    vis[msk] = 1 ;
+    pair<int , int > ans = {n + 1 , 0 }  ;
+    for (int j = 0; j < n ; j ++ ) {
+       if (msk >> j & 1) {
+           auto now = calc(msk ^ (1 << j)) ;
+           if (now.second + v[j] <= x ) {
+               now.second += v[j] ;
+           }else {
+               now.first++ ;
+               now.second = v[j] ;
+           }
+        ans = min(ans , now) ;
+       }
+    }
+return dp[msk] = ans ;
+}
+int32_t main() {
+    fastio();
+    input();
+    int t = 1;
+    // cin >> t;
+    while (t--) {
+        cin >> n >> x ;
+        v.resize(n)  ;
+        for (int i = 0; i < n; i++) cin >> v[i];
+        memset(vis , 0 , sizeof vis);
+        cout << calc((1 << n ) - 1 ).first<< endl;
+    }
+    return 0;
+}
+
+
+______________________________
+#include <bits/stdc++.h>
+using namespace std;
+#define all(x) begin(x), end(x)
+#define fastio() ios::sync_with_stdio(false); cin.tie(nullptr)
+#define endl '\n'
+using ll = long long;
+const int INF = 1e18;
+const int MOD = 1e9 + 7;
+#define int long long
+
+void input() {
+#ifndef ONLINE_JUDGE
+    freopen("in.txt", "r", stdin);
+    freopen("ou.txt", "w", stdout);
+#endif
+}
+
+int n, m;
+vector<vector<int>> dir;
+vector<int> color;
+vector<int> topo_order;
+bool has_cycle = false;
+
+struct Edge {
+    int type, u, v;
+};
+vector<Edge> edges;
+
+void check_cycle(int u) {
+    color[u] = 1;
+    for (int v : dir[u]) {
+        if (color[v] == 1) {
+            has_cycle = true;
+            return;
+        }
+        if (color[v] == 0) {
+            check_cycle(v);
+        }
+    }
+    color[u] = 2;
+    topo_order.push_back(u);
+}
+
+int32_t main() {
+    fastio();
+    input();
+    int t = 1;
+    cin >> t;
+    while (t--) {
+        cin >> n >> m;
+        dir.assign(n + 1, vector<int>());
+        color.assign(n + 1, 0);
+        topo_order.clear();
+        edges.clear();
+        has_cycle = false;
+        for (int i = 0; i < m; i++) {
+            int type, u, v;
+            cin >> type >> u >> v;
+            edges.push_back({type, u, v});
+            if (type == 1) {
+                dir[u].push_back(v);
+            }
+        }
+        for (int i = 1; i <= n; i++) {
+            if (color[i] == 0) {
+                check_cycle(i);
+                if (has_cycle) break;
+            }
+        }
+        if (has_cycle) {
+            cout << "NO\n";
+            continue;
+        }
+        reverse(all(topo_order));
+        vector<int> pos(n + 1);
+        for (int i = 0; i < topo_order.size(); i++) {
+            pos[topo_order[i]] = i;
+        }
+        cout << "YES\n";
+        for (auto& e : edges) {
+            if (e.type == 1) {
+                cout << e.u << " " << e.v << endl;
+            } else {
+                if (pos[e.u] < pos[e.v]) {
+                    cout << e.u << " " << e.v << endl;
+                } else {
+                    cout << e.v << " " << e.u << endl;
+                }
+            }
+        }
+    }
+    return 0;
+}
+_______
+#include <bits/stdc++.h>
+using namespace std;
+#define all(x) begin(x), end(x)
+#define fastio() ios::sync_with_stdio(false); cin.tie(nullptr)
+#define endl '\n'
+using ll = long long;
+const int INF = 1e18;
+const int MOD = 1e9 + 7;
+#define int long long
+#define pii pair <int , int >
+
+struct pair_hash {
+    static uint64_t splitmix64(uint64_t x) {
+        x += 0x9e3779b97f4a7c15;
+        x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
+        x = (x ^ (x >> 27)) * 0x94d049bb133111eb;
+        return x ^ (x >> 31);
+    }
+
+    size_t operator()(const pair<int, int>& p) const {
+        static const uint64_t RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+        return splitmix64(((uint64_t)p.first << 32) | (uint64_t)p.second) + RANDOM;
+    }
+};
+
+void input() {
+#ifndef ONLINE_JUDGE
+    freopen("in.txt", "r", stdin);
+    freopen("ou.txt", "w", stdout);
+#endif
+}
+int dx[] = { -1, 0, 1, 0 };
+int dy[] = { 0, 1, 0, -1 };
+
+int n, m, k , d;
+unordered_map<pair<int , int > , int , pair_hash > points;
+unordered_map<pair<int,int>, pair<int,int > , pair_hash > ans;
+vector<pair<int , int > > v;
+
+int32_t main() {
+    fastio();
+    input();
+    int t = 1;
+    while (t--) {
+        // multi source bfs
+        cin >> n;
+        v.reserve(n);
+        for (int i = 0 ; i < n ; i++ ) {
+            int x , y ; cin >> x >> y;
+            points[{x , y}] = 1;
+            v.push_back({x , y});
+        }
+        queue<pair<int,int>> q;
+        for (auto &it : v) {
+            // بجيب كل الاحابات الممكنه في الاول
+            int x = it.first, y = it.second;
+            for (int i = 0; i < 4; i++) {
+                int nx = x + dx[i], ny = y + dy[i];
+                if (!points.count({nx, ny})) {
+                    ans[it] = {nx, ny};
+                    q.push(it);
+                    break;
+                }
+            }
+        }
+        while (!q.empty()) {
+            auto now  = q.front(); q.pop();
+            auto best = ans[now]; // لو لقيت جار متعلمش لسه دي اقرب اجابه ليه
+            for (int i = 0; i < 4; i++) {
+                int nx = now .first + dx[i], ny = now .second + dy[i];
+                pair<int,int> np = {nx, ny};
+                if (points.count(np) && !ans.count(np)) {
+                    // طلما انا لسه متعلمتش ف جاري جابلي احسن اجابه لقاها او هو االجابه
+                    // روح انقل الاجابه لجيرانك لو محتاجينها ولو احتاجوها اكيد مجدش وصل قبلك ف دا اقل مسافه
+                    ans[np] = best;
+                    q.push(np);
+                }
+            }
+        }
+        for (auto &it : v) {
+            auto [f , s ]  = ans[it];
+            cout << f << " " << s  << endl ;
+        }
+    }
+    return 0;
+}
+_____________
+
+#include <bits/stdc++.h>
+using namespace std;
+#define all(x) begin(x), end(x)
+#define fastio() ios::sync_with_stdio(false); cin.tie(nullptr)
+#define endl '\n'
+using ll = long long;
+const ll INF = 1e18 ;
+const int MOD = 1e9 + 7;
+#define int long long
+
+void input() {
+#ifndef ONLINE_JUDGE
+    freopen("in.txt", "r", stdin);
+    freopen("ou.txt", "w", stdout);
+#else
+#endif
+}
+        vector<int> points  ;
+vector<vector<pair<int , int >>>adj ;   ;
+vector<vector<vector<int>>> dist (2) ;
+void dij(int id , int src) {
+priority_queue<pair<int , pair<int , int >> ,vector<pair<int , pair<int , int >> > , greater<>> pq ;
+ pq.push({0 , {src , 0 }}) ;
+    dist[id][src][0] = 0 ;
+    while (!pq.empty()) {
+        auto [cost , p] = pq.top();
+        pq.pop() ;
+        auto [u , is_horse] = p ;
+        if(dist[id][u][is_horse] < cost) continue;
+        if (points[u] && dist[id][u][0] < dist[id][u][1]) {
+            dist[id][u][1] = dist[id][u][0] ;
+            pq.push({dist[id][u][1], {u , 1 }}) ;
+        }
+        for (auto [v , w] : adj[u]) {
+            int div = 1    ;
+            if (is_horse == 1) {
+                div = 2 ;
+            }
+            if ( dist[id][v][is_horse] > dist[id][u][is_horse] + w / div ) {
+                dist[id][v][is_horse] = dist[id][u][is_horse] + w  / div ;
+                pq.push({dist[id][v][is_horse] , {v , is_horse}});
+            }
+        }
+    }
+}
+int32_t main() {
+    fastio();
+    input();
+    int t = 1;
+    cin >> t;
+    while (t--) {
+        int n , m , k  ; cin >> n >> m >> k ;
+        points.assign(n + 1 , 0 ) ;
+        for (int i = 1 ; i <=k ; i++) {
+         int x ;  cin >> x ;
+          points[x] = 1 ;
+        }
+        adj.assign(n + 1 , {}) ;
+        for (int i = 0 ; i < m ; i ++ ) {
+            int x , y, w  ; cin >> x >> y >> w  ;
+            adj[x].push_back({y , w }) ;
+            adj[y].push_back({x , w }) ;
+        }
+        dist[0].assign(n + 1 , vector<int> (2  , INF)) ;
+        dist[1].assign(n + 1 , vector<int> (2  , INF)) ;
+        dij(0 , 1 ) ;
+        dij(1 , n ) ;
+        int ans = INF ;
+        for (int i = 1 ; i <= n ; i++) {
+            for (int j = 0 ; j < 2 ; j++) {
+                for (int k1 = 0 ; k1 < 2 ; k1++) {
+                    ans = min(ans , max(dist[0][i][j] , dist[1][i][k1])) ;
+                }
+            }
+        }
+        ans  = (ans >= INF ? -1 : ans) ;
+        cout << ans << endl ;
+    }
+    return 0;
+}
+
+______
+#include <bits/stdc++.h>
+using namespace std;
+#define all(x) begin(x), end(x)
+#define fastio() ios::sync_with_stdio(false); cin.tie(nullptr)
+#define endl '\n'
+using ll = long long;
+const ll INF = (ll)1e18;
+const int MOD = 1e9 + 7;
+#define int long long
+
+void input() {
+#ifndef ONLINE_JUDGE
+    freopen("in.txt", "r", stdin);
+    freopen("ou.txt", "w", stdout);
+#else
+#endif
+}
+
+int32_t main() {
+    fastio();
+    input();
+    int t = 1;
+    // cin >> t;
+    while (t--) {
+        string s1 , s2 ;
+        cin >> s1 >> s2 ;
+        int m ; cin >> m ;
+        vector<vector<int>> dist(26, vector<int>(26, INF));
+        for (int c = 0; c < 26; ++c) dist[c][c] = 0;
+        for (int i = 0; i < m; ++i) {
+            char u, v; int w; cin >> u >> v >> w ;
+            int a = u - 'a';
+            int b = v - 'a';
+            if (w < dist[a][b]) dist[a][b] = w;
+        }
+
+        for (int k = 0; k < 26; ++k) {
+            for (int i = 0; i < 26; ++i) {
+                if (dist[i][k] >= INF) continue;
+                for (int j = 0; j < 26; ++j) {
+                    if (dist[k][j] >= INF) continue;
+                    int now = dist[i][k] + dist[k][j];
+                    if (now < dist[i][j]) dist[i][j] = now;
+                }
+            }
+        }
+
+        if (s1.size() != s2.size()) {
+            cout << -1 << endl ;
+            return 0 ;
+        }
+        int ans1 = 0 ;
+        string ans2;
+        int sz = (int)s1.size();
+        ans2.reserve(sz);
+        for (int idx = 0; idx < sz; ++idx) {
+            if (s1[idx] == s2[idx]) {
+                ans2.push_back(s1[idx]);
+                continue;
+            }
+            int a = s1[idx] - 'a';
+            int b = s2[idx] - 'a';
+            int best = INF;
+            int bestch = -1;
+            for (int j = 0; j < 26; ++j) {
+                int d1 = dist[a][j];
+                int d2 = dist[b][j];
+                if (d1 >= INF || d2 >= INF) continue;
+                if (d1 + d2 < best) {
+                    best = d1 + d2;
+                    bestch = j;
+                }
+            }
+            if (best == INF) {
+                cout << -1 << endl;
+                return 0;
+            }
+            ans1 += best;
+            ans2.push_back(char('a' + bestch));
+        }
+        cout << ans1 << endl << ans2 << endl;
+    }
+    return 0;
+}
+______
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+#define all(x) begin(x), end(x)
+#define fastio() ios::sync_with_stdio(false); cin.tie(nullptr)
+#define endl '\n'
+const ll INF = (ll)9e18;
+const int MOD = 1e9 + 7;
+#define int long long
+
+void input() {
+#ifndef ONLINE_JUDGE
+    freopen("in.txt", "r", stdin);
+    freopen("ou.txt", "w", stdout);
+#endif
+}
+
+struct Medicine {
+    int d;
+    int removeMask;
+    int addMask;
+};
+
+int32_t main() {
+    fastio();
+    input();
+    int t = 1;
+    if (!(cin >> t)) return 0;
+    while (t--) {
+        int n, m;
+        cin >> n >> m;
+        string stym; cin >> stym;
+        int startMask = 0;
+        for (int i = 0; i < n; ++i) if (stym[i] == '1') startMask |= (1 << i);
+
+        vector<Medicine> meds;
+        meds.reserve(m);
+        for (int i = 0; i < m; ++i) {
+            int d; string fix, cause;
+            cin >> d >> fix >> cause;
+            int rmask = 0, amask = 0;
+            for (int j = 0; j < n; ++j) {
+                if (fix[j] == '1') rmask |= (1 << j);
+                if (cause[j] == '1') amask |= (1 << j);
+            }
+            meds.push_back({d, rmask, amask});
+        }
+        int N = 1 << n;
+        vector<ll> dist(N, INF);
+        using P = pair<ll,int>; 
+        priority_queue<P, vector<P>, greater<P>> pq;
+        dist[startMask] = 0;
+        pq.push({0, startMask});
+        while (!pq.empty()) {
+            auto [cost, mask] = pq.top(); pq.pop();
+            if (cost != dist[mask]) continue;
+            if (mask == 0) break;
+            for (auto &med : meds) {
+                int next = mask;
+                next &= ~med.removeMask;
+                next |= med.addMask;
+                ll ncost = cost + med.d;
+                if (ncost < dist[next]) {
+                    dist[next] = ncost;
+                    pq.push({ncost, next});
+                }
+            }
+        }
+
+        if (dist[0] == INF) cout << -1 << endl;
+        else cout << dist[0] << endl;
+    }
+    return 0;
+}
+___________
+
+#include <bits/stdc++.h>
+using namespace std;
+#define fastio() ios::sync_with_stdio(false); cin.tie(nullptr)
+#define endl '\n'
+#define int long long
+
+const long long INF = 1e18;
+
+struct Edge {
+    int to, w;
+    bool is_train;
+};
+
+void input() {
+#ifndef ONLINE_JUDGE
+    freopen("in.txt", "r", stdin);
+    freopen("ou.txt", "w", stdout);
+#endif
+}
+
+int32_t main() {
+    fastio();
+    input();
+    int t = 1;
+    // cin >> t;
+    while (t--) {
+        int n, m, k;
+        cin >> n >> m >> k;
+        vector<vector<Edge>> adj(n + 1);
+        for (int i = 0; i < m; ++i) {
+            int u, v, x;
+            cin >> u >> v >> x;
+            adj[u].push_back({v, x, 0});
+            adj[v].push_back({u, x, 0});
+        }
+
+        for (int i = 0; i < k; ++i) {
+            int s, y;
+            cin >> s >> y;
+            adj[1].push_back({s, y, 1});
+            adj[s].push_back({1, y, 1});
+        }
+        vector<long long> dist(n + 1, INF);
+        priority_queue<pair<long long, int>, vector<pair<long long, int>>, greater<>> pq;
+        dist[1] = 0;
+        pq.push({0, 1});
+        vector<int> same(n + 1, 0);
+        while (!pq.empty()) {
+            auto [d, u] = pq.top();
+            pq.pop();
+            if (d != dist[u]) continue;
+            for (auto [v, w, is_train] : adj[u]) {
+                if (d + w < dist[v]) {
+                    dist[v] = d + w;
+                    same[v] = is_train;
+                    pq.push({dist[v], v});
+                }else if (d + w == dist[v]) {
+                    if (!is_train && same[v]) same[v] = 0;
+                }
+            }
+        }
+        int noneed = 0;
+        for (int v = 2; v <= n; ++v) {
+                noneed += same[v];
+        }
+        cout << k - noneed << endl;
+    }
+    return 0;
+}
+
+___________
+#include <bits/stdc++.h>
+using namespace std;
+#define all(x) begin(x), end(x)
+#define fastio() ios::sync_with_stdio(false); cin.tie(nullptr)
+#define endl '\n'
+using ll = long long;
+const long long INF = 4e18;
+#define int long long
+
+void input() {
+#ifndef ONLINE_JUDGE
+    freopen("in.txt", "r", stdin);
+    freopen("ou.txt", "w", stdout);
+#endif
+}
+
+struct edge {
+    int v, wb, ww;
+};
+
+int n, m;
+int t0, t1, t2;
+vector<vector<edge>> adj;
+
+bool solve(int mid) {
+    vector<long long> dist(n + 1, INF);
+    priority_queue<pair<long long,int>, vector<pair<long long,int>>, greater<>> pq;
+    dist[1] = mid;
+    pq.push({mid, 1});
+    while (!pq.empty()) {
+        auto [cur, u] = pq.top(); pq.pop();
+        if (cur != dist[u] || cur > t0 ) continue;
+        if (u == n && cur <= t0) return true ;
+        for (auto &e : adj[u]) {
+            int v = e.v;
+            int time;
+            // walk
+            time = cur + e.ww;
+            if (time < dist[v]) {
+                dist[v] = time;
+                pq.push({time, v});
+            }
+            // bus
+            int bus_time;
+            if (cur + e.wb <= t1) {
+                bus_time = cur + e.wb;
+            } else if (cur < t2) {
+                bus_time = t2 + e.wb;
+            } else {
+                bus_time = cur + e.wb;
+            }
+            if (bus_time < dist[v]) {
+                dist[v] = bus_time;
+                pq.push({bus_time, v});
+            }
+        }
+    }
+    return dist[n] <= t0 ;
+}
+
+int32_t main() {
+    fastio();
+    input();
+    int t = 1;
+    cin >> t;
+    while (t--) {
+        cin >> n >> m >> t0 >> t1 >> t2;
+        adj.assign(n + 1, {});
+        for (int i = 0; i < m; i++) {
+            int u , v , wb , ww;
+            cin >> u >> v >> wb >> ww;
+            adj[u].push_back({v, wb, ww});
+            adj[v].push_back({u, wb, ww});
+        }
+        int lo = 0, hi = t0, ans = -1;
+        while (lo <= hi) {
+            int mid = (lo + hi) / 2 ;
+            if (solve(mid) ) {
+                ans = mid;
+                lo = mid + 1;
+            } else hi = mid - 1;
+        }
+        cout << ans << endl;
+    }
+    return 0;
+}
+______________
+
+#include <bits/stdc++.h>
+using namespace std;
+#define all(x) begin(x), end(x)
+#define fastio() ios::sync_with_stdio(false); cin.tie(nullptr)
+#define endl '\n'
+using ll = long long;
+const int INF = 1e18;
+const int MOD = 1e9 + 7;
+#define int long long
+
+void input() {
+#ifndef ONLINE_JUDGE
+    freopen("in.txt", "r", stdin);
+    freopen("ou.txt", "w", stdout);
+#else
+#endif
+}
+
+struct Edge {
+    int u, v;
+    long long cost;
+    int wis;
+};
+
+static bool solve(int n, const vector<Edge>& edges, int k , int mid) {
+    vector<vector<pair<int,long long>>> adj(n + 1);
+    adj.reserve(n + 1);
+    for (const auto &e : edges) {
+        if (e.wis <= mid) {
+            adj[e.u].push_back({e.v, e.cost});
+            adj[e.v].push_back({e.u, e.cost});
+        }
+    }
+    vector<long long> dist(n + 1, (long long)INF);
+    priority_queue<pair<long long,int>, vector<pair<long long,int>>, greater<pair<long long,int>>> pq;
+    dist[1] = 0;
+    pq.push({0, 1});
+    while (!pq.empty()) {
+        auto [d, u] = pq.top(); pq.pop();
+        if (d != dist[u] ||  (d >= k)) continue;
+        if (u == n) break;
+        for (auto [v, w] : adj[u]) {
+            int nw = d + w;
+            if (nw < dist[v]) {
+                pq.push({nw, v});
+                dist[v] = nw;
+            }
+        }
+    }
+    return dist[n] < k;
+}
+int32_t main() {
+    fastio();
+    input();
+    int t = 1;
+    cin >> t;
+    while (t--) {
+        int n, m , k;
+        cin >> n >> m >> k;
+        vector<Edge> edges;
+        edges.reserve(m);
+        vector<int> wis;
+        wis.reserve(m);
+        for (int i = 0; i < m; ++i) {
+            int s1, s2; long long c; int W;
+            cin >> s1 >> s2 >> c >> W;
+            edges.push_back({s1, s2, c, W});
+            wis.push_back(W);
+        }
+        sort(wis.begin(), wis.end());
+        wis.erase(unique(wis.begin(), wis.end()), wis.end());
+        int ans = -1;
+        if (!wis.empty()) {
+            int lo = 0, hi = (int)wis.size() - 1;
+            while (lo <= hi) {
+                int md = (lo + hi) >> 1;
+                if (solve(n, edges, k, wis[md])) {
+                    ans = wis[md];
+                    hi = md - 1;
+                } else {
+                    lo = md + 1;
+                }
+            }
+        }
+        cout << ans << endl ;
+    }
+    return 0;
+}
+
+_____
+#include <bits/stdc++.h>
+using namespace std;
+#define all(x) begin(x), end(x)
+#define fastio() ios::sync_with_stdio(false); cin.tie(nullptr)
+#define endl '\n'
+using ll = long long;
+const int INF = 1e18;
+const int MOD = 1e9 + 7;
+#define int long long
+
+void input() {
+#ifndef ONLINE_JUDGE
+    freopen("in.txt", "r", stdin);
+    freopen("ou.txt", "w", stdout);
+#else
+#endif
+}
+
+struct DSU {
+    int comp_size;
+    bool track_comps = false;
+    vector<int> p, sz;
+    vector<vector<int> > comps;
+
+    DSU() {}
+    DSU(int n, bool enable_track = false) { init(n, enable_track); }
+
+    void init(int n, bool enable_track = false) {
+        comp_size = n;
+        track_comps = enable_track;
+        p.resize(n + 1);
+        sz.assign(n + 1, 1);
+        for (int i = 1; i <= n; i++) p[i] = i;
+        if (track_comps) {
+            comps.assign(n + 1, {});
+            for (int i = 1; i <= n; i++) comps[i].push_back(i);
+        } else comps.clear();
+    }
+
+    inline int find(int x) { return p[x] == x ? x : p[x] = find(p[x]); }
+    inline bool same(int x, int y) { return find(x) == find(y); }
+
+    inline bool unite(int x, int y) {
+        int u = find(x), v = find(y);
+        if (u == v) return false;
+        if (sz[u] < sz[v]) swap(u, v);
+        p[v] = u;
+        sz[u] += sz[v];
+        comp_size--;
+        if (track_comps) {
+            if (comps[v].size() > comps[u].size())
+                swap(comps[u], comps[v]);
+            comps[u].insert(comps[u].end(),
+                            comps[v].begin(), comps[v].end());
+            comps[v].clear();
+        }
+        return true;
+    }
+
+    inline int get_comp_count() const { return comp_size; }
+    vector<int> get_members(int x) { return track_comps ? comps[find(x)] : vector<int>(); }
+
+    vector<vector<int> > get_all_comps() {
+        if (!track_comps) return {};
+        vector<vector<int> > res;
+        for (int i = 1; i < (int) comps.size(); i++)
+            if (!comps[i].empty()) res.push_back(comps[i]);
+        return res;
+    }
+};
+
+
+int32_t main() {
+    fastio();
+    input();
+    int t = 1;
+    cin >> t;
+    while (t--) {
+        int n, p;
+        cin >> n >> p;
+        vector<int> a(n + 1);
+        for (int i = 1; i <= n; i++) cin >> a[i];
+        vector<pair<int,int>> vals;
+        for (int i = 1; i <= n; i++) vals.push_back({a[i], i});
+        sort(all(vals));
+        DSU dsu(n);
+        int ans = 0;
+        for (auto [val, idx] : vals) {
+            if (val >= p) break;
+            for (int j = idx - 1; j >= 1; j--) {
+                if (a[j] % val != 0) break;
+                if (!dsu.same(j, idx )) {
+                    dsu.unite(j, idx );
+                    ans += val;
+                }else break;
+            }
+            for (int j = idx + 1; j <= n; j++) {
+                if (a[j] % val != 0) break;
+                if (!dsu.same(idx, j)) {
+                    dsu.unite(idx , j);
+                    ans += val;
+                }else break;
+            }
+        }
+        for (int i = 1; i < n; i++) {
+            if (!dsu.same(i, i + 1)) {
+                dsu.unite(i, i + 1);
+                ans += p;
+            }
+        }
+        cout << ans << endl;
+    }
+    return 0;
+}
+
+__________
+#include <bits/stdc++.h>
+using namespace std;
+#define all(x) begin(x), end(x)
+#define fastio() ios::sync_with_stdio(false); cin.tie(nullptr)
+#define endl '\n'
+using ll = long long;
+const int INF = 1e18;
+const int MOD = 1e9 + 7;
+#define int long long
+
+void input() {
+#ifndef ONLINE_JUDGE
+    freopen("in.txt", "r", stdin);
+    freopen("ou.txt", "w", stdout);
+#else
+#endif
+}
+
+struct DSU {
+    int comp_size;
+    bool track_comps = false;
+    vector<int> p, sz;
+    vector<vector<int>> comps;
+
+    DSU() {}
+    DSU(int n, bool enable_track = false) { init(n, enable_track); }
+
+    void init(int n, bool enable_track = false) {
+        comp_size = n;
+        track_comps = enable_track;
+        p.resize(n + 1);
+        sz.assign(n + 1, 1);
+        for (int i = 1; i <= n; i++) p[i] = i;
+        if (track_comps) {
+            comps.assign(n + 1, {});
+            for (int i = 1; i <= n; i++) comps[i].push_back(i);
+        } else comps.clear();
+    }
+
+    inline int find(int x) { return p[x] == x ? x : p[x] = find(p[x]); }
+    inline bool same(int x, int y) { return find(x) == find(y); }
+
+    inline bool unite(int x, int y, ll &add) {
+        int u = find(x), v = find(y);
+        if (u == v) return false;
+        if (sz[u] < sz[v]) swap(u, v);
+        add = 1LL * sz[u] * sz[v];
+        p[v] = u;
+        sz[u] += sz[v];
+        comp_size--;
+        if (track_comps) {
+            if (comps[v].size() > comps[u].size())
+                swap(comps[u], comps[v]);
+            comps[u].insert(comps[u].end(), comps[v].begin(), comps[v].end());
+            comps[v].clear();
+        }
+        return true;
+    }
+
+    inline int get_comp_count() const { return comp_size; }
+    vector<int> get_members(int x) { return track_comps ? comps[find(x)] : vector<int>(); }
+
+    vector<vector<int>> get_all_comps() {
+        if (!track_comps) return {};
+        vector<vector<int>> res;
+        for (int i = 1; i < (int)comps.size(); i++)
+            if (!comps[i].empty()) res.push_back(comps[i]);
+        return res;
+    }
+};
+
+struct Edge {
+    int u, v, w;
+};
+
+int32_t main() {
+    fastio();
+    input();
+    int t = 1;
+    // cin >> t;
+    while (t--) {
+        int n, m;
+        cin >> n >> m;
+        vector<Edge> edges(n - 1);
+        for (auto &e : edges) cin >> e.u >> e.v >> e.w;
+        const int MAXW = 200005;
+        vector<ll> val(MAXW + 5, 0);
+        sort(all(edges), [](const Edge &a, const Edge &b) {
+            return a.w < b.w;
+        });
+        DSU dsu(n);
+        for (auto &e : edges) {
+            ll add = 0;
+            if (dsu.unite(e.u, e.v, add))
+                val[e.w] += add;
+        }
+        for (int i = 1; i <= MAXW; i++) val[i] += val[i - 1];
+        while (m--) {
+            int q;
+            cin >> q;
+            if (q > MAXW) q = MAXW;
+            cout << val[q] << " ";
+        }
+        cout << endl;
+    }
+    return 0;
+}
+____
+#include <bits/stdc++.h>
+using namespace std;
+#define all(x) begin(x), end(x)
+#define fastio() ios::sync_with_stdio(false); cin.tie(nullptr)
+#define endl '\n'
+using ll = long long;
+const int INF = 1e18;
+const int MOD = 1e9 + 7;
+#define int long long
+
+void input() {
+#ifndef ONLINE_JUDGE
+    freopen("in.txt", "r", stdin);
+    freopen("ou.txt", "w", stdout);
+#else
+#endif
+}
+
+struct DSU {
+    int comp_size;
+    bool track_comps = false;
+    vector<int> p, sz;
+    vector<vector<int> > comps;
+
+    DSU() {
+    }
+
+    DSU(int n, bool enable_track = false) { init(n, enable_track); }
+
+    void init(int n, bool enable_track = false) {
+        comp_size = n;
+        track_comps = enable_track;
+        p.resize(n + 1);
+        sz.assign(n + 1, 1);
+        for (int i = 1; i <= n; i++) p[i] = i;
+        if (track_comps) {
+            comps.assign(n + 1, {});
+            for (int i = 1; i <= n; i++) comps[i].push_back(i);
+        } else comps.clear();
+    }
+
+    inline int find(int x) { return p[x] == x ? x : p[x] = find(p[x]); }
+    inline bool same(int x, int y) { return find(x) == find(y); }
+
+    inline bool unite(int x, int y) {
+        int u = find(x), v = find(y);
+        if (u == v) return false;
+        if (sz[u] < sz[v]) swap(u, v);
+        p[v] = u;
+        sz[u] += sz[v];
+        comp_size--;
+        if (track_comps) {
+            if (comps[v].size() > comps[u].size())
+                swap(comps[u], comps[v]);
+            comps[u].insert(comps[u].end(),
+                            comps[v].begin(), comps[v].end());
+            comps[v].clear();
+        }
+        return true;
+    }
+
+    inline int get_comp_count() const { return comp_size; }
+    vector<int> get_members(int x) { return track_comps ? comps[find(x)] : vector<int>(); }
+
+    vector<vector<int> > get_all_comps() {
+        if (!track_comps) return {};
+        vector<vector<int> > res;
+        for (int i = 1; i < (int) comps.size(); i++)
+            if (!comps[i].empty()) res.push_back(comps[i]);
+        return res;
+    }
+};
+
+
+int32_t main() {
+    fastio();
+    input();
+    int t = 1;
+    // cin >> t ;
+    while (t--) {
+        int n, a, b;
+        cin >> n >> a >> b;
+        vector<int> v(n+1);
+        unordered_map<int, vector<int>> pos; pos.reserve(n*2);
+        for (int i = 1; i <= n; ++i) {
+            cin >> v[i];
+            pos[v[i]].push_back(i);
+        }
+        DSU dsu(n, true);
+        for (auto &pr : pos) {
+            const vector<int> &indices = pr.second;
+            for (int i = 1; i < (int)indices.size(); ++i) {
+                dsu.unite(indices[0], indices[i]);
+            }
+        }
+        for (int i = 1; i <= n; ++i) {
+            int va = a - v[i];
+            int vb = b - v[i];
+            if (pos.count(va)) {
+                dsu.unite(i , pos[va][0]);
+            }
+            if (pos.count(vb)) {
+                dsu.unite(i, pos[vb][0]);
+            }
+        }
+        vector<int> ans(n+1, -1);
+        bool ok = true;
+        auto comps = dsu.get_all_comps();
+        for (auto &comp : comps) {
+            unordered_map<int,int> freq; freq.reserve(comp.size()*2);
+            for (int idx : comp) freq[v[idx]]++;
+            bool canA = true;
+            for (int idx : comp) {
+                int need = a - v[idx];
+                // make all first
+                if (freq.find(need) == freq.end()) {
+                    canA = false;
+                    break;
+                }
+            }
+            bool canB = true;
+            // make all sec ;
+            for (int idx : comp) {
+                int need = b - v[idx];
+                if (freq.find(need) == freq.end()) { canB = false; break; }
+            }
+            // has no a or b
+            if (!canA && !canB) {
+                ok = false;
+                break;
+            }
+            int assign = canA ? 0 : 1;
+            for (int idx : comp) ans[idx] = assign;
+        }
+        if (!ok) {
+            cout << "NO\n";
+            continue;
+        }
+        cout << "YES\n";
+        for (int i = 1; i <= n; ++i) {
+            cout << ans[i] << " ";
+        }
+        cout << endl;
+    }
+    return 0;
+}
+_____
