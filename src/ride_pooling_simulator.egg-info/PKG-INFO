@@ -1,5 +1,0 @@
-Metadata-Version: 2.4
-Name: ride-pooling-simulator
-Version: 0.1.0
-Summary: Historical NYC TLC candidate generation for a ride-pooling simulator
-Requires-Python: >=3.11
