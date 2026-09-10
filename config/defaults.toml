@@ -1,0 +1,37 @@
+# Recommended simulator starting values. Ranges are tunable configuration.
+
+[starting_area_size_m]
+minimum = 300
+maximum = 800
+
+[matching_time_window_minutes]
+minimum = 5
+maximum = 7
+
+[maximum_wait_before_decision_minutes]
+minimum = 1.5
+maximum = 3
+
+[pool]
+max_passengers = 3
+
+[detour]
+maximum_extra_minutes_minimum = 3
+maximum_extra_minutes_maximum = 5
+maximum_extra_meters = 500
+
+[passenger]
+minimum_saving_percent_minimum = 15
+minimum_saving_percent_maximum = 20
+
+[driver]
+incremental_profit_margin_percent_minimum = 20
+incremental_profit_margin_percent_maximum = 30
+offer_wait_seconds_minimum = 30
+offer_wait_seconds_maximum = 45
+maximum_offer_attempts = 2
+
+[demand]
+minimum_requests_minimum = 15
+minimum_requests_maximum = 20
+window_minutes = 10
